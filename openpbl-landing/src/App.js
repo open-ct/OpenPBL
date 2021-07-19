@@ -1,24 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, BrowserRouter, Switch } from "react-router-dom";
+
+import './App.less';
+import Home from './pages/Home/index'
+import Project from "./pages/Project";
+import ProjectInfo from "./pages/Project/ProjectInfo/index";
+import PublicProject from "./pages/Project/PublicProject";
+import LearningProject from "./pages/Project/LearningProject";
+import FinishedProject from "./pages/Project/FinishedProject";
+
+
+import Login from "./pages/User/Login";
+import Register from "./pages/User/Register";
+import Learning from "./pages/Project/LearningPage";
+import EditInfo from "./pages/Project/CreateProject/EditInfo";
+import EditOutlined from "./pages/Project/CreateProject/EditOutline"
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="App">
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/landing" component={Home} />
+            <Route exact path="/project" component={Project} />
+
+            <Route exact path="/project/public" component={PublicProject} />
+            <Route exact path="/project/learning" component={LearningProject} />
+            <Route exact path="/project/finished" component={FinishedProject} />
+            <Route exact path="/project/info/:id" component={ProjectInfo} />
+
+            {/*
+          <Route exact path="/project/create" component={CreateProject} />
+*/}
+            <Route exact path="/project/edit/info/:id" component={EditInfo} />
+            <Route exact path="/project/edit/outline/:id" component={EditOutlined} />
+
+            <Route exact path="/project/learning/:pid/:cid/:sid" component={Learning} />
+
+            <Route exact path="/user/login" component={Login} />
+            <Route exact path="/user/register" component={Register} />
+
+          </Switch>
+        </BrowserRouter>
+      </div>
   );
 }
 
