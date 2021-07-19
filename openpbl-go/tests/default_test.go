@@ -1,6 +1,7 @@
 package test
 
 import (
+	"github.com/astaxie/beego/logs"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -8,8 +9,7 @@ import (
 	"path/filepath"
 	_ "openpbl-go/routers"
 
-	beego "github.com/beego/beego/v2/server/web"
-	"github.com/beego/beego/v2/core/logs"
+	"github.com/astaxie/beego"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

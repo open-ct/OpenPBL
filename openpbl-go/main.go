@@ -1,9 +1,8 @@
 package main
 
 import (
+	"github.com/astaxie/beego"
 	_ "openpbl-go/routers"
-
-	beego "github.com/beego/beego/v2/server/web"
 )
 
 func main() {

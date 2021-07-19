@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"openpbl-go/models"
 	"encoding/json"
+	"openpbl-go/models"
 
-	beego "github.com/beego/beego/v2/server/web"
+	"github.com/astaxie/beego"
 )
 
 // Operations about object
