@@ -1,3 +1,4 @@
+// Package routers
 // @APIVersion 1.0.0
 // @Title beego Test API
 // @Description beego has a very cool tools to autogenerate documents for your API
@@ -8,23 +9,27 @@
 package routers
 
 import (
-	"openpbl-go/controllers"
-
 	"github.com/astaxie/beego"
+	"openpbl-go/controllers"
 )
 
 func init() {
 	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/object",
+
+		beego.NSNamespace("/project",
 			beego.NSInclude(
-				&controllers.ObjectController{},
-			),
-		),
-		beego.NSNamespace("/user",
+				&controllers.ProjectController{})),
+
+		beego.NSNamespace("/project-list",
 			beego.NSInclude(
-				&controllers.UserController{},
-			),
-		),
+				&controllers.ProjectListController{})),
+
+		beego.NSNamespace("/student",
+			beego.NSInclude(
+				&controllers.StudentController{})),
+		beego.NSNamespace("/teacher",
+			beego.NSInclude(
+				&controllers.TeacherController{})),
 	)
 	beego.AddNamespace(ns)
 }
