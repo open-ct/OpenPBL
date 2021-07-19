@@ -107,7 +107,7 @@ function InfoEditPage(obj) {
     project.updateProject(data)
       .then((res) => {
         if (res.data.result) {
-          window.location.href = '/project/edit/outline/' + p.id
+          window.location.href = '/project/edit/outline/' + pid
         }
       })
       .catch((e) => {
