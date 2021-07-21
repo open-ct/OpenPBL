@@ -1,4 +1,5 @@
 import {trim} from "./Util";
+import axios from "axios";
 
 export let authConfig = {
   category: "email",
@@ -10,6 +11,22 @@ export let authConfig = {
 
 export function initAuthWithConfig(config) {
   authConfig = config;
+}
+export function getCasdoorService() {
+  return axios.create({
+    baseURL: authConfig.serverUrl,
+    timeout: 10000,
+    withCredentials: true
+  })
+}
+
+export function getUser(teacherId) {
+  let request = getCasdoorService()
+  return request({
+    url: '/api/get-user',
+    method: 'get',
+    params: {id: authConfig.organizationName + '/' + teacherId}
+  })
 }
 
 export function getAuthorizeUrl() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
-import {Button, Card, Col, Divider, Image, Menu, PageHeader, Popconfirm, Row} from 'antd';
+import {Avatar, Button, Card, Col, Divider, Image, Menu, PageHeader, Popconfirm, Row} from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import localStorage from 'localStorage';
 import {Link} from 'react-router-dom';
@@ -14,34 +14,45 @@ import StudentApi from "../../../api/StudentApi";
 import TeacherApi from "../../../api/TeacherApi";
 import StudentAdmin from "./component/StudentAdmin";
 import SubmitFiles from "./component/SubmitFiles";
+import {getUser} from "../../User/Auth/Auth";
 
 
 class ProjectInfo extends React.PureComponent {
   constructor(props) {
     super(props);
     const pid = this.props.match.params.id;
-
-    // TODO axios get project info
-    const projectInfo = {
-      id: pid,
-    };
     this.state = {
       pid: pid,
-      project: projectInfo,
+      project: {},
+      teacher: {},
       menu: 'project-introduce',
       type: localStorage.getItem('type'),
     };
   }
 
   componentDidMount() {
+    this.loadProjectDetail()
+  }
+  loadProjectDetail = () => {
     ProjectApi.getProjectDetail(this.state.pid)
       .then((res) => {
         this.setState({
           project: res.data.project
         })
+        this.loadTeacherInfo(res.data.project.teacherId)
       })
       .catch((e) => {
         console.log(e)
+      })
+  }
+  loadTeacherInfo = (teacherId) => {
+    getUser(teacherId)
+      .then((res) => {
+        if (res.status === 200) {
+          this.setState({
+            teacher: res.data
+          })
+        }
       })
   }
 
@@ -103,7 +114,7 @@ class ProjectInfo extends React.PureComponent {
 
 
   render() {
-    const {project, menu, type, pid } = this.state;
+    const {project, teacher, menu, type, pid } = this.state;
 
     const teacherBt = (
       <div style={{float: 'right'}}>
@@ -226,7 +237,10 @@ class ProjectInfo extends React.PureComponent {
                           <Divider type="vertical"/>
                           <span>{project.readNum}&nbsp;人加入学习</span>
                           <Divider type="vertical"/>
-                          <span>授课教师：{project.name}</span>
+                          <span>授课教师：&nbsp;
+                            <Avatar src={teacher.avatar} />&nbsp;&nbsp;
+                            {teacher.displayName}
+                          </span>
                         </div>
                         <br/>
                         {type === 'student' ? studentBt : teacherBt}
