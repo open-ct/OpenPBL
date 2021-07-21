@@ -1,7 +1,8 @@
 package models
 
 import (
-	"openpbl-go/models/db"
+	"errors"
+	"fmt"
 	"time"
 	"xorm.io/xorm"
 )
@@ -88,22 +89,22 @@ type ProjectSubject struct {
 }
 
 func (p *Project) GetEngine() *xorm.Session {
-	return db.GetEngine().Table(p)
+	return adapter.Engine.Table(p)
 }
 func (p *Chapter) GetEngine() *xorm.Session {
-	return db.GetEngine().Table(p)
+	return adapter.Engine.Table(p)
 }
 func (p *Section) GetEngine() *xorm.Session {
-	return db.GetEngine().Table(p)
+	return adapter.Engine.Table(p)
 }
 func (p *SubmitFile) GetEngine() *xorm.Session {
-	return db.GetEngine().Table(p)
+	return adapter.Engine.Table(p)
 }
 func (p *ProjectSkill) GetEngine() *xorm.Session {
-	return db.GetEngine().Table(p)
+	return adapter.Engine.Table(p)
 }
 func (p *ProjectSubject) GetEngine() *xorm.Session {
-	return db.GetEngine().Table(p)
+	return adapter.Engine.Table(p)
 }
 
 func GetProjectByPidForTeacher(pid string) (pd ProjectDetail, err error) {
@@ -115,12 +116,16 @@ func GetProjectByPidForTeacher(pid string) (pd ProjectDetail, err error) {
 }
 
 func GetProjectByPidForStudent(pid string) (pd ProjectDetail, err error) {
-	_, err = db.GetEngine().
+	c, err := adapter.Engine.
 		SQL("select * from project " +
 			"inner join teacher t on project.teacher_id = t.id " +
 			"left join learn_project lp on project.id = lp.project_id " +
 			"where project.id = ?", pid).
 		Get(&pd)
+	fmt.Println(c)
+	if !c {
+		err = errors.New("404")
+	}
 	return
 }
 
@@ -183,7 +188,7 @@ func GetSubmitFiles(sid string, pid string) (f[] SubmitFile, err error) {
 }
 
 func GetOutlineByPid(pid string) (c []Outline, err error) {
-	err = db.GetEngine().
+	err = adapter.Engine.
 		SQL("select * from chapter left join section s on chapter.id = s.chapter_id where chapter.project_id = 1").
 		// Where("project_id = ?", pid).
 		// Asc("chapter_number").

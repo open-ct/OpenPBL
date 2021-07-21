@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"openpbl-go/models/db"
 )
 
 // ============= student ===================
@@ -28,15 +27,14 @@ func GetMyProjectListBySid(sid string, from int, size int,
 	sql1 := fmt.Sprintf(baseSql, "*", sid, learning, e1, e2, e3) +
 		fmt.Sprintf(pageSql, orderBy, orderType, from, size)
 	sql2 := fmt.Sprintf(baseSql, "count(*)", sid, learning, e1, e2, e3)
-	err = db.GetEngine().
+	err = adapter.Engine.
 		SQL(sql1).
 		Find(&p)
-	_, err = db.GetEngine().
+	_, err = adapter.Engine.
 		SQL(sql2).
 		Get(&rows)
 	return
 }
-
 
 func GetPublicProjectListForStudent(sid string, from int, size int,
 	subject string, skill string, text string, orderBy string, orderType string) (p []ProjectDetail, rows int64, err error) {
@@ -56,11 +54,11 @@ func GetPublicProjectListForStudent(sid string, from int, size int,
 	sql1 := fmt.Sprintf(baseSql, "*", e1, e2, e3, sid) +
 		fmt.Sprintf(pageSql, orderBy, orderType, from, size)
 	sql2 := fmt.Sprintf(baseSql, "count(*)", e1, e2, e3, sid)
-	
-	err = db.GetEngine().
+
+	err = adapter.Engine.
 		SQL(sql1).
 		Find(&p)
-	_, err = db.GetEngine().
+	_, err = adapter.Engine.
 		SQL(sql2).
 		Get(&rows)
 	return
@@ -69,7 +67,7 @@ func GetPublicProjectListForStudent(sid string, from int, size int,
 // ============= teacher ===================
 
 func GetMyProjectListByTid(tid string, from int, size int,
-	subject string, skill string, text string, orderBy string ,orderType string, published bool, closed bool) (p []ProjectDetail, rows int64, err error) {
+	subject string, skill string, text string, orderBy string, orderType string, published bool, closed bool) (p []ProjectDetail, rows int64, err error) {
 	const baseSql = `
 		select %s from project where teacher_id = %s
     		and published = %v
@@ -85,10 +83,10 @@ func GetMyProjectListByTid(tid string, from int, size int,
 		fmt.Sprintf(pageSql, orderBy, orderType, from, size)
 	sql2 := fmt.Sprintf(baseSql, "count(*)", tid, published, closed, e1, e2, e3)
 
-	err = db.GetEngine().
+	err = adapter.Engine.
 		SQL(sql1).
 		Find(&p)
-	_, err = db.GetEngine().
+	_, err = adapter.Engine.
 		SQL(sql2).
 		Get(&rows)
 
@@ -96,7 +94,7 @@ func GetMyProjectListByTid(tid string, from int, size int,
 }
 
 func GetPublicProjectListForTeacher(sid string, from int, size int,
-	subject string, skill string, text string, orderBy string, orderType string ) (p []ProjectDetail, rows int64, err error) {
+	subject string, skill string, text string, orderBy string, orderType string) (p []ProjectDetail, rows int64, err error) {
 	baseSql := "select %s from project where published = true %s %s %s "
 	pageSql := " order by %s %s limit %d, %d "
 	e1 := getSubjectExistSql(subject)
@@ -107,10 +105,10 @@ func GetPublicProjectListForTeacher(sid string, from int, size int,
 		fmt.Sprintf(pageSql, orderBy, orderType, from, size)
 	sql2 := fmt.Sprintf(baseSql, "count(*)", e1, e2, e3)
 
-	err = db.GetEngine().
+	err = adapter.Engine.
 		SQL(sql1).
 		Find(&p)
-	_, err = db.GetEngine().
+	_, err = adapter.Engine.
 		SQL(sql2).
 		Get(&rows)
 	return

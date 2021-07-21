@@ -94,6 +94,7 @@ func (p *ProjectController) CreateProject() {
 			Msg:  "请先登录",
 		}
 		p.Data["json"] = resp
+		p.ServeJSON()
 		return
 	}
 	if user.Tag != "teacher" {
@@ -102,12 +103,14 @@ func (p *ProjectController) CreateProject() {
 			Msg:  "非法用户",
 		}
 		p.Data["json"] = resp
+		p.ServeJSON()
 		return
 	}
-	uid := user.Name
+	uid := user.Username
 	project := &models.Project{
 		TeacherId:        uid,
 	}
+	fmt.Println(project)
 	err := project.Create()
 	if err != nil {
 		resp = Response{
@@ -141,6 +144,7 @@ func (p *ProjectController) UpdateProject() {
 			Msg:  "请先登录",
 		}
 		p.Data["json"] = resp
+		p.ServeJSON()
 		return
 	}
 	if user.Tag != "teacher" {
@@ -149,6 +153,7 @@ func (p *ProjectController) UpdateProject() {
 			Msg:  "非法用户",
 		}
 		p.Data["json"] = resp
+		p.ServeJSON()
 		return
 	}
 	uid := user.Name

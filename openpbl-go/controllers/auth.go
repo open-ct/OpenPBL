@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 	"openpbl-go/util"
@@ -23,9 +22,6 @@ func (c *AuthController) GetSessionUser() *auth.Claims {
 	if s == nil {
 		return nil
 	}
-
-	fmt.Println(s)
-
 	claims := &auth.Claims{}
 	err := util.JsonToStruct(s.(string), claims)
 	if err != nil {
