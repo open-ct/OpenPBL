@@ -14,8 +14,8 @@ type StudentController struct {
 	beego.Controller
 }
 
-func (pl *StudentController) GetSessionUser() *auth.Claims {
-	s := pl.GetSession("user")
+func (u *StudentController) GetSessionUser() *auth.Claims {
+	s := u.GetSession("user")
 	if s == nil {
 		return nil
 	}
@@ -27,61 +27,56 @@ func (pl *StudentController) GetSessionUser() *auth.Claims {
 	return claims
 }
 
-
-// GetStudent
-// @Title GetStudent
-// @Description
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Project
-// @Failure 403 :id is empty
-// @router /:sid [get]
-func (u *StudentController) GetStudent() {
-	var (
-		sid   string
-		err   error
-		stu   models.Student
-	)
-	sid = u.GetString(":sid")
-	if sid != "" {
-		stu, err = models.GetStudentById(sid)
-		if err != nil {
-			u.Data["json"] = map[string]string{"error": err.Error()}
-		} else {
-			u.Data["json"] = map[string]models.Student{"student": stu}
-		}
-	} else {
-
-	}
-	u.ServeJSON()
-}
-
 // LearnProject
 // @Title
 // @Description
-// @Param body body models.LearnProject true ""
-// @Success 200 {object} models.Project
-// @Failure 403 :id is empty
+// @Param pid path string true ""
+// @Success 200 {object} Response
+// @Failure 401
+// @Failure 403
 // @router /learn/:pid [post]
 func (u *StudentController) LearnProject() {
-
-	learning, err := u.GetBool("learning")
-	sid, err := u.GetInt64("studentId")
 	pid, err := u.GetInt64(":pid")
+	var resp Response
+	user := u.GetSessionUser()
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	if user.Tag != "student" {
+		resp = Response{
+			Code: 403,
+			Msg:  "非法的用户",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	uid := user.Name
 
 	l := &models.LearnProject{
-		StudentId: sid,
+		StudentId: uid,
 		ProjectId: pid,
-		Learning:  learning,
-	}
-	err = json.Unmarshal(u.Ctx.Input.RequestBody, &l)
-	if err != nil {
-		u.Data["json"] = map[string]string{"error": err.Error()}
+		Learning:  true,
 	}
 	err = l.Create()
 	if err != nil {
-		u.Data["json"] = map[string]string{"error": err.Error()}
+		resp = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+		u.Data["json"] = resp
 	}
-	u.Data["json"] = map[string]bool{"result": true}
+	resp = Response{
+		Code: 200,
+		Msg:  "加入成功",
+	}
+	u.Data["json"] = resp
 	u.ServeJSON()
 }
 

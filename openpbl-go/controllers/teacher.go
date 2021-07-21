@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 	"openpbl-go/models"
-	"strconv"
+	"openpbl-go/util"
 	"time"
 )
 
@@ -14,60 +14,21 @@ type TeacherController struct {
 	beego.Controller
 }
 
-// CreateTeacher
-// @Title Create Teacher
-// @Description create a teacher
-// @Param body body models.Teacher true	"body for teacher content"
-// @Success 200 {int} models.Teacher.Id
-// @Failure 403 body is empty
-// @router / [post]
-func (u *TeacherController) CreateTeacher() {
-	var (
-		err     error
-		teacher models.Teacher
-		uid     int64
-	)
-	err = json.Unmarshal(u.Ctx.Input.RequestBody, &teacher)
+func (u *TeacherController) GetSessionUser() *auth.Claims {
+	s := u.GetSession("user")
+	if s == nil {
+		return nil
+	}
+	claims := &auth.Claims{}
+	err := util.JsonToStruct(s.(string), claims)
 	if err != nil {
-		u.Data["json"] = map[string]string{"error": err.Error()}
+		panic(err)
 	}
-	err = teacher.Create()
-	if err != nil {
-		u.Data["json"] = map[string]string{"error": err.Error()}
-	}
-	uid = teacher.Id
-	u.Data["json"] = map[string]string{"id": strconv.FormatInt(uid, 10)}
-	u.ServeJSON()
-}
-
-// CheckTeacherEmail
-// @Title CheckTeacherEmail
-// @Description
-// @Param email	path string	true ""
-// @Success 200 {exist: true}
-// @Failure 403 :email is empty
-// @router /teacher/checkout/:email [get]
-func (u *TeacherController) CheckTeacherEmail() {
-	var (
-		err   error
-		exist bool
-		email string
-	)
-	email = u.GetString(":email")
-	if email != "" {
-		exist, err = models.ExistTeacherEmail(email)
-		if err != nil {
-			u.Data["json"] = map[string]string{"error": err.Error()}
-		}
-		u.Data["json"] = map[string]bool{"exist": exist}
-	} else {
-
-	}
-	u.ServeJSON()
+	return claims
 }
 
 // PublishProject
-// @Title Create Teacher
+// @Title
 // @Description create a teacher
 // @Param pid path string true ""
 // @Success 200 {int}
@@ -75,16 +36,44 @@ func (u *TeacherController) CheckTeacherEmail() {
 // @router /publish [post]
 func (u *TeacherController) PublishProject() {
 	pid, err := u.GetInt64("pid")
+	var resp Response
+	user := u.GetSessionUser()
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	if user.Tag != "teacher" {
+		resp = Response{
+			Code: 403,
+			Msg:  "非法的用户",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+
 	p := models.Project{
 		Id:               pid,
 		PublishedAt:      time.Now(),
 		Published:        true,
 	}
-
 	err = models.UpdatePublished(p)
 	if err != nil {
-		u.Data["json"] = map[string]string{"error": err.Error()}
+		resp = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		resp = Response{
+			Code: 200,
+			Msg:  "发布成功",
+		}
 	}
-	u.Data["json"] = map[string]bool{"result": true}
+	u.Data["json"] = resp
 	u.ServeJSON()
 }
