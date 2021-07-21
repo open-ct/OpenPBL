@@ -17,7 +17,7 @@ type ProjectListController struct {
 type ProjectList struct {
 	Code     int                    `json:"code"`
 	Count    int64                  `json:"count"`
-	Projects []models.DetailProject `json:"projects"`
+	Projects []models.ProjectDetail `json:"projects"`
 }
 
 func (pl *ProjectListController) GetSessionUser() *auth.Claims {
@@ -83,7 +83,7 @@ func (pl *ProjectListController) GetUserProjectList() {
 	uid := user.Name
 
 
-	var projects []models.DetailProject
+	var projects []models.ProjectDetail
 	var count    int64
 	if user.Tag == "student" {
 		if t == "learning" {

@@ -105,8 +105,6 @@ func (a *Adapter) close() {
 func (a *Adapter) createTable() {
 	err := a.Engine.Sync2(
 		new(Project),
-		new(Teacher),
-		new(Student),
 		new(LearnProject),
 
 		new(Chapter),
