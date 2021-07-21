@@ -3,8 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 	"openpbl-go/models"
-	"strconv"
+	"openpbl-go/util"
 )
 
 // StudentController
@@ -13,57 +14,19 @@ type StudentController struct {
 	beego.Controller
 }
 
-// CreateStudent
-// @Title Create Student
-// @Description create a student
-// @Param body body models.Student true	"body for student content"
-// @Success 200 {int} models.Student.Id
-// @Failure 403 body is empty
-// @router / [post]
-func (u *StudentController) CreateStudent() {
-	var (
-		err     error
-		student models.Student
-		uid     int64
-	)
-	err = json.Unmarshal(u.Ctx.Input.RequestBody, &student)
-	if err != nil {
-		u.Data["json"] = map[string]string{"error": err.Error()}
+func (pl *StudentController) GetSessionUser() *auth.Claims {
+	s := pl.GetSession("user")
+	if s == nil {
+		return nil
 	}
-	err = student.Create()
+	claims := &auth.Claims{}
+	err := util.JsonToStruct(s.(string), claims)
 	if err != nil {
-		u.Data["json"] = map[string]string{"error": err.Error()}
+		panic(err)
 	}
-	uid = student.Id
-	u.Data["json"] = map[string]string{"id": strconv.FormatInt(uid, 10)}
-	u.ServeJSON()
+	return claims
 }
 
-// CheckStudentEmail
-// @Title CheckStudentEmail
-// @Description
-// @Param email	path string	true ""
-// @Success 200 {exist: true}
-// @Failure 403 :email is empty
-// @router /checkout/:email [get]
-func (u *StudentController) CheckStudentEmail() {
-	var (
-		err   error
-		exist bool
-		email string
-	)
-	email = u.GetString(":email")
-	if email != "" {
-		exist, err = models.ExistStudentEmail(email)
-		if err != nil {
-			u.Data["json"] = map[string]string{"error": err.Error()}
-		}
-		u.Data["json"] = map[string]bool{"exist": exist}
-	} else {
-
-	}
-	u.ServeJSON()
-}
 
 // GetStudent
 // @Title GetStudent
@@ -98,11 +61,12 @@ func (u *StudentController) GetStudent() {
 // @Param body body models.LearnProject true ""
 // @Success 200 {object} models.Project
 // @Failure 403 :id is empty
-// @router /learn [post]
+// @router /learn/:pid [post]
 func (u *StudentController) LearnProject() {
+
 	learning, err := u.GetBool("learning")
 	sid, err := u.GetInt64("studentId")
-	pid, err := u.GetInt64("projectId")
+	pid, err := u.GetInt64(":pid")
 
 	l := &models.LearnProject{
 		StudentId: sid,
