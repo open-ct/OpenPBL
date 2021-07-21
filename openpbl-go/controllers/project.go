@@ -3,7 +3,9 @@ package controllers
 import (
 	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 	"openpbl-go/models"
+	"openpbl-go/util"
 	"strconv"
 	"strings"
 )
@@ -14,43 +16,66 @@ type ProjectController struct {
 	beego.Controller
 }
 
-// GetProjectForStudent
+func (p *ProjectController) GetSessionUser() *auth.Claims {
+	s := p.GetSession("user")
+	if s == nil {
+		return nil
+	}
+	claims := &auth.Claims{}
+	err := util.JsonToStruct(s.(string), claims)
+	if err != nil {
+		panic(err)
+	}
+	return claims
+}
+
+type ProjectResponse struct {
+	Code    int                  `json:"code"`
+	Msg     string               `json:"msg"`
+	Project models.ProjectDetail `json:"project"`
+}
+
+// GetProjectDetail
 // @Title
 // @Description
 // @Param id path string true "project id"
 // @Success 200 {object} models.TeacherProject
-// @Failure 403 :id is empty
-// @router /student/:id [get]
-func (p *ProjectController) GetProjectForStudent() {
+// @Failure 400
+// @router /:id [get]
+func (p *ProjectController) GetProjectDetail() {
 	pid := p.GetString(":id")
-	if pid != "" {
-		project, err := models.GetProjectByPidForStudent(pid)
-		if err != nil {
-			p.Data["json"] = map[string]string{"error": err.Error()}
+	user := p.GetSessionUser()
+	var resp ProjectResponse
+	if user == nil {
+		resp = ProjectResponse{
+			Code:    401,
+			Msg:     "请先登录",
 		}
-		p.Data["json"] = map[string]models.ProjectDetail{"project": project}
+		p.Data["json"] = resp
+		p.ServeJSON()
+		return
 	}
+	var err error
+	var project models.ProjectDetail
+	if user.Tag == "student" {
+		project, err = models.GetProjectByPidForStudent(pid)
+	} else if user.Tag == "teacher" {
+		project, err = models.GetProjectByPidForTeacher(pid)
+	}
+	if err != nil {
+		resp = ProjectResponse{
+			Code:    400,
+			Msg:     err.Error(),
+		}
+	} else {
+		resp = ProjectResponse{
+			Code:    200,
+			Project: project,
+		}
+	}
+	p.Data["json"] = resp
 	p.ServeJSON()
 }
-// GetProjectForTeacher
-// @Title
-// @Description
-// @Param id path string true ""
-// @Success 200 {object} models.TeacherProject
-// @Failure 403 :id is empty
-// @router /teacher/:id [get]
-func (p *ProjectController) GetProjectForTeacher() {
-	pid := p.GetString(":id")
-	if pid != "" {
-		project, err := models.GetProjectByPidForTeacher(pid)
-		if err != nil {
-			p.Data["json"] = map[string]string{"error": err.Error()}
-		}
-		p.Data["json"] = map[string]models.ProjectDetail{"project": project}
-	}
-	p.ServeJSON()
-}
-
 
 // CreateProject
 // @Title
@@ -296,6 +321,7 @@ type StudentList struct {
 }
 
 // GetProjectStudents
+// todo need refactor
 // @Title
 // @Description
 // @Param from query int true ""

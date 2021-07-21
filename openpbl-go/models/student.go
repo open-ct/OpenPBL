@@ -11,15 +11,14 @@ type LearnProject struct {
 	Learning   bool     `json:"learning" xorm:"index default 0"`
 }
 
-type DetailProject struct {
-	Project          `xorm:"extends"`
-	Learning   bool  `json:"learning"`
+type StudentInfo struct {
+
 }
 
 func (l *LearnProject) GetEngine() *xorm.Session {
 	return db.GetEngine().Table(l)
 }
-func (sp *DetailProject) GetEngine() *xorm.Session {
+func (sp *ProjectDetail) GetEngine() *xorm.Session {
 	return db.GetEngine().Table(sp)
 }
 
@@ -37,4 +36,23 @@ func (l *LearnProject) Update() (err error) {
 }
 
 
+
+func GetProjectStudents(pid string, from int, size int) (s []StudentInfo, err error) {
+	err = db.GetEngine().
+		SQL("select * from student " +
+			"inner join " +
+			"( select * from learn_project where project_id = ?) as l " +
+			"on student.id = l.student_id limit ?, ?", pid, from, size).
+		Find(&s)
+	return
+}
+func CountProjectStudents(pid string, from int, size int) (rows int64, err error) {
+	_, err = db.GetEngine().
+		SQL("select count(*) from student " +
+			"inner join " +
+			"( select * from learn_project where project_id = ?) as l " +
+			"on student.id = l.student_id", pid).
+		Get(&rows)
+	return
+}
 

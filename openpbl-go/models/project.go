@@ -6,6 +6,7 @@ import (
 	"xorm.io/xorm"
 )
 
+
 type Project struct {
 	Id                 int64     `json:"id" xorm:"not null pk autoincr"`
 	Image              string    `json:"image" xorm:"longtext"`
@@ -26,6 +27,12 @@ type Project struct {
 	JoinNum            int64     `json:"joinNum" xorm:"default 0"`
 
 	Published          bool      `json:"published" xorm:"default false index"`
+}
+
+type ProjectDetail struct {
+	Project            `xorm:"extends"`
+	Name     string    `json:"name"`
+	Learning bool      `json:"learning"`
 }
 
 type Outline struct {
@@ -210,25 +217,5 @@ func GetSectionById(sid string) (s Section, err error) {
 	_, err = (&Section{}).GetEngine().
 		Where("id = ?", sid).
 		Get(&s)
-	return
-}
-
-
-func GetProjectStudents(pid string, from int, size int) (s []StudentInfo, err error) {
-	err = db.GetEngine().
-		SQL("select * from student " +
-			"inner join " +
-			"( select * from learn_project where project_id = ?) as l " +
-			"on student.id = l.student_id limit ?, ?", pid, from, size).
-		Find(&s)
-	return
-}
-func CountProjectStudents(pid string, from int, size int) (rows int64, err error) {
-	_, err = db.GetEngine().
-		SQL("select count(*) from student " +
-			"inner join " +
-			"( select * from learn_project where project_id = ?) as l " +
-			"on student.id = l.student_id", pid).
-		Get(&rows)
 	return
 }
