@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Dropdown, Layout, Menu, Row, Avatar} from "antd";
+import {Avatar, Col, Dropdown, Layout, Menu, Row} from "antd";
 import {Link} from "react-router-dom";
 import {LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 
@@ -18,14 +18,16 @@ class GlobalHeader extends React.PureComponent {
 
   componentDidMount() {
     AuthApi.getAccount()
-      .then((res)=>{
+      .then((res) => {
         if (res.data.code === 200) {
           this.setState({
             account: res.data.data
           })
         }
       })
-      .catch((e)=>{console.log(e)})
+      .catch((e) => {
+        console.log(e)
+      })
   }
 
   handleRightDropdownClick(e) {
@@ -35,19 +37,22 @@ class GlobalHeader extends React.PureComponent {
       window.open(Auth.getMyProfileUrl(account));
     } else if (e.key === 'logout') {
       AuthApi.logout()
-        .then((res)=>{
-          if (res.data.code === 200){
+        .then((res) => {
+          if (res.data.code === 200) {
             this.setState({
               account: null
             })
           }
         })
-        .catch(e=>{console.log(e)})
+        .catch(e => {
+          console.log(e)
+        })
     }
   }
+
   renderRightDropdown() {
     const menu = (
-      <Menu onClick={this.handleRightDropdownClick.bind(this)} style={{ width: '150px', padding: '5px' }}>
+      <Menu onClick={this.handleRightDropdownClick.bind(this)} style={{width: '150px', padding: '5px'}}>
         <Menu.Item key='my-account'>
           <SettingOutlined/>
           我的账户
@@ -60,13 +65,14 @@ class GlobalHeader extends React.PureComponent {
     )
     return (
       <Dropdown overlay={menu} placement="bottomRight">
-        <div style={{ cursor: 'pointer' }}>
-          <Avatar size="large" src={this.state.account.avatar} />&nbsp;
+        <div style={{cursor: 'pointer'}}>
+          <Avatar size="large" src={this.state.account.avatar}/>&nbsp;
           <span>{this.state.account.username}</span>
         </div>
       </Dropdown>
     );
   }
+
   renderAccount() {
     if (this.state.account === undefined || this.state.account === null) {
       return (
