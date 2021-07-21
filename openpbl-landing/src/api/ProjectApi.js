@@ -48,6 +48,12 @@ export default {
       data: qs.stringify(chapter)
     })
   },
+  deleteProjectChapter(id) {
+    return request({
+      url:'/project/chapter/delete/' + id,
+      method: 'post',
+    })
+  },
   getChapterSections(id) {
     return request({
       url:'/project/chapter/sections/' + id,
@@ -66,6 +72,12 @@ export default {
       url:'/project/chapter/section/' + section.id,
       method: 'post',
       data: qs.stringify(section)
+    })
+  },
+  deleteChapterSection(id) {
+    return request({
+      url:'/project/chapter/section/delete/' + id,
+      method: 'post',
     })
   },
   getSectionFiles(id) {

@@ -150,11 +150,11 @@ func (p *Project) Update(subjects []*ProjectSubject, skills []*ProjectSkill) (er
 	_, err = p.GetEngine().ID(p.Id).Update(p)
 	n1 := len(subjects)
 	for i:=0; i<n1; i++ {
-		err = subjects[i].Create()
+		_ = subjects[i].Create()
 	}
 	n2 := len(skills)
 	for i:=0; i<n2; i++ {
-		err = skills[i].Create()
+		_ = skills[i].Create()
 	}
 	return
 }
@@ -167,6 +167,11 @@ func (p *Chapter) Update() (err error) {
 	_, err = p.GetEngine().ID(p.Id).Update(p)
 	return
 }
+func (p *Chapter) Delete() (err error) {
+	_, err = p.GetEngine().ID(p.Id).Delete(p)
+	// TODO need modify delete all sections belong to this chapter
+	return
+}
 
 func (p *Section) Create() (err error) {
 	_, err = p.GetEngine().Insert(p)
@@ -174,6 +179,10 @@ func (p *Section) Create() (err error) {
 }
 func (p *Section) Update() (err error) {
 	_, err = p.GetEngine().ID(p.Id).Update(p)
+	return
+}
+func (p *Section) Delete() (err error) {
+	_, err = p.GetEngine().ID(p.Id).Delete(p)
 	return
 }
 

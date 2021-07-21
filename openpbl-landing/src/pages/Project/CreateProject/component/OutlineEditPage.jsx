@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Button, Input, Menu, Modal, Row, Col, message} from 'antd'
-import {EditOutlined} from '@ant-design/icons'
+import {Button, Input, Menu, Modal, Row, Col, message, Popconfirm} from 'antd'
+import {EditOutlined, DeleteOutlined} from '@ant-design/icons'
 import {Link} from 'react-router-dom'
 
 import ProjectApi from "../../../../api/ProjectApi";
-import SectionEditPage from "./SectionEditPage";
 
 const {SubMenu} = Menu;
 
@@ -15,7 +14,7 @@ function OutlineEditPage(obj) {
   const [chapterModalVisible, setChapterModalVisible] = useState(false)
   const [sectionModalVisible, setSectionModalVisible] = useState(false)
 
-  const [exist, setExist] = useState(false)
+  const [opt, setOpt] = useState('add')
   const [chapter, setChapter] = useState({})
   const [section, setSection] = useState({})
 
@@ -55,17 +54,18 @@ function OutlineEditPage(obj) {
     }
   }
   const addChapter = e => {
-    setExist(false)
+    setOpt('add')
     setChapterModalVisible(true)
   }
-  const modifyChapter = (c, i) => {
+  const modifyChapter = (c, index) => {
     setChapter(c)
-    setIndex(i)
-    setExist(true)
+    setIndex(index)
+    setOpt('modify')
     setChapterModalVisible(true)
   }
-  const addSection = (index) => {
-    setExist(false)
+  const addSection = (c, index) => {
+    setOpt('add')
+    setChapter(c)
     setIndex(index)
     setSectionModalVisible(true)
   }
@@ -73,15 +73,38 @@ function OutlineEditPage(obj) {
     setSection(s)
     setIndex(index)
     setSubIndex(subIndex)
-    setExist(true)
+    setOpt('modify')
     setSectionModalVisible(true)
   }
-  const createChapter = e => {
+  const deleteChapter = (c, index) => {
+    ProjectApi.deleteProjectChapter(c.id)
+      .then((res)=>{
+        if (res.data.code === 200) {
+          chapters.splice(index, 1)
+          setChapters([...chapters])
+          message.success(res.data.msg)
+        }
+      })
+      .catch((e)=>{console.log(e)})
+  }
+  const deleteSection = (s, index, subIndex) => {
+    ProjectApi.deleteChapterSection(s.id)
+      .then((res)=>{
+        if (res.data.code === 200) {
+          let sections = chapters[index].sections
+          sections.splice(subIndex, 1)
+          chapters[index].sections = sections
+          setChapters([...chapters])
+          message.success(res.data.msg)
+        }
+      })
+  }
+  const doChapter = e => {
     if (chapterName === '') {
       message.error('请输入章名')
       return
     }
-    if (exist) {
+    if (opt === 'modify') {
       let c = {
         id: chapter.id,
         projectId: chapter.projectId,
@@ -101,8 +124,12 @@ function OutlineEditPage(obj) {
           }
         })
         .catch((e)=>{console.log(e)})
-    } else {
-      let l = chapters.length
+    } else if (opt === 'add') {
+      let len = chapters.length
+      let l = 0
+      if (len > 0) {
+        l = chapters[len-1].chapterNumber + 1
+      }
       let cp = {chapterName: chapterName, chapterNumber: l, projectId: pid}
       ProjectApi.createProjectChapter(cp)
         .then((res) => {
@@ -119,12 +146,12 @@ function OutlineEditPage(obj) {
         })
     }
   }
-  const createSection = () => {
+  const doSection = () => {
     if (sectionName === '') {
       message.error('请输入小节名')
       return
     }
-    if (exist) {
+    if (opt === 'modify') {
       let s = {
         id: section.id,
         chapterId: section.chapterId,
@@ -142,10 +169,13 @@ function OutlineEditPage(obj) {
           }
         })
         .catch((e)=>{console.log(e)})
-    } else {
+    } else if (opt === 'add') {
       let l = 0
       if (chapters[index].sections !== null) {
-        l = chapters[index].sections.length
+        let len = chapters[index].sections.length
+        if (len > 0) {
+          l = chapters[index].sections[len - 1].sectionNumber + 1
+        }
       }
       let sec = {sectionName: sectionName, sectionNumber: l, chapterId: chapters[index].id}
       ProjectApi.createChapterSection(sec)
@@ -168,10 +198,10 @@ function OutlineEditPage(obj) {
         })
     }
   }
-  const cancelCreateChapter = e => {
+  const cancelDoChapter = e => {
     setChapterModalVisible(false)
   }
-  const cancelCreateSection = e => {
+  const cancelDoSection = e => {
     setSectionModalVisible(false)
   }
 
@@ -198,6 +228,9 @@ function OutlineEditPage(obj) {
               {item.chapterName}
               <span style={{ float: 'right', marginRight: '20px' }}>
                 <Button shape="circle" type="text" onClick={e => modifyChapter(item, index)} icon={<EditOutlined/>} />
+                <Popconfirm title="确定删除章节？" onConfirm={e => deleteChapter(item, index)}>
+                  <Button shape="circle" type="text" icon={<DeleteOutlined/>} />
+                </Popconfirm>
               </span>
             </div>
           }
@@ -209,11 +242,16 @@ function OutlineEditPage(obj) {
                 {subItem.sectionName}
                 <span style={{ float: 'right', marginRight: '20px' }}>
                   <Button shape="circle" type="text" onClick={e => modifySection(subItem, index, subIndex)} icon={<EditOutlined/>} />
+
+                  <Popconfirm title="确定删除小节？" onConfirm={e => deleteSection(subItem, index, subIndex)}>
+                    <Button shape="circle" type="text" icon={<DeleteOutlined/>} />
+                  </Popconfirm>
+
                 </span>
               </Menu.Item>
             ))
           }
-          <Button type="round" style={{float: 'right', margin: '3px'}} onClick={e => addSection(index)}>添加小节</Button>
+          <Button type="round" style={{float: 'right', margin: '3px'}} onClick={e => addSection(item, index)}>添加小节</Button>
         </SubMenu>
       ))}
       </Menu>
@@ -229,7 +267,7 @@ function OutlineEditPage(obj) {
         </Link>
       </div>
 
-      <Modal title="" visible={chapterModalVisible} onOk={createChapter} onCancel={cancelCreateChapter}>
+      <Modal title="" visible={chapterModalVisible} onOk={doChapter} onCancel={cancelDoChapter}>
         <br/>
         <Row>
           <Col span={3}>
@@ -241,7 +279,7 @@ function OutlineEditPage(obj) {
         </Row>
       </Modal>
 
-      <Modal visible={sectionModalVisible} onOk={createSection} onCancel={cancelCreateSection}>
+      <Modal visible={sectionModalVisible} onOk={doSection} onCancel={cancelDoSection}>
         <br/>
         <Row>
           <Col span={3}>

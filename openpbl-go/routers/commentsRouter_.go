@@ -81,6 +81,15 @@ func init() {
 
     beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"],
         beego.ControllerComments{
+            Method: "DeleteProjectChapter",
+            Router: "/chapter/delete/:cid",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"],
+        beego.ControllerComments{
             Method: "CreateChapterSection",
             Router: "/chapter/section",
             AllowHTTPMethods: []string{"post"},
@@ -101,6 +110,15 @@ func init() {
         beego.ControllerComments{
             Method: "UpdateChapterSection",
             Router: "/chapter/section/:sid",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "DeleteChapterSection",
+            Router: "/chapter/section/delete/:sid",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
