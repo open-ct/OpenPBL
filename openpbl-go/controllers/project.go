@@ -156,7 +156,7 @@ func (p *ProjectController) UpdateProject() {
 		p.ServeJSON()
 		return
 	}
-	uid := user.Name
+	uid := user.Username
 	pid, err := p.GetInt64(":id")
 	if err != nil {
 		resp = Response{

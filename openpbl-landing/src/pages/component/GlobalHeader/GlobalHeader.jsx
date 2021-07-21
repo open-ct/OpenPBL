@@ -23,6 +23,9 @@ class GlobalHeader extends React.PureComponent {
           this.setState({
             account: res.data.data
           })
+          localStorage.setItem("type", res.data.data.tag)
+        } else {
+          localStorage.setItem("type", "")
         }
       })
       .catch((e) => {
@@ -42,6 +45,7 @@ class GlobalHeader extends React.PureComponent {
             this.setState({
               account: null
             })
+            localStorage.setItem("type", "")
           }
         })
         .catch(e => {

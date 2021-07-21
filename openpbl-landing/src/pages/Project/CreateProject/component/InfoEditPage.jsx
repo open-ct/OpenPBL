@@ -29,7 +29,7 @@ function InfoEditPage(obj) {
     return str.split(',')
   }
   useEffect(() => {
-    ProjectApi.getProjectDetailForTeacher(pid)
+    ProjectApi.getProjectDetail()
       .then((res) => {
         setP(res.data.project)
         setImageUrl(res.data.project.image)
@@ -104,7 +104,7 @@ function InfoEditPage(obj) {
     }
     ProjectApi.updateProject(data, pid)
       .then((res) => {
-        if (res.data.result) {
+        if (res.data.code === 200) {
           window.location.href = '/project/edit/outline/' + pid
         }
       })

@@ -80,11 +80,11 @@ func (pl *ProjectListController) GetUserProjectList() {
 		pl.ServeJSON()
 		return
 	}
-	uid := user.Name
-
+	uid := user.Username
 
 	var projects []models.ProjectDetail
 	var count    int64
+
 	if user.Tag == "student" {
 		if t == "learning" {
 			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, true)
