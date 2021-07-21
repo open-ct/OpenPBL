@@ -1,6 +1,10 @@
 import React from "react";
-import {Col, Layout, Menu, Row} from "antd";
+import {Col, Dropdown, Layout, Menu, Row, Avatar} from "antd";
 import {Link} from "react-router-dom";
+import {LogoutOutlined, SettingOutlined} from '@ant-design/icons';
+
+import * as Auth from "../../User/Auth/Auth"
+import AuthApi from "../../../api/AuthApi"
 
 import './global-header.less'
 
@@ -8,7 +12,73 @@ const {Header} = Layout;
 
 class GlobalHeader extends React.PureComponent {
   state = {
-    current: this.props.current
+    current: this.props.current,
+    account: null,
+  }
+
+  componentDidMount() {
+    AuthApi.getAccount()
+      .then((res)=>{
+        if (res.data.code === 200) {
+          this.setState({
+            account: res.data.data
+          })
+        }
+      })
+      .catch((e)=>{console.log(e)})
+  }
+
+  handleRightDropdownClick(e) {
+    let account = this.state.account;
+    console.log(account)
+    if (e.key === 'my-account') {
+      window.open(Auth.getMyProfileUrl(account));
+    } else if (e.key === 'logout') {
+      AuthApi.logout()
+        .then((res)=>{
+          if (res.data.code === 200){
+            this.setState({
+              account: null
+            })
+          }
+        })
+        .catch(e=>{console.log(e)})
+    }
+  }
+  renderRightDropdown() {
+    const menu = (
+      <Menu onClick={this.handleRightDropdownClick.bind(this)} style={{ width: '150px', padding: '5px' }}>
+        <Menu.Item key='my-account'>
+          <SettingOutlined/>
+          我的账户
+        </Menu.Item>
+        <Menu.Item key='logout'>
+          <LogoutOutlined/>
+          退出账号
+        </Menu.Item>
+      </Menu>
+    )
+    return (
+      <Dropdown overlay={menu} placement="bottomRight">
+        <div style={{ cursor: 'pointer' }}>
+          <Avatar size="large" src={this.state.account.avatar} />&nbsp;
+          <span>{this.state.account.username}</span>
+        </div>
+      </Dropdown>
+    );
+  }
+  renderAccount() {
+    if (this.state.account === undefined || this.state.account === null) {
+      return (
+        <a href={Auth.getAuthorizeUrl()}>
+          登录注册
+        </a>
+      );
+    } else {
+      return (
+        this.renderRightDropdown()
+      )
+    }
   }
 
   render() {
@@ -24,7 +94,7 @@ class GlobalHeader extends React.PureComponent {
                 </div>
               </Link>
             </Col>
-            <Col xxl={8} xl={12} lg={14} md={16} sm={14} xs={8}>
+            <Col xxl={6} xl={10} lg={12} md={14} sm={12} xs={6}>
               <Menu theme="light" mode="horizontal" defaultSelectedKeys={[current]} style={{border: 0}}>
                 <Menu.Item key="landing">
                   <Link to="/landing">
@@ -36,22 +106,17 @@ class GlobalHeader extends React.PureComponent {
                     项目学习
                   </Link>
                 </Menu.Item>
-                <Menu.Item key="login">
-                  <Link to="/user/login">
-                    用户登录
-                  </Link>
-                </Menu.Item>
-                <Menu.Item key="register">
-                  <Link to="/user/register">
-                    用户注册
-                  </Link>
-                </Menu.Item>
                 <Menu.Item key="bbs">
                   <a href="https://bbs.open-ct.com">
                     在线论坛
                   </a>
                 </Menu.Item>
               </Menu>
+            </Col>
+            <Col xxl={2} xl={2} lg={2} md={2} sm={2} xs={2}>
+              {
+                this.renderAccount()
+              }
             </Col>
           </Row>
         </Header>

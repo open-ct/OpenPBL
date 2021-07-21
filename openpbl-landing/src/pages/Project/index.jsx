@@ -6,6 +6,10 @@ import MenuBar from './component/MenuBar';
 
 class Project extends React.PureComponent {
   state = {}
+  constructor(props) {
+    super(props);
+    const params = new URLSearchParams(this.props.location.search);
+  }
 
   componentDidMount() {
   }

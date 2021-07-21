@@ -8,7 +8,7 @@ import PublicProject from "./pages/Project/PublicProject";
 import LearningProject from "./pages/Project/LearningProject";
 import FinishedProject from "./pages/Project/FinishedProject";
 
-
+import AuthCallback from "./pages/User/Auth/AuthCallback";
 import Login from "./pages/User/Login";
 import Register from "./pages/User/Register";
 import Learning from "./pages/Project/LearningPage";
@@ -21,6 +21,8 @@ function App() {
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={Home} />
+            <Route exact path="/callback" component={AuthCallback} />
+
             <Route exact path="/landing" component={Home} />
             <Route exact path="/project" component={Project} />
 

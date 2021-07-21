@@ -7,47 +7,29 @@ import (
 
 func init() {
 
-    beego.GlobalControllerRouter["openpbl-go/controllers:ObjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ObjectController"],
+    beego.GlobalControllerRouter["openpbl-go/controllers:AuthController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:AuthController"],
         beego.ControllerComments{
-            Method: "Post",
-            Router: "/",
+            Method: "GetAccount",
+            Router: "/account",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["openpbl-go/controllers:AuthController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:AuthController"],
+        beego.ControllerComments{
+            Method: "Login",
+            Router: "/login",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["openpbl-go/controllers:ObjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ObjectController"],
+    beego.GlobalControllerRouter["openpbl-go/controllers:AuthController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:AuthController"],
         beego.ControllerComments{
-            Method: "GetAll",
-            Router: "/",
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["openpbl-go/controllers:ObjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ObjectController"],
-        beego.ControllerComments{
-            Method: "Get",
-            Router: "/:objectId",
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["openpbl-go/controllers:ObjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ObjectController"],
-        beego.ControllerComments{
-            Method: "Put",
-            Router: "/:objectId",
-            AllowHTTPMethods: []string{"put"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["openpbl-go/controllers:ObjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ObjectController"],
-        beego.ControllerComments{
-            Method: "Delete",
-            Router: "/:objectId",
-            AllowHTTPMethods: []string{"delete"},
+            Method: "Logout",
+            Router: "/logout",
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
