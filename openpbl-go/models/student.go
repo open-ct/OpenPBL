@@ -23,7 +23,7 @@ type LearnProject struct {
 	Learning   bool     `json:"learning" xorm:"index default 0"`
 }
 
-type StudentProject struct {
+type DetailProject struct {
 	Project          `xorm:"extends"`
 	Learning   bool  `json:"learning"`
 }
@@ -34,7 +34,7 @@ func (s *Student) GetEngine() *xorm.Session {
 func (l *LearnProject) GetEngine() *xorm.Session {
 	return db.GetEngine().Table(l)
 }
-func (sp *StudentProject) GetEngine() *xorm.Session {
+func (sp *DetailProject) GetEngine() *xorm.Session {
 	return db.GetEngine().Table(sp)
 }
 

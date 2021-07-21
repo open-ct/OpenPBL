@@ -153,35 +153,8 @@ func init() {
 
     beego.GlobalControllerRouter["openpbl-go/controllers:ProjectListController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ProjectListController"],
         beego.ControllerComments{
-            Method: "GetStudentPublicProjects",
-            Router: "/public/student/:sid",
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["openpbl-go/controllers:ProjectListController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ProjectListController"],
-        beego.ControllerComments{
-            Method: "GetTeacherPublicProjects",
-            Router: "/public/teacher/:tid",
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["openpbl-go/controllers:ProjectListController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ProjectListController"],
-        beego.ControllerComments{
-            Method: "GetProjectListBySid",
-            Router: "/student/:type/:sid",
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["openpbl-go/controllers:ProjectListController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ProjectListController"],
-        beego.ControllerComments{
-            Method: "GetProjectListByTid",
-            Router: "/teacher/:type/:tid",
+            Method: "GetUserProjectList",
+            Router: "/:projectType",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,

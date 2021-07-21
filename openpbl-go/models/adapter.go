@@ -119,10 +119,4 @@ func (a *Adapter) createTable() {
 		fmt.Println(err)
 		panic(err)
 	}
-
-/*	err := a.Engine.Sync2(new(Program))
-	if err != nil {
-		panic(err)
-	}*/
-
 }

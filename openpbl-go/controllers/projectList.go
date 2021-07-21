@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 	"openpbl-go/models"
+	"openpbl-go/util"
 	"strconv"
 )
 
@@ -13,124 +15,48 @@ type ProjectListController struct {
 }
 
 type ProjectList struct {
-	Count    int64            `json:"count"`
-	Projects []models.Project `json:"projects"`
+	Code     int                    `json:"code"`
+	Count    int64                  `json:"count"`
+	Projects []models.DetailProject `json:"projects"`
 }
 
-// GetProjectListByTid
+func (pl *ProjectListController) GetSessionUser() *auth.Claims {
+	s := pl.GetSession("user")
+	if s == nil {
+		return nil
+	}
+	claims := &auth.Claims{}
+	err := util.JsonToStruct(s.(string), claims)
+	if err != nil {
+		panic(err)
+	}
+	return claims
+}
+
+// GetUserProjectList
 // @Title
-// @Description get project list by teacher id
-// @Param type path string true "editing published ..."
-// @Param tid path string true "teacher id"
+// @Description
+// @Param projectType path string true "editing published closed // learning finished"
 // @Param from query string false "from"
 // @Param size query string false "size"
+// @Param orderBy query string false "orderBy"
+// @Param orderType query string false "orderType"
 // @Param subject query string false ""
 // @Param skill query string false ""
 // @Param text query string false ""
 // @Success 200 {object} ProjectList
-// @Failure 403 :id is empty
-// @router /teacher/:type/:tid [get]
-func (pl *ProjectListController) GetProjectListByTid() {
-	t := pl.GetString(":type")
-	tid := pl.GetString(":tid")
-	from, err := strconv.Atoi(pl.GetString("from"))
-	if err != nil {
-		from = 0
-	}
-	size, err := strconv.Atoi(pl.GetString("size"))
-	if err != nil {
-		size = 10
-	}
-	skill := pl.GetString("skill")
-	subject := pl.GetString("subject")
-	text := pl.GetString("text")
-
-	var projects []models.Project
-	var count    int64
-	if t == "editing" {
-		projects, count, err = models.GetMyProjectListByTid(tid, from, size, subject, skill, text, "create_at", "desc", false, false)
-	} else if t == "published" {
-		projects, count, err = models.GetMyProjectListByTid(tid, from, size, subject, skill, text, "create_at", "desc", true, false)
-	} else {
-		projects, count, err = models.GetMyProjectListByTid(tid, from, size, subject, skill, text, "create_at", "desc", true, true)
-	}
-	if err != nil {
-		pl.Data["json"] = map[string]string{"err": err.Error()}
-	}
-
-	data := &ProjectList{Projects: projects, Count: count}
-	pl.Data["json"] = data
-
-	pl.ServeJSON()
-}
-
-
-type StudentProjectList struct {
-	Count    int64                   `json:"count"`
-	Projects []models.StudentProject `json:"projects"`
-}
-
-// GetProjectListBySid
-// @Title Get
-// @Description get project list by student id
-// @Param type path string true "learning ..."
-// @Param sid path string true ""
-// @Param from query string false "from"
-// @Param size query string false "size"
-// @Param subject query string false ""
-// @Param skill query string false ""
-// @Param text query string false ""
-// @Success 200 {object} StudentProjectList
-// @Failure 403 :id is empty
-// @router /student/:type/:sid [get]
-func (pl *ProjectListController) GetProjectListBySid() {
-	t := pl.GetString(":type")
-	sid := pl.GetString(":sid")
-	from, err := strconv.Atoi(pl.GetString("from"))
-	if err != nil {
-		from = 0
-	}
-	size, err := strconv.Atoi(pl.GetString("size"))
-	if err != nil {
-		size = 10
-	}
-	skill := pl.GetString("skill")
-	subject := pl.GetString("subject")
-	text := pl.GetString("text")
-	b := false
-	if t == "learning" {
-		b = true
-	}
-	var projects []models.StudentProject
-	var count    int64
-	projects, count, err = models.GetMyProjectListBySid(sid, from, size, subject, skill, text, "create_at", "desc", b)
-
-	if err != nil {
-		pl.Data["json"] = map[string]string{"error": err.Error()}
-	}
-
-	data := &StudentProjectList{Projects: projects, Count: count}
-	pl.Data["json"] = data
-
-	pl.ServeJSON()
-}
-
-// GetTeacherPublicProjects
-// @Title Get
-// @Description
-// @Param sid path string true ""
-// @Param orderBy path string true "create_at join_num"
-// @Param from query string false "from"
-// @Param size query string false "size"
-// @Param subject query string false ""
-// @Param skill query string false ""
-// @Param text query string false ""
-// @Success 200 {object} ProjectList
-// @Failure 403
-// @router /public/teacher/:tid [get]
-func (pl *ProjectListController) GetTeacherPublicProjects() {
+// @Failure 401
+// @router /:projectType [get]
+func (pl *ProjectListController) GetUserProjectList() {
 	orderBy := pl.GetString("orderBy")
-	tid := pl.GetString(":tid")
+	if orderBy == "" {
+		orderBy = "create_at"
+	}
+	orderType := pl.GetString("orderType")
+	if orderType == "" {
+		orderType = "desc"
+	}
+	t := pl.GetString(":projectType")
 	from, err := strconv.Atoi(pl.GetString("from"))
 	if err != nil {
 		from = 0
@@ -142,56 +68,47 @@ func (pl *ProjectListController) GetTeacherPublicProjects() {
 	skill := pl.GetString("skill")
 	subject := pl.GetString("subject")
 	text := pl.GetString("text")
-	var projects []models.Project
+
+	user := pl.GetSessionUser()
+	var data ProjectList
+
+	if user == nil {
+		data = ProjectList{
+			Code:     401,
+		}
+		pl.Data["json"] = data
+		pl.ServeJSON()
+		return
+	}
+	uid := user.Name
+
+
+	var projects []models.DetailProject
 	var count    int64
-	projects, count, err = models.GetPublicProjectListForTeacher(tid, from, size, subject, skill, text, orderBy, "desc")
-
-	if err != nil {
-		pl.Data["json"] = map[string]string{"error": err.Error()}
+	if user.Tag == "student" {
+		if t == "learning" {
+			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, true)
+		} else if t == "finished" {
+			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, false)
+		} else if t == "public" {
+			projects, count, err = models.GetPublicProjectListForStudent(uid, from, size, subject, skill, text, orderBy, orderType)
+		}
+	} else if user.Tag == "teacher" {
+		if t == "editing" {
+			projects, count, err = models.GetMyProjectListByTid(uid, from, size, subject, skill, text, orderBy, orderType, false, false)
+		} else if t == "published" {
+			projects, count, err = models.GetMyProjectListByTid(uid, from, size, subject, skill, text, orderBy, orderType, true, false)
+		} else if t == "closed" {
+			projects, count, err = models.GetMyProjectListByTid(uid, from, size, subject, skill, text, orderBy, orderType, true, true)
+		} else if t == "public" {
+			projects, count, err = models.GetPublicProjectListForTeacher(uid, from, size, subject, skill, text, orderBy, orderType)
+		}
 	}
-
-	data := &ProjectList{Projects: projects, Count: count}
-	pl.Data["json"] = data
-
-	pl.ServeJSON()
-}
-
-// GetStudentPublicProjects
-// @Title
-// @Description
-// @Param sid path string true "student id"
-// @Param orderBy query string true "create_at join_num"
-// @Param from query string false "from"
-// @Param size query string false "size"
-// @Param skill query string true ""
-// @Param subject path string true "数学,英语"
-// @Param text path string false ""
-// @Success 200 {object} StudentProjectList
-// @Failure 403
-// @router /public/student/:sid [get]
-func (pl *ProjectListController) GetStudentPublicProjects() {
-	sid := pl.GetString(":sid")
-	skill := pl.GetString("skill")
-	subject := pl.GetString("subject")
-	text := pl.GetString("text")
-	orderBy := pl.GetString("orderBy")
-	from, err := strconv.Atoi(pl.GetString("from"))
-	if err != nil {
-		from = 0
+	data = ProjectList{
+		Code:     200,
+		Count:    count,
+		Projects: projects,
 	}
-	size, err := strconv.Atoi(pl.GetString("size"))
-	if err != nil {
-		size = 10
-	}
-	var projects []models.StudentProject
-	var count    int64
-	projects, count, err = models.GetPublicProjectListForStudent(sid, from, size, subject, skill, text, orderBy, "desc")
-
-	if err != nil {
-		pl.Data["json"] = map[string]string{"error": err.Error()}
-	}
-
-	data := &StudentProjectList{Projects: projects, Count: count}
 	pl.Data["json"] = data
 
 	pl.ServeJSON()

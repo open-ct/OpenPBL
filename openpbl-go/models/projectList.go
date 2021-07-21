@@ -8,7 +8,7 @@ import (
 // ============= student ===================
 
 func GetMyProjectListBySid(sid string, from int, size int,
-	subject string, skill string, text string, orderBy string, orderType string, learning bool) (p []StudentProject, rows int64, err error) {
+	subject string, skill string, text string, orderBy string, orderType string, learning bool) (p []DetailProject, rows int64, err error) {
 	const baseSql = `
 		select %s from (
     		select * from project
@@ -39,7 +39,7 @@ func GetMyProjectListBySid(sid string, from int, size int,
 
 
 func GetPublicProjectListForStudent(sid string, from int, size int,
-	subject string, skill string, text string, orderBy string, orderType string) (p []StudentProject, rows int64, err error) {
+	subject string, skill string, text string, orderBy string, orderType string) (p []DetailProject, rows int64, err error) {
 	const baseSql = `
 		select %s from (
     		select * from project where project.published = true
@@ -69,7 +69,7 @@ func GetPublicProjectListForStudent(sid string, from int, size int,
 // ============= teacher ===================
 
 func GetMyProjectListByTid(tid string, from int, size int,
-	subject string, skill string, text string, orderBy string ,orderType string, published bool, closed bool) (p []Project, rows int64, err error) {
+	subject string, skill string, text string, orderBy string ,orderType string, published bool, closed bool) (p []DetailProject, rows int64, err error) {
 	const baseSql = `
 		select %s from project where teacher_id = %s
     		and published = %v
@@ -96,7 +96,7 @@ func GetMyProjectListByTid(tid string, from int, size int,
 }
 
 func GetPublicProjectListForTeacher(sid string, from int, size int,
-	subject string, skill string, text string, orderBy string, orderType string ) (p []Project, rows int64, err error) {
+	subject string, skill string, text string, orderBy string, orderType string ) (p []DetailProject, rows int64, err error) {
 	baseSql := "select %s from project where published = true %s %s %s "
 	pageSql := " order by %s %s limit %d, %d "
 	e1 := getSubjectExistSql(subject)
