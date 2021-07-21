@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Button, Input, Menu, Modal} from 'antd'
 import {Link} from 'react-router-dom'
 
-import project from "../../../../api/project";
+import ProjectApi from "../../../../api/ProjectApi";
 
 const {SubMenu} = Menu;
 
@@ -19,7 +19,7 @@ function OutlineEditPage(obj) {
   const [introduce, setIntroduce] = useState('')
 
   useEffect(() => {
-    project.getProjectChapters(pid)
+    ProjectApi.getProjectChapters(pid)
       .then((res) => {
         if (res.data.chapters === null) {
           setChapters([])
@@ -31,7 +31,7 @@ function OutlineEditPage(obj) {
 
   const handleClick = (item, key) => {
     if (item.sections === undefined) {
-      project.getChapterSections(item.id)
+      ProjectApi.getChapterSections(item.id)
         .then((res) => {
           item.sections = res.data.sections
           chapters[key] = item

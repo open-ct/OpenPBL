@@ -1,7 +1,7 @@
 import React from 'react';
 import {Card, message, PageHeader, Progress, Upload} from 'antd';
 import {Document, Page} from 'react-pdf';
-import project from "../../../api/project";
+import ProjectApi from "../../../api/ProjectApi";
 
 
 class Learning extends React.PureComponent {

@@ -9,9 +9,9 @@ import ProjectIntroduce from './component/ProjectIntroduce';
 import ProjectOutline from './component/ProjectOutline';
 import ProjectEvaluation from './component/ProjectEvaluation';
 import ProjectComment from './component/ProjectComment';
-import project from "../../../api/project";
-import student from "../../../api/student";
-import teacher from "../../../api/teacher";
+import ProjectApi from "../../../api/ProjectApi";
+import StudentApi from "../../../api/StudentApi";
+import TeacherApi from "../../../api/TeacherApi";
 import StudentAdmin from "./component/StudentAdmin";
 import SubmitFiles from "./component/SubmitFiles";
 
@@ -24,49 +24,25 @@ class ProjectInfo extends React.PureComponent {
     // TODO axios get project info
     const projectInfo = {
       id: pid,
-      image: '',
-      projectIntroduce: '',
-      projectTitle: '',
-      name: '',
-      teacherId: '',
-      subjects: '',
-      skills: '',
-      createAt: '',
-      readNum: 0,
-      joinNum: 0,
-      learning: null,
     };
     this.state = {
       pid: pid,
       project: projectInfo,
       menu: 'project-introduce',
       type: localStorage.getItem('type'),
-      uid: localStorage.getItem('uid')
     };
   }
 
   componentDidMount() {
-    if (this.state.type === 'teacher') {
-      project.getProjectDetailForTeacher(this.state.pid)
-        .then((res) => {
-          this.setState({
-            project: res.data.project
-          })
+    ProjectApi.getProjectDetail(this.state.pid)
+      .then((res) => {
+        this.setState({
+          project: res.data.project
         })
-        .catch((e) => {
-          console.log(e)
-        })
-    } else if (this.state.type === 'student') {
-      project.getProjectDetailForStudent(this.state.pid)
-        .then((res) => {
-          this.setState({
-            project: res.data.project
-          })
-        })
-        .catch((e) => {
-          console.log(e)
-        })
-    }
+      })
+      .catch((e) => {
+        console.log(e)
+      })
   }
 
   handleClick = (e) => {
@@ -79,7 +55,7 @@ class ProjectInfo extends React.PureComponent {
     this.props.history.push('/project')
   }
   learnProject = e => {
-    student.learnProject(this.state.uid, this.state.pid)
+    StudentApi.learnProject(this.state.pid)
       .then((res) => {
         if (res.data.result) {
           let p = Object.assign({}, this.state.project)
@@ -94,7 +70,7 @@ class ProjectInfo extends React.PureComponent {
       })
   }
   publishProject = e => {
-    teacher.publishProject(this.state.pid)
+    TeacherApi.publishProject()
       .then((res) => {
         if (res.data.result) {
           let p = Object.assign({}, this.state.project)

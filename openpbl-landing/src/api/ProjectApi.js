@@ -2,15 +2,9 @@ import request from './request'
 import qs from 'qs'
 
 export default {
-  getProjectDetailForStudent(id) {
+  getProjectDetail(id) {
     return request({
-      url:'/project/student/' + id,
-      method: 'get'
-    })
-  },
-  getProjectDetailForTeacher(id) {
-    return request({
-      url:'/project/teacher/' + id,
+      url:'/project/' + id,
       method: 'get'
     })
   },
@@ -21,9 +15,9 @@ export default {
       data: qs.stringify(data)
     })
   },
-  updateProject(data) {
+  updateProject(data, id) {
     return request({
-      url:'/project/info',
+      url:'/project/' + id,
       method: 'post',
       data: qs.stringify(data)
     })

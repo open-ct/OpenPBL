@@ -3,12 +3,11 @@ import {Button, Col, Input, message, Row, Select, Upload} from "antd";
 import ImgCrop from 'antd-img-crop';
 import '../index.less'
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
-import project from "../../../../api/project";
+import ProjectApi from "../../../../api/ProjectApi";
 
 
 function InfoEditPage(obj) {
   const pid = obj.pid
-  const uid = localStorage.getItem('uid')
 
   const subjects = ['语文', '数学', '英语', '科学']
   const skills = ['学习与创新技能', '信息、媒体与技术技能', '生活与职业技能']
@@ -30,7 +29,7 @@ function InfoEditPage(obj) {
     return str.split(',')
   }
   useEffect(() => {
-    project.getProjectDetailForTeacher(pid)
+    ProjectApi.getProjectDetailForTeacher(pid)
       .then((res) => {
         setP(res.data.project)
         setImageUrl(res.data.project.image)
@@ -102,9 +101,8 @@ function InfoEditPage(obj) {
       projectGoal: projectGoal,
       subjects: selectedSubjects.toString(),
       skills: selectedSkills.toString(),
-      teacherId: uid,
     }
-    project.updateProject(data)
+    ProjectApi.updateProject(data, pid)
       .then((res) => {
         if (res.data.result) {
           window.location.href = '/project/edit/outline/' + pid

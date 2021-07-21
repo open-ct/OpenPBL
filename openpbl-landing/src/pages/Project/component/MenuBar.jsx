@@ -18,7 +18,7 @@ import FinishedProject from '../FinishedProject';
 import PublishedProject from "../PublishedProject";
 import EditingProject from "../EditingProject";
 import localStorage from "localStorage";
-import project from "../../../api/project";
+import ProjectApi from "../../../api/ProjectApi";
 
 const {SubMenu} = Menu;
 const {Sider, Content} = Layout;
@@ -39,10 +39,10 @@ class MenuBar extends React.PureComponent {
   }
 
   createProject = e => {
-    project.createProject()
+    ProjectApi.createProject()
       .then((res)=>{
-        if (res.data.id) {
-          window.open('/project/edit/info/' + res.data.id)
+        if (res.data.code === 200) {
+          window.open('/project/edit/info/' + res.data.data)
         }
       })
       .catch((e)=>{console.log(e)})

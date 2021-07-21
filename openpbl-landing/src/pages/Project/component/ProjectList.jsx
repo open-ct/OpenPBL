@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom';
 
 import './project-list.less';
 
-import project_list from '../../../api/project_list'
+import ProjectListApi from '../../../api/ProjectListApi'
 
 const {Meta} = Card;
 const {Search} = Input;
@@ -45,98 +45,29 @@ function ProjectList(obj) {
   }
 
   const updateProjectList = (p, size, subject, skill, text) => {
-    if (mode === 'public') {
-      if (type === 'student') {
-        let q = {
-          page: p-1,
-          size: size,
-          orderBy: 'create_at',
-          subject: subject,
-          skill: skill,
-          text: text
-        }
-        project_list.getStudentPublicProjects(uid, q)
-          .then((res) => {
-            if (res.data.projects === null) {
-              setLearningProjectList([])
-            } else {
-              setLearningProjectList(res.data.projects)
-            }
-            setTotal(res.data.count);
-          })
-          .catch((e) => {
-            console.log(e)
-          })
-      } else if (type === 'teacher') {
-        let q = {
-          page: p-1,
-          size: size,
-          orderBy: 'create_at',
-          subject: subject,
-          skill: skill,
-          text: text
-        }
-        project_list.getTeacherPublicProjects(uid, q)
-          .then((res) => {
-            if (res.data.projects === null) {
-              setLearningProjectList([])
-            } else {
-              setLearningProjectList(res.data.projects)
-            }
-            setTotal(res.data.count);
-
-          })
-          .catch((e) => {
-            console.log(e)
-          })
-      }
-    } else {
-      if (type === 'teacher') {
-        let q = {
-          page: p-1,
-          size: size,
-          orderBy: 'create_at',
-          subject: subject,
-          skill: skill,
-          text: text
-        }
-        project_list.getProjectListByTid(uid, mode, q)
-          .then((res) => {
-            if (res.data.projects === null) {
-              setLearningProjectList([])
-            } else {
-              setLearningProjectList(res.data.projects)
-            }
-            setTotal(res.data.count);
-          })
-          .catch((e) => {
-            console.log(e)
-          })
-      } else if (type === 'student') {
-        let q = {
-          page: p-1,
-          size: size,
-          orderBy: 'create_at',
-          subject: subject,
-          skill: skill,
-          text: text
-        }
-        project_list.getProjectListBySid(uid, mode, q)
-          .then((res) => {
-            if (res.data.projects === null) {
-              setLearningProjectList([])
-            } else {
-              setLearningProjectList(res.data.projects)
-            }
-            setTotal(res.data.count);
-          })
-          .catch((e) => {
-            console.log(e)
-          })
-      }
+    let q = {
+      page: p-1,
+      size: size,
+      orderBy: 'create_at',
+      orderType: 'desc',
+      subject: subject,
+      skill: skill,
+      text: text
     }
+    ProjectListApi.getUserProjectList(mode, q)
+      .then((res) => {
+        if (res.data.projects === null) {
+          setLearningProjectList([])
+        } else {
+          setLearningProjectList(res.data.projects)
+        }
+        setTotal(res.data.count);
+      })
+      .catch((e) => {
+        console.log(e)
+      })
     setPage(p);
-  };
+  }
 
   useEffect(() => {
     loadPage(1, 10);

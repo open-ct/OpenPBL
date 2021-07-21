@@ -21,6 +21,7 @@ class AuthCallback extends React.Component {
     AuthApi.login(params.get('code'), params.get('state'))
       .then((res) => {
         if (res.data.code === 200) {
+          localStorage.setItem("type", res.data.data.tag)
           message.success("登录成功，跳转主页");
           window.location.href = "/project"
         } else {

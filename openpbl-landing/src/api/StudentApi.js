@@ -21,15 +21,10 @@ export default {
       method: 'get'
     })
   },
-  learnProject(sid, pid) {
+  learnProject(pid) {
     return request({
-      url: '/student/learn',
+      url: '/student/learn/' + pid,
       method: 'post',
-      data: qs.stringify({
-        studentId: sid,
-        projectId: pid,
-        learning: true
-      })
     })
   },
   FinishedProject(sid, pid) {

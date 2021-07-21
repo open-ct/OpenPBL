@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import QueueAnim from 'rc-queue-anim';
-import project from "../../../../api/project";
+import ProjectApi from "../../../../api/ProjectApi";
 import {Table} from "antd";
 
 const columns = [
@@ -25,7 +25,7 @@ function StudentAdmin(obj) {
   const pid = obj.project.id
   const [students, setStudents] = useState([])
   useEffect(() => {
-    project.getProjectStudents(pid)
+    ProjectApi.getProjectStudents(pid)
       .then((res) => {
         if (res.data.students) {
           setStudents(res.data.students);
