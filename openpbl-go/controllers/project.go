@@ -80,26 +80,48 @@ func (p *ProjectController) GetProjectDetail() {
 // CreateProject
 // @Title
 // @Description create project
-// @Param body body models.Project true	""
-// @Success 200 {int} models.Project.Id
-// @Failure 403 body is empty
+// @Success 200 {object} Response
+// @Failure 401
+// @Failure 400
+// @Failure 403
 // @router / [post]
 func (p *ProjectController) CreateProject() {
-	tid, err := strconv.ParseInt(p.GetString("teacherId"), 10, 64)
-	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
+	user := p.GetSessionUser()
+	var resp Response
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		p.Data["json"] = resp
+		return
 	}
+	if user.Tag != "teacher" {
+		resp = Response{
+			Code: 403,
+			Msg:  "非法用户",
+		}
+		p.Data["json"] = resp
+		return
+	}
+	uid := user.Name
 	project := &models.Project{
-		TeacherId:        tid,
+		TeacherId:        uid,
 	}
+	err := project.Create()
 	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
+		resp = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		resp = Response{
+			Code: 200,
+			Msg:  "创建成功",
+			Data: project.Id,
+		}
 	}
-	err = project.Create()
-	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
-	}
-	p.Data["json"] = map[string]string{"id": strconv.FormatInt(project.Id, 10)}
+	p.Data["json"] = resp
 	p.ServeJSON()
 }
 
@@ -111,10 +133,33 @@ func (p *ProjectController) CreateProject() {
 // @Failure 403 body is empty
 // @router /info [post]
 func (p *ProjectController) UpdateProject() {
+	user := p.GetSessionUser()
+	var resp Response
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		p.Data["json"] = resp
+		return
+	}
+	if user.Tag != "teacher" {
+		resp = Response{
+			Code: 403,
+			Msg:  "非法用户",
+		}
+		p.Data["json"] = resp
+		return
+	}
+	uid := user.Name
 	pid, err := p.GetInt64("id")
-	tid, err := p.GetInt64("teacherId")
 	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
+		resp = Response{
+			Code: 400,
+			Msg: "修改失败",
+		}
+		p.Data["json"] = resp
+		p.ServeJSON()
 	}
 	project := &models.Project{
 		Id:               pid,
@@ -122,20 +167,27 @@ func (p *ProjectController) UpdateProject() {
 		ProjectTitle:     p.GetString("projectTitle"),
 		ProjectIntroduce: p.GetString("projectIntroduce"),
 		ProjectGoal:      p.GetString("projectGoal"),
-		TeacherId:        tid,
+		TeacherId:        uid,
 		Subjects:         p.GetString("subjects"),
 		Skills:           p.GetString("skills"),
 	}
-	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
-	}
 	projectSubjects, projectSkills, err := getProjectSubjectsAndSkills(pid, project.Subjects, project.Skills)
-
 	err = project.Update(projectSubjects, projectSkills)
 	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
+		resp = Response{
+			Code: 400,
+			Msg:  err.Error(),
+			Data: true,
+		}
+		p.Data["json"] = resp
+		p.ServeJSON()
+	} else {
+		resp = Response{
+			Code: 200,
+			Msg:  "更新成功",
+		}
 	}
-	p.Data["json"] = map[string]bool{"result": true}
+	p.Data["json"] = resp
 	p.ServeJSON()
 }
 
@@ -157,7 +209,6 @@ func (p *ProjectController) GetProjectOutline() {
 	}
 	p.ServeJSON()
 }
-
 
 // GetProjectChapters
 // @Title

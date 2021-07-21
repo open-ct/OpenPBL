@@ -12,9 +12,9 @@ type Project struct {
 	Image              string    `json:"image" xorm:"longtext"`
 	ProjectTitle       string    `json:"projectTitle"`
 	ProjectIntroduce   string    `json:"projectIntroduce"`
-	ProjectGoal        string     `json:"projectGoal"`
+	ProjectGoal        string    `json:"projectGoal"`
 
-	TeacherId          int64     `json:"teacherId" xorm:"index"`
+	TeacherId          string    `json:"teacherId" xorm:"index"`
 
 	Subjects           string    `json:"subjects" xorm:"default ''"`
 	Skills             string    `json:"skills" xorm:"default ''"`
