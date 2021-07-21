@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"time"
 	"xorm.io/xorm"
 )
@@ -32,7 +31,6 @@ type Project struct {
 
 type ProjectDetail struct {
 	Project            `xorm:"extends"`
-	Name     string    `json:"name"`
 	Learning bool      `json:"learning"`
 }
 
@@ -108,21 +106,25 @@ func (p *ProjectSubject) GetEngine() *xorm.Session {
 }
 
 func GetProjectByPidForTeacher(pid string) (pd ProjectDetail, err error) {
-	_, err = (&Project{}).GetEngine().
-		Join("INNER", "teacher", "teacher.id = project.teacher_id").
-		Where("project.id = ?", pid).
-		Get(&pd)
+	var p Project
+	c, err := (&Project{}).GetEngine().
+		ID(pid).
+		Get(&p)
+	pd = ProjectDetail{
+		Project:  p,
+		Learning: false,
+	}
+	if !c {
+		err = errors.New("404")
+	}
 	return
 }
 
 func GetProjectByPidForStudent(pid string) (pd ProjectDetail, err error) {
-	c, err := adapter.Engine.
-		SQL("select * from project " +
-			"inner join teacher t on project.teacher_id = t.id " +
-			"left join learn_project lp on project.id = lp.project_id " +
-			"where project.id = ?", pid).
+	c, err := (&Project{}).GetEngine().
+		Where("project.id = ?", pid).
+		Join("LEFT OUTER", LearnProject{}, "project.id = learn_project.project_id").
 		Get(&pd)
-	fmt.Println(c)
 	if !c {
 		err = errors.New("404")
 	}

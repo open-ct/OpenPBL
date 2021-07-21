@@ -1,7 +1,6 @@
 package models
 
 import (
-	"openpbl-go/models/db"
 	"xorm.io/xorm"
 )
 
@@ -16,10 +15,10 @@ type StudentInfo struct {
 }
 
 func (l *LearnProject) GetEngine() *xorm.Session {
-	return db.GetEngine().Table(l)
+	return adapter.Engine.Table(l)
 }
 func (sp *ProjectDetail) GetEngine() *xorm.Session {
-	return db.GetEngine().Table(sp)
+	return adapter.Engine.Table(sp)
 }
 
 func (l *LearnProject) Create() (err error) {
@@ -38,7 +37,7 @@ func (l *LearnProject) Update() (err error) {
 
 
 func GetProjectStudents(pid string, from int, size int) (s []StudentInfo, err error) {
-	err = db.GetEngine().
+	err = adapter.Engine.
 		SQL("select * from student " +
 			"inner join " +
 			"( select * from learn_project where project_id = ?) as l " +
@@ -47,7 +46,7 @@ func GetProjectStudents(pid string, from int, size int) (s []StudentInfo, err er
 	return
 }
 func CountProjectStudents(pid string, from int, size int) (rows int64, err error) {
-	_, err = db.GetEngine().
+	_, err = adapter.Engine.
 		SQL("select count(*) from student " +
 			"inner join " +
 			"( select * from learn_project where project_id = ?) as l " +

@@ -54,6 +54,15 @@ func init() {
 
     beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"],
         beego.ControllerComments{
+            Method: "UpdateProject",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"],
+        beego.ControllerComments{
             Method: "CreateProjectChapter",
             Router: "/chapter",
             AllowHTTPMethods: []string{"post"},
@@ -93,15 +102,6 @@ func init() {
             Method: "GetProjectChapters",
             Router: "/chapters/:pid",
             AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "UpdateProject",
-            Router: "/info",
-            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

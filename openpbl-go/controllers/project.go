@@ -134,7 +134,7 @@ func (p *ProjectController) CreateProject() {
 // @Param body body models.Project true	""
 // @Success 200 {int} models.Project.Id
 // @Failure 403 body is empty
-// @router /info [post]
+// @router /:id [post]
 func (p *ProjectController) UpdateProject() {
 	user := p.GetSessionUser()
 	var resp Response
@@ -157,14 +157,15 @@ func (p *ProjectController) UpdateProject() {
 		return
 	}
 	uid := user.Name
-	pid, err := p.GetInt64("id")
+	pid, err := p.GetInt64(":id")
 	if err != nil {
 		resp = Response{
 			Code: 400,
-			Msg: "修改失败",
+			Msg: err.Error(),
 		}
 		p.Data["json"] = resp
 		p.ServeJSON()
+		return
 	}
 	project := &models.Project{
 		Id:               pid,
@@ -184,8 +185,6 @@ func (p *ProjectController) UpdateProject() {
 			Msg:  err.Error(),
 			Data: true,
 		}
-		p.Data["json"] = resp
-		p.ServeJSON()
 	} else {
 		resp = Response{
 			Code: 200,
