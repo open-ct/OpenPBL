@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
 	"sync"
@@ -14,26 +13,11 @@ var loadDbOnce sync.Once
 
 func GetEngine() *xorm.Engine {
 	loadDbOnce.Do(func() {
-		var (
-			err      error
-			host     string
-			port     string
-			user     string
-			password string
-			name     string
-			dsn      string
-		)
-		host = beego.AppConfig.String("db.host")
-		port = beego.AppConfig.String("db.port")
-		user = beego.AppConfig.String("db.user")
-		password = beego.AppConfig.String("db.password")
-		name = beego.AppConfig.String("db.name")
+		driver := beego.AppConfig.String("driverName")
+		dataSource := beego.AppConfig.String("dataSourceName")
+		db := beego.AppConfig.String("dbName")
 
-		fmt.Sprintln("host=%s, port=%s, user=%s, password=%s, name=%s, ",
-			host, port, user, password, name)
-
-		dsn = user + ":" + password + "@tcp(" + host + ":" + port + ")/" + name + "?charset=utf8"
-		engine, err = xorm.NewEngine("mysql", dsn)
+		engine, err := xorm.NewEngine(driver, dataSource + db)
 
 		if err != nil {
 			panic(err.Error())
