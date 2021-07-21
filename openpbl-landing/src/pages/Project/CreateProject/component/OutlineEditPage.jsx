@@ -58,7 +58,7 @@ function OutlineEditPage(obj) {
       if (add === 'chapter') {
         let l = chapters.length
         let cp = {chapterName: name, chapterNumber: l, projectId: pid}
-        project.createProjectChapter(cp)
+        ProjectApi.createProjectChapter(cp)
           .then((res) => {
             setIsModalVisible(false)
             if (res.data.id) {
@@ -78,7 +78,7 @@ function OutlineEditPage(obj) {
           l = chapters[index].sections.length
         }
         let sec = {sectionName: name, sectionNumber: l, chapterId: chapters[index].id}
-        project.createChapterSection(sec)
+        ProjectApi.createChapterSection(sec)
           .then((res) => {
             setIsModalVisible(false)
             if (res.data.id) {

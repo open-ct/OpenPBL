@@ -8,6 +8,7 @@ import (
 	"openpbl-go/util"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // ProjectController
@@ -193,6 +194,60 @@ func (p *ProjectController) UpdateProject() {
 	}
 	p.Data["json"] = resp
 	p.ServeJSON()
+}
+
+
+// PublishProject
+// @Title
+// @Description
+// @Param pid path int true ""
+// @Success 200 {Response}
+// @Failure 400
+// @Failure 401
+// @Failure 403
+// @router /publish/:pid [post]
+func (u *ProjectController) PublishProject() {
+	pid, err := u.GetInt64(":pid")
+	var resp Response
+	user := u.GetSessionUser()
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	if user.Tag != "teacher" {
+		resp = Response{
+			Code: 403,
+			Msg:  "非法的用户",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+
+	p := models.Project{
+		Id:               pid,
+		PublishedAt:      time.Now(),
+		Published:        true,
+	}
+	err = models.UpdatePublished(p)
+	if err != nil {
+		resp = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		resp = Response{
+			Code: 200,
+			Msg:  "发布成功",
+		}
+	}
+	u.Data["json"] = resp
+	u.ServeJSON()
 }
 
 // GetProjectOutline

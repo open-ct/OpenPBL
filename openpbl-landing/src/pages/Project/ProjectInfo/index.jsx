@@ -11,7 +11,6 @@ import ProjectEvaluation from './component/ProjectEvaluation';
 import ProjectComment from './component/ProjectComment';
 import ProjectApi from "../../../api/ProjectApi";
 import StudentApi from "../../../api/StudentApi";
-import TeacherApi from "../../../api/TeacherApi";
 import StudentAdmin from "./component/StudentAdmin";
 import SubmitFiles from "./component/SubmitFiles";
 import {getUser} from "../../User/Auth/Auth";
@@ -54,6 +53,7 @@ class ProjectInfo extends React.PureComponent {
           })
         }
       })
+      .catch((e)=>{console.log(e)})
   }
 
   handleClick = (e) => {
@@ -68,7 +68,7 @@ class ProjectInfo extends React.PureComponent {
   learnProject = e => {
     StudentApi.learnProject(this.state.pid)
       .then((res) => {
-        if (res.data.result) {
+        if (res.data.code === 200) {
           let p = Object.assign({}, this.state.project)
           p.learning = true
           this.setState({
@@ -81,9 +81,9 @@ class ProjectInfo extends React.PureComponent {
       })
   }
   publishProject = e => {
-    TeacherApi.publishProject()
+    ProjectApi.publishProject(this.state.pid)
       .then((res) => {
-        if (res.data.result) {
+        if (res.data.code === 200) {
           let p = Object.assign({}, this.state.project)
           p.published = true
           this.setState({

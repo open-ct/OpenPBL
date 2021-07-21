@@ -22,6 +22,12 @@ export default {
       data: qs.stringify(data)
     })
   },
+  publishProject(pid) {
+    return request({
+      url:'/project/publish/' + pid,
+      method: 'post',
+    })
+  },
   getProjectChapters(id) {
     return request({
       url:'/project/chapters/' + id,

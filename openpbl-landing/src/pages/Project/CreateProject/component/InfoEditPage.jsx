@@ -29,15 +29,18 @@ function InfoEditPage(obj) {
     return str.split(',')
   }
   useEffect(() => {
-    ProjectApi.getProjectDetail()
+    ProjectApi.getProjectDetail(pid)
       .then((res) => {
-        setP(res.data.project)
-        setImageUrl(res.data.project.image)
-        setProjectTitle(res.data.project.projectTitle)
-        setProjectIntroduce(res.data.project.projectIntroduce)
-        setProjectGoal(res.data.project.projectGoal)
-        setSelectedSkills(stringToList(res.data.project.skills))
-        setSelectedSubjects(stringToList(res.data.project.subjects))
+        if (res.data.code === 200) {
+          console.log(res.data.project)
+          setP(res.data.project)
+          setImageUrl(res.data.project.image)
+          setProjectTitle(res.data.project.projectTitle)
+          setProjectIntroduce(res.data.project.projectIntroduce)
+          setProjectGoal(res.data.project.projectGoal)
+          setSelectedSkills(stringToList(res.data.project.skills))
+          setSelectedSubjects(stringToList(res.data.project.subjects))
+        }
       })
       .catch((e) => {
         console.log(e)
