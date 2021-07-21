@@ -250,24 +250,6 @@ func (u *ProjectController) PublishProject() {
 	u.ServeJSON()
 }
 
-// GetProjectOutline
-// @Title
-// @Description
-// @Param pid path string true "project id"
-// @Success 200 {object} []models.Outline
-// @Failure 403 body is empty
-// @router /outline/:pid [get]
-func (p *ProjectController) GetProjectOutline() {
-	pid := p.GetString(":pid")
-	if pid != "" {
-		outline, err := models.GetOutlineByPid(pid)
-		if err != nil {
-			p.Data["json"] = map[string]string{"error": err.Error()}
-		}
-		p.Data["json"] = map[string][]models.Outline{"outline": outline}
-	}
-	p.ServeJSON()
-}
 
 // GetProjectChapters
 // @Title
@@ -281,9 +263,10 @@ func (p *ProjectController) GetProjectChapters() {
 	if pid != "" {
 		chapters, err := models.GetChaptersByPid(pid)
 		if err != nil {
-			p.Data["json"] = map[string]string{"error": err.Error()}
+			p.Data["json"] = map[string][]models.Chapter{"chapters": nil}
+		} else {
+			p.Data["json"] = map[string][]models.Chapter{"chapters": chapters}
 		}
-		p.Data["json"] = map[string][]models.Chapter{"chapters": chapters}
 	}
 	p.ServeJSON()
 }
@@ -291,8 +274,8 @@ func (p *ProjectController) GetProjectChapters() {
 // @Title
 // @Description
 // @Param body body models.Chapter true ""
-// @Success 200 {object}
-// @Failure 403 body is empty
+// @Success 200 {object} Response
+// @Failure 401
 // @router /chapter [post]
 func (p *ProjectController) CreateProjectChapter() {
 	pid, err := p.GetInt64("projectId")
@@ -302,9 +285,6 @@ func (p *ProjectController) CreateProjectChapter() {
 		ChapterName:      p.GetString("chapterName"),
 		ChapterNumber:    num,
 	}
-
-	fmt.Println(chapter)
-
 	if err != nil {
 		p.Data["json"] = map[string]string{"error": err.Error()}
 	}
@@ -313,6 +293,39 @@ func (p *ProjectController) CreateProjectChapter() {
 		p.Data["json"] = map[string]string{"error": err.Error()}
 	}
 	p.Data["json"] = map[string]string{"id": strconv.FormatInt(chapter.Id, 10)}
+	p.ServeJSON()
+}
+
+// UpdateProjectChapter
+// @Title
+// @Description
+// @Param body body models.Chapter true ""
+// @Success 200 {object} Response
+// @Failure 401
+// @router /chapter/:cid [post]
+func (p *ProjectController) UpdateProjectChapter() {
+	cid, err := p.GetInt64(":cid")
+	pid, err := p.GetInt64("projectId")
+	num, err := p.GetInt("chapterNumber")
+	chapter := &models.Chapter{
+		Id:               cid,
+		ProjectId:        pid,
+		ChapterName:      p.GetString("chapterName"),
+		ChapterNumber:    num,
+	}
+	err = chapter.Update()
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  "更新失败",
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Msg: "更新成功",
+			Data: true,
+		}
+	}
 	p.ServeJSON()
 }
 
@@ -328,9 +341,10 @@ func (p *ProjectController) GetChapterSections() {
 	if cid != "" {
 		sections, err := models.GetSectionsByCid(cid)
 		if err != nil {
-			p.Data["json"] = map[string]string{"error": err.Error()}
+			p.Data["json"] = map[string][]models.Section{"sections": nil}
+		} else {
+			p.Data["json"] = map[string][]models.Section{"sections": sections}
 		}
-		p.Data["json"] = map[string][]models.Section{"sections": sections}
 	}
 	p.ServeJSON()
 }
@@ -357,6 +371,39 @@ func (p *ProjectController) CreateChapterSection() {
 		p.Data["json"] = map[string]string{"error": err.Error()}
 	}
 	p.Data["json"] = map[string]string{"id": strconv.FormatInt(section.Id, 10)}
+	p.ServeJSON()
+}
+
+// UpdateChapterSection
+// @Title
+// @Description
+// @Param body body models.Section true ""
+// @Success 200 {object}
+// @Failure 401
+// @router /chapter/section/:sid [post]
+func (p *ProjectController) UpdateChapterSection() {
+	sid, err := p.GetInt64(":sid")
+	cid, err := p.GetInt64("chapterId")
+	num, err := p.GetInt("sectionNumber")
+	section := &models.Section{
+		Id:               sid,
+		ChapterId:        cid,
+		SectionName:      p.GetString("sectionName"),
+		SectionNumber:    num,
+	}
+	err = section.Update()
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  "更新失败",
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Msg: "更新成功",
+			Data: true,
+		}
+	}
 	p.ServeJSON()
 }
 

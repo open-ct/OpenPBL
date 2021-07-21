@@ -164,7 +164,7 @@ func (p *Chapter) Create() (err error) {
 	return
 }
 func (p *Chapter) Update() (err error) {
-	_, err = p.GetEngine().Where("id = ", p.Id).Update(p)
+	_, err = p.GetEngine().ID(p.Id).Update(p)
 	return
 }
 
@@ -173,7 +173,7 @@ func (p *Section) Create() (err error) {
 	return
 }
 func (p *Section) Update() (err error) {
-	_, err = p.GetEngine().Where("id = ", p.Id).Update(p)
+	_, err = p.GetEngine().ID(p.Id).Update(p)
 	return
 }
 

@@ -41,6 +41,13 @@ export default {
       data: qs.stringify(chapter)
     })
   },
+  updateProjectChapter(chapter) {
+    return request({
+      url:'/project/chapter/' + chapter.id,
+      method: 'post',
+      data: qs.stringify(chapter)
+    })
+  },
   getChapterSections(id) {
     return request({
       url:'/project/chapter/sections/' + id,
@@ -50,6 +57,13 @@ export default {
   createChapterSection(section) {
     return request({
       url:'/project/chapter/section',
+      method: 'post',
+      data: qs.stringify(section)
+    })
+  },
+  updateChapterSection(section) {
+    return request({
+      url:'/project/chapter/section/' + section.id,
       method: 'post',
       data: qs.stringify(section)
     })
