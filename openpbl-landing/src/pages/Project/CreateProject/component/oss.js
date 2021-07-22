@@ -3,10 +3,10 @@ import {} from 'lodash';
 
 const ossclient = new OSS({
   region: 'oss-cn-hangzhou',
-  accessKeyId: 'LTAI5tCeg6VeJeRks3CeXa1X',
-  accessKeySecret: 'wg0Q4g6TQo9PwRsZNfRNuqhkYElfzu',
+  accessKeyId: '',
+  accessKeySecret: '',
   stsToken: '',
-  bucket: 'lbaf23',
+  bucket: '',
 });
 
 function buildFileName(path, postfix) {
