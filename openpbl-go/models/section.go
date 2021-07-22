@@ -63,9 +63,9 @@ func GetSectionById(sid string) (s Section, err error) {
 
 func GetSectionDetailById(sid string) (s SectionDetail, err error) {
 	_, err = adapter.Engine.
-		Join("INNER", Resource{}, "resource.section_id = section.id").
-		Where("resource.id = ?", sid).
+		Table("section").
+		Where("section.id = ?", sid).
+		Join("INNER", "resource", "resource.section_id = section.id").
 		Get(&s)
-
 	return
 }
