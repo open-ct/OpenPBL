@@ -8,13 +8,14 @@ import (
 type Submit struct {
 	Id              int64     `json:"id" xorm:"not null pk autoincr"`
 
-	StudentId       int64     `json:"studentId" xorm:"index"`
-	ResourceId      int64     `json:"resourceId" xorm:"index"`
+	StudentId       int64     `json:"studentId" xorm:"not null index"`
+	TaskId          int64     `json:"taskId" xorm:"not null index"`
 
 	SubmitTitle     string    `json:"submitTitle"`
 	SubmitIntroduce string    `json:"submitIntroduce" xorm:"text"`
 
 	FilePath        string    `json:"filePath"`
+
 
 	CreateAt        time.Time `json:"createAt" xorm:"created"`
 }

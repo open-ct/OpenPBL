@@ -17,7 +17,6 @@ function RichWords(obj) {
 
   }, [])
   const receiveHtml = (content) => {
-    console.log("recieved markdown content", content);
     setContent(content)
   }
 

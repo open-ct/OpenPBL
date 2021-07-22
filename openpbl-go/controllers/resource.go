@@ -38,16 +38,12 @@ func (p *ResourceController) GetResource() {
 // @router / [post]
 func (p *ResourceController) CreateResource() {
 	s, err := p.GetInt64("SectionId")
-	h, err := p.GetBool("hasHomeWork")
 	resource := &models.Resource{
 		SectionId:         s,
 		FileTitle:         p.GetString("fileTitle"),
 		FileIntroduce:     p.GetString("fileIntroduce"),
 		FilePath:          p.GetString("FilePath"),
 		Content:           p.GetString("Content"),
-		HasHomeWork:       h,
-		HomeWorkTitle:     p.GetString("HomeWorkTitle"),
-		HomeWorkIntroduce: p.GetString("HomeWorkIntroduce"),
 	}
 	err = resource.Create()
 	if err != nil {
@@ -73,7 +69,6 @@ func (p *ResourceController) CreateResource() {
 // @Failure 400
 // @router /:id [post]
 func (p *ResourceController) UpdateResource() {
-	h, err := p.GetBool("hasHomeWork")
 	s, err := p.GetInt64("sectionId")
 	id, err := p.GetInt64(":id")
 	resource := &models.Resource{
@@ -83,9 +78,6 @@ func (p *ResourceController) UpdateResource() {
 		FileIntroduce:     p.GetString("fileIntroduce"),
 		FilePath:          p.GetString("filePath"),
 		Content:           p.GetString("content"),
-		HasHomeWork:       h,
-		HomeWorkTitle:     p.GetString("homeWorkTitle"),
-		HomeWorkIntroduce: p.GetString("homeWorkIntroduce"),
 	}
 	err = resource.Update()
 	if err != nil {
