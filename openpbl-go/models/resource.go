@@ -10,9 +10,11 @@ type Resource struct {
 
 	Content           string  `json:"content" xorm:"longtext"`
 
-	FilePath          string  `json:"filePath" xorm:"index"`
+	FileTitle         string  `json:"fileTitle"`
+	FileIntroduce     string  `json:"fileIntroduce"`
+	FilePath          string  `json:"filePath"`
 
-	HasHomeWork       bool    `json:"hasHomeWork" xorm:"default false"`
+	HasHomeWork       bool    `json:"hasHomeWork"`
 	HomeWorkTitle     string  `json:"homeWorkTitle"`
 	HomeWorkIntroduce string  `json:"homeWorkIntroduce" xorm:"text"`
 }
@@ -26,6 +28,7 @@ func (p *Resource) Create() (err error) {
 }
 func (p *Resource) Update() (err error) {
 	_, err = p.GetEngine().
+		MustCols("has_home_work").
 		ID(p.Id).
 		Update(p)
 	return

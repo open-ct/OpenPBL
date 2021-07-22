@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, message} from "antd";
+import {Button, Card, Divider, message} from "antd";
 import LzEditor from "react-lz-editor"
 import uniqBy from 'lodash/uniqBy';
 import findIndex from 'lodash/findIndex';
@@ -83,7 +83,7 @@ function RichWords(obj) {
   return (
     <Card className="resource-card">
       <p className="card-title">文本内容</p>
-
+      <Divider/>
       <div style={{textAlign: 'left'}}>
         <LzEditor
           readOnly={true}

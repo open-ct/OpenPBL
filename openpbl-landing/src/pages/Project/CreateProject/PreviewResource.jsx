@@ -39,11 +39,17 @@ function PreviewResource(obj) {
           <div dangerouslySetInnerHTML={{__html: section.resource.content}}/>
         </Card>
         <Card className="resource-card">
-          文件
+          <p className="card-title">文件</p>
+          <p>{section.resource.fileTitle}</p>
+          <p>{section.resource.fileIntroduce}</p>
         </Card>
-        <Card className="resource-card">
-          学生任务
-        </Card>
+        {section.resource.hasHomeWork ?
+          <Card className="resource-card">
+            <p className="card-title">学生任务</p>
+            <p>{section.resource.homeWorkTitle}</p>
+            <p>{section.resource.homeWorkIntroduce}</p>
+          </Card>
+          : null}
       </div>
     </div>
   </DocumentTitle>

@@ -41,6 +41,8 @@ func (p *ResourceController) CreateResource() {
 	h, err := p.GetBool("hasHomeWork")
 	resource := &models.Resource{
 		SectionId:         s,
+		FileTitle:         p.GetString("fileTitle"),
+		FileIntroduce:     p.GetString("fileIntroduce"),
 		FilePath:          p.GetString("FilePath"),
 		Content:           p.GetString("Content"),
 		HasHomeWork:       h,
@@ -77,6 +79,8 @@ func (p *ResourceController) UpdateResource() {
 	resource := &models.Resource{
 		Id:                id,
 		SectionId:         s,
+		FileTitle:         p.GetString("fileTitle"),
+		FileIntroduce:     p.GetString("fileIntroduce"),
 		FilePath:          p.GetString("filePath"),
 		Content:           p.GetString("content"),
 		HasHomeWork:       h,
