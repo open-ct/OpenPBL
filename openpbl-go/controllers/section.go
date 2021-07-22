@@ -168,6 +168,33 @@ func (p *ProjectController) DeleteChapterSection() {
 	p.ServeJSON()
 }
 
+// ExchangeChapterSection
+// @Title
+// @Description
+// @Param sid path string true ""
+// @Success 200 {object}
+// @Failure 401
+// @router /chapter/section/exchange/:sid1/:sid2 [post]
+func (p *ProjectController) ExchangeChapterSection() {
+	sid1 := p.GetString(":sid1")
+	sid2 := p.GetString(":sid2")
+	err := models.ExchangeSections(sid1, sid2)
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Data: true,
+		}
+	}
+	p.ServeJSON()
+}
+
+
+
+
 // GetSubmitFiles
 // @Title
 // @Description

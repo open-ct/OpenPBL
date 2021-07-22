@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, Col, Input, message, Row, Select, Upload} from "antd";
+import {Link} from 'react-router-dom'
 import ImgCrop from 'antd-img-crop';
 import '../index.less'
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
@@ -205,6 +206,12 @@ function InfoEditPage(obj) {
       </Row>
       <Row style={{marginTop: '20px'}}>
         <Col span={4} offset={20}>
+          <Link to={"/project/edit/outline/" + pid}>
+            <Button
+              size="middle"
+              style={{marginRight: '20px'}}
+            >下一页</Button>
+          </Link>
           <Button
             type="primary"
             size="middle"

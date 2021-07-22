@@ -186,6 +186,19 @@ func (p *Section) Delete() (err error) {
 	return
 }
 
+func ExchangeChapters(cid1 string, cid2 string) (err error) {
+	_, err = adapter.Engine.
+		Exec("update chapter c1 join chapter c2 on (c1.id = ? and c2.id = ?) " +
+			"set c1.chapter_number = c2.chapter_number, c2.chapter_number = c1.chapter_number", cid1, cid2)
+	return
+}
+func ExchangeSections(id1 string, id2 string) (err error) {
+	_, err = adapter.Engine.
+		Exec("update section c1 join section c2 on (c1.id = ? and c2.id = ?) " +
+			"set c1.section_number = c2.section_number, c2.section_number = c1.section_number", id1, id2)
+	return
+}
+
 func (p *SubmitFile) Create() (err error) {
 	_, err = p.GetEngine().Insert(p)
 	return

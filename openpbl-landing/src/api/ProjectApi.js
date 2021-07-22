@@ -54,6 +54,12 @@ export default {
       method: 'post',
     })
   },
+  exchangeProjectChapter(id1, id2) {
+    return request({
+      url:'/project/chapter/exchange/' + id1 + '/' + id2,
+      method: 'post',
+    })
+  },
   getChapterSections(id) {
     return request({
       url:'/project/chapter/sections/' + id,
@@ -77,6 +83,12 @@ export default {
   deleteChapterSection(id) {
     return request({
       url:'/project/chapter/section/delete/' + id,
+      method: 'post',
+    })
+  },
+  exchangeChapterSection(id1, id2) {
+    return request({
+      url:'/project/chapter/section/exchange/' + id1 + '/' + id2,
       method: 'post',
     })
   },

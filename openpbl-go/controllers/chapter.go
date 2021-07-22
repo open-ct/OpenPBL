@@ -110,3 +110,28 @@ func (p *ProjectController) DeleteProjectChapter() {
 	}
 	p.ServeJSON()
 }
+
+// ExchangeProjectChapter
+// @Title
+// @Description
+// @Param cid path string true ""
+// @Success 200 {object} Response
+// @Failure 401
+// @router /chapter/exchange/:cid1/:cid2 [post]
+func (p *ProjectController) ExchangeProjectChapter() {
+	cid1 := p.GetString(":cid1")
+	cid2 := p.GetString(":cid2")
+
+	err := models.ExchangeChapters(cid1, cid2)
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Data: true,
+		}
+	}
+	p.ServeJSON()
+}

@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Button, Input, Menu, Modal, Row, Col, message, Popconfirm} from 'antd'
-import {EditOutlined, DeleteOutlined} from '@ant-design/icons'
+import {EditOutlined, DeleteOutlined, ArrowUpOutlined, ArrowDownOutlined} from '@ant-design/icons'
 import {Link} from 'react-router-dom'
 
 import ProjectApi from "../../../../api/ProjectApi";
+import Project from "../../index";
+import {EChartsReactProps} from "echarts-for-react";
 
 const {SubMenu} = Menu;
 
@@ -59,6 +61,7 @@ function OutlineEditPage(obj) {
   }
   const modifyChapter = (c, index) => {
     setChapter(c)
+    setChapterName(c.chapterName)
     setIndex(index)
     setOpt('modify')
     setChapterModalVisible(true)
@@ -71,6 +74,7 @@ function OutlineEditPage(obj) {
   }
   const modifySection = (s, index, subIndex) => {
     setSection(s)
+    setSectionName(s.sectionName)
     setIndex(index)
     setSubIndex(subIndex)
     setOpt('modify')
@@ -200,9 +204,11 @@ function OutlineEditPage(obj) {
   }
   const cancelDoChapter = e => {
     setChapterModalVisible(false)
+    setChapterName('')
   }
   const cancelDoSection = e => {
     setSectionModalVisible(false)
+    setSectionName('')
   }
 
   const changeChapterName = value => {
@@ -210,6 +216,41 @@ function OutlineEditPage(obj) {
   }
   const changeSectionName = value => {
     setSectionName(value.target.value)
+  }
+  const exchangeChapter = (index, index2) => {
+    if (index < 0 || index2 >= chapters.length) {
+
+    } else {
+      let id1 = chapters[index].id
+      let id2 = chapters[index2].id
+      ProjectApi.exchangeProjectChapter(id1, id2)
+        .then((res) => {
+          if (res.data.code === 200) {
+            let c1 = chapters[index]
+            chapters[index] = chapters[index2]
+            chapters[index2] = c1
+            setChapters([...chapters])
+          }
+        })
+        .catch(e=>{console.log(e)})
+    }
+  }
+  const exchangeSection = (index, subIndex, subIndex2) => {
+    if (subIndex < 0 || subIndex2 >= chapters[index].sections.length) {
+    } else {
+      let id1 = chapters[index].sections[subIndex].id
+      let id2 = chapters[index].sections[subIndex2].id
+      ProjectApi.exchangeChapterSection(id1, id2)
+        .then(res=>{
+          if (res.data.code === 200) {
+            let s1 = chapters[index].sections[subIndex]
+            chapters[index].sections[subIndex] = chapters[index].sections[subIndex2]
+            chapters[index].sections[subIndex2] = s1
+            setChapters([...chapters])
+          }
+        })
+        .catch(e=>{console.log(e)})
+    }
   }
 
   return (
@@ -227,6 +268,8 @@ function OutlineEditPage(obj) {
             <div>
               {item.chapterName}
               <span style={{ float: 'right', marginRight: '20px' }}>
+                <Button shape="circle" type="text" icon={<ArrowUpOutlined />} onClick={e => exchangeChapter(index - 1, index)} />
+                <Button shape="circle" type="text" icon={<ArrowDownOutlined />} onClick={e => exchangeChapter(index, index + 1)}/>
                 <Button shape="circle" type="text" onClick={e => modifyChapter(item, index)} icon={<EditOutlined/>} />
                 <Popconfirm title="确定删除章节？" onConfirm={e => deleteChapter(item, index)}>
                   <Button shape="circle" type="text" icon={<DeleteOutlined/>} />
@@ -241,6 +284,11 @@ function OutlineEditPage(obj) {
               <Menu.Item key={index.toString() + subIndex.toString()}>
                 {subItem.sectionName}
                 <span style={{ float: 'right', marginRight: '20px' }}>
+                  <Button type="text">编辑详细信息</Button>
+
+                  <Button shape="circle" type="text" icon={<ArrowUpOutlined />} onClick={e => exchangeSection(index, subIndex-1, subIndex)}/>
+                  <Button shape="circle" type="text" icon={<ArrowDownOutlined />} onClick={e => exchangeSection(index, subIndex, subIndex+1)}/>
+
                   <Button shape="circle" type="text" onClick={e => modifySection(subItem, index, subIndex)} icon={<EditOutlined/>} />
 
                   <Popconfirm title="确定删除小节？" onConfirm={e => deleteSection(subItem, index, subIndex)}>
