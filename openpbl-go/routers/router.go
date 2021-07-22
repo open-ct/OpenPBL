@@ -23,6 +23,10 @@ func init() {
 			beego.NSInclude(
 				&controllers.ProjectController{})),
 
+		beego.NSNamespace("/resource",
+			beego.NSInclude(
+				&controllers.ResourceController{})),
+
 		beego.NSNamespace("/project-list",
 			beego.NSInclude(
 				&controllers.ProjectListController{})),

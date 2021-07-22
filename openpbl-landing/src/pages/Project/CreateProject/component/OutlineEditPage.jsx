@@ -3,9 +3,8 @@ import {Button, Input, Menu, Modal, Row, Col, message, Popconfirm} from 'antd'
 import {EditOutlined, DeleteOutlined, ArrowUpOutlined, ArrowDownOutlined} from '@ant-design/icons'
 import {Link} from 'react-router-dom'
 
-import ProjectApi from "../../../../api/ProjectApi";
-import Project from "../../index";
-import {EChartsReactProps} from "echarts-for-react";
+import ChapterApi from "../../../../api/ChapterApi"
+import SectionApi from "../../../../api/SectionApi"
 
 const {SubMenu} = Menu;
 
@@ -27,7 +26,7 @@ function OutlineEditPage(obj) {
   const [sectionName, setSectionName] = useState('')
 
   useEffect(() => {
-    ProjectApi.getProjectChapters(pid)
+    ChapterApi.getProjectChapters(pid)
       .then((res) => {
         if (res.data.chapters === null) {
           setChapters([])
@@ -40,7 +39,7 @@ function OutlineEditPage(obj) {
 
   const handleClick = (item, key) => {
     if (item.sections === undefined) {
-      ProjectApi.getChapterSections(item.id)
+      SectionApi.getChapterSections(item.id)
         .then((res) => {
           if (res.data.sections == null) {
             item.sections = []
@@ -81,7 +80,7 @@ function OutlineEditPage(obj) {
     setSectionModalVisible(true)
   }
   const deleteChapter = (c, index) => {
-    ProjectApi.deleteProjectChapter(c.id)
+    ChapterApi.deleteProjectChapter(c.id)
       .then((res)=>{
         if (res.data.code === 200) {
           chapters.splice(index, 1)
@@ -92,7 +91,7 @@ function OutlineEditPage(obj) {
       .catch((e)=>{console.log(e)})
   }
   const deleteSection = (s, index, subIndex) => {
-    ProjectApi.deleteChapterSection(s.id)
+    SectionApi.deleteChapterSection(s.id)
       .then((res)=>{
         if (res.data.code === 200) {
           let sections = chapters[index].sections
@@ -115,7 +114,7 @@ function OutlineEditPage(obj) {
         chapterName: chapterName,
         chapterNumber: chapter.chapterNumber,
       }
-      ProjectApi.updateProjectChapter(c)
+      ChapterApi.updateProjectChapter(c)
         .then((res)=>{
           if (res.data.code === 200) {
             let s = chapters[index].sections
@@ -135,7 +134,7 @@ function OutlineEditPage(obj) {
         l = chapters[len-1].chapterNumber + 1
       }
       let cp = {chapterName: chapterName, chapterNumber: l, projectId: pid}
-      ProjectApi.createProjectChapter(cp)
+      ChapterApi.createProjectChapter(cp)
         .then((res) => {
           setChapterModalVisible(false)
           setChapterName('')
@@ -162,7 +161,7 @@ function OutlineEditPage(obj) {
         sectionName: sectionName,
         sectionNumber: section.sectionNumber
       }
-      ProjectApi.updateChapterSection(s)
+      SectionApi.updateChapterSection(s)
         .then((res)=>{
           if (res.data.code === 200) {
             chapters[index].sections[subIndex] = s
@@ -182,7 +181,7 @@ function OutlineEditPage(obj) {
         }
       }
       let sec = {sectionName: sectionName, sectionNumber: l, chapterId: chapters[index].id}
-      ProjectApi.createChapterSection(sec)
+      SectionApi.createChapterSection(sec)
         .then((res) => {
           setSectionModalVisible(false)
           setSectionName('')
@@ -223,7 +222,7 @@ function OutlineEditPage(obj) {
     } else {
       let id1 = chapters[index].id
       let id2 = chapters[index2].id
-      ProjectApi.exchangeProjectChapter(id1, id2)
+      ChapterApi.exchangeProjectChapter(id1, id2)
         .then((res) => {
           if (res.data.code === 200) {
             let c1 = chapters[index]
@@ -240,7 +239,7 @@ function OutlineEditPage(obj) {
     } else {
       let id1 = chapters[index].sections[subIndex].id
       let id2 = chapters[index].sections[subIndex2].id
-      ProjectApi.exchangeChapterSection(id1, id2)
+      SectionApi.exchangeChapterSection(id1, id2)
         .then(res=>{
           if (res.data.code === 200) {
             let s1 = chapters[index].sections[subIndex]

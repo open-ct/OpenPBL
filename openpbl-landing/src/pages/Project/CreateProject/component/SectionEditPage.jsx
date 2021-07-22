@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Col, Row, Input, PageHeader, Card} from "antd";
 import DocumentTitle from 'react-document-title';
 
-import ProjectApi from "../../../../api/ProjectApi";
+import SectionApi from "../../../../api/SectionApi";
 import "./section-edit.less"
 
 function SectionEditPage(obj) {
@@ -12,7 +12,7 @@ function SectionEditPage(obj) {
   const [resources, setResources] = useState([])
 
   useEffect(()=>{
-    ProjectApi.getSection(sid)
+    SectionApi.getSection(sid)
       .then(res=>{
         setSection(res.data.section)
       })

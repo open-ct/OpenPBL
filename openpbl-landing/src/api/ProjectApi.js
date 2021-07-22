@@ -28,76 +28,7 @@ export default {
       method: 'post',
     })
   },
-  getProjectChapters(id) {
-    return request({
-      url:'/project/chapters/' + id,
-      method: 'get',
-    })
-  },
-  createProjectChapter(chapter) {
-    return request({
-      url:'/project/chapter',
-      method: 'post',
-      data: qs.stringify(chapter)
-    })
-  },
-  updateProjectChapter(chapter) {
-    return request({
-      url:'/project/chapter/' + chapter.id,
-      method: 'post',
-      data: qs.stringify(chapter)
-    })
-  },
-  deleteProjectChapter(id) {
-    return request({
-      url:'/project/chapter/delete/' + id,
-      method: 'post',
-    })
-  },
-  exchangeProjectChapter(id1, id2) {
-    return request({
-      url:'/project/chapter/exchange/' + id1 + '/' + id2,
-      method: 'post',
-    })
-  },
-  getSection(id) {
-    return request({
-      url:'/project/chapter/section/' + id,
-      method: 'get',
-    })
-  },
-  getChapterSections(id) {
-    return request({
-      url:'/project/chapter/sections/' + id,
-      method: 'get',
-    })
-  },
-  createChapterSection(section) {
-    return request({
-      url:'/project/chapter/section',
-      method: 'post',
-      data: qs.stringify(section)
-    })
-  },
-  updateChapterSection(section) {
-    return request({
-      url:'/project/chapter/section/' + section.id,
-      method: 'post',
-      data: qs.stringify(section)
-    })
-  },
-  deleteChapterSection(id) {
-    return request({
-      url:'/project/chapter/section/delete/' + id,
-      method: 'post',
-    })
-  },
-  exchangeChapterSection(id1, id2) {
-    return request({
-      url:'/project/chapter/section/exchange/' + id1 + '/' + id2,
-      method: 'post',
-    })
-  },
+
   getSectionFiles(id) {
     return request({
       url:'/project/chapter/section/files/' + id,
@@ -109,20 +40,6 @@ export default {
       url:'/project/chapter/section/file',
       method: 'post',
       data: qs.stringify(f)
-    })
-  },
-
-  getSubmitFiles(sid, pid) {
-    return request({
-      url:'/project/submit-files/' + pid + '/' + sid,
-      method: 'get',
-    })
-  },
-  createSubmitFiles(data) {
-    return request({
-      url:'/project/submit-files',
-      method: 'post',
-      data: qs.stringify(data)
     })
   },
 

@@ -109,7 +109,8 @@ func (a *Adapter) createTable() {
 
 		new(Chapter),
 		new(Section),
-		new(SubmitFile),
+		new(Resource),
+
 		new(ProjectSkill),
 		new(ProjectSubject),
 	)

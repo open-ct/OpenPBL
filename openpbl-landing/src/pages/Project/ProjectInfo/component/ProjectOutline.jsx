@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Menu} from 'antd'
 import QueueAnim from 'rc-queue-anim';
 
-import ProjectApi from "../../../../api/ProjectApi";
+import ChapterApi from "../../../../api/ChapterApi";
+import SectionApi from "../../../../api/SectionApi";
 
 const {SubMenu} = Menu;
 
@@ -11,7 +12,7 @@ function ProjectOutline(obj) {
   const [chapters, setChapters] = useState([])
 
   useEffect(() => {
-    ProjectApi.getProjectChapters(pid)
+    ChapterApi.getProjectChapters(pid)
       .then((res) => {
         if (res.data.chapters === null) {
           setChapters([])
@@ -23,7 +24,7 @@ function ProjectOutline(obj) {
 
   const handleClick = (item, key) => {
     if (item.sections === undefined) {
-      ProjectApi.getChapterSections(item.id)
+      SectionApi.getChapterSections(item.id)
         .then((res) => {
           item.sections = res.data.sections
           chapters[key] = item

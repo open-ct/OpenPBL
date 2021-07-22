@@ -14,11 +14,10 @@ import (
 // @router /chapter/section/:sid [get]
 func (p *ProjectController) GetSection() {
 	sid := p.GetString(":sid")
-	if sid != "" {
-		section, err := models.GetSectionById(sid)
-		if err != nil {
-			p.Data["json"] = map[string]string{"error": err.Error()}
-		}
+	section, err := models.GetSectionById(sid)
+	if err != nil {
+		p.Data["json"] = map[string]models.Section{"section": {}}
+	} else {
 		p.Data["json"] = map[string]models.Section{"section": section}
 	}
 	p.ServeJSON()
@@ -192,53 +191,5 @@ func (p *ProjectController) ExchangeChapterSection() {
 	p.ServeJSON()
 }
 
-
-
-
-// GetSubmitFiles
-// @Title
-// @Description
-// @Param pid path string true ""
-// @Param sid path string true ""
-// @Success 200 {object} []models.SubmitFile
-// @Failure 403 body is empty
-// @router /submit-files/:pid/:sid [get]
-func (p *ProjectController) GetSubmitFiles() {
-	sid := p.GetString(":sid")
-	pid := p.GetString(":pid")
-	if sid != "" && pid != "" {
-		files, err := models.GetSubmitFiles(sid, pid)
-		if err != nil {
-			p.Data["json"] = map[string]string{"error": err.Error()}
-		}
-		p.Data["json"] = map[string][]models.SubmitFile{"files": files}
-	}
-	p.ServeJSON()
-}
-
-// CreateSubmitFile
-// @Title
-// @Description
-// @Param body body models.SubmitFile true ""
-// @Success 200 {object}
-// @Failure 403 body is empty
-// @router /submit-files [post]
-func (p *ProjectController) CreateSubmitFile() {
-	pid, err := p.GetInt64("projectId")
-	sid, err := p.GetInt64("studentId")
-	f := &models.SubmitFile{
-		ProjectId:       pid,
-		StudentId:       sid,
-		SubmitIntroduce: p.GetString("submitIntroduce"),
-		FilePath:        p.GetString("filePath"),
-		FileName:        p.GetString("fileName"),
-	}
-	err = f.Create()
-	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
-	}
-	p.Data["json"] = map[string]string{"id": strconv.FormatInt(f.Id, 10)}
-	p.ServeJSON()
-}
 
 
