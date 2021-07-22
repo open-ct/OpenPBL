@@ -1,6 +1,8 @@
 package models
 
-import "xorm.io/xorm"
+import (
+	"xorm.io/xorm"
+)
 
 type Section struct {
 	Id                 int64   `json:"id" xorm:"not null pk autoincr"`
@@ -9,12 +11,24 @@ type Section struct {
 	SectionNumber      int     `json:"sectionNumber" xorm:"index"`
 }
 
+type SectionDetail struct {
+	Section     `xorm:"extends"`
+	Resource    `json:"resource" xorm:"extends"`
+}
+
 func (p *Section) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(p)
 }
 
 func (p *Section) Create() (err error) {
-	_, err = p.GetEngine().Insert(p)
+	session := adapter.Engine.NewSession()
+	defer session.Close()
+	session.Begin()
+	_, err = session.Insert(p)
+	_, err = session.Insert(Resource{
+		SectionId:         p.Id,
+	})
+	session.Commit()
 	return
 }
 func (p *Section) Update() (err error) {
@@ -40,10 +54,18 @@ func GetSectionsByCid(cid string) (s []Section, err error) {
 	return
 }
 
-
 func GetSectionById(sid string) (s Section, err error) {
 	_, err = (&Section{}).GetEngine().
 		Where("id = ?", sid).
 		Get(&s)
+	return
+}
+
+func GetSectionDetailById(sid string) (s SectionDetail, err error) {
+	_, err = adapter.Engine.
+		Join("INNER", Resource{}, "resource.section_id = section.id").
+		Where("resource.id = ?", sid).
+		Get(&s)
+
 	return
 }

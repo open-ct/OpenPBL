@@ -117,7 +117,7 @@ func init() {
 
     beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"] = append(beego.GlobalControllerRouter["openpbl-go/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "GetSection",
+            Method: "GetSectionDetail",
             Router: "/chapter/section/:sid",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),

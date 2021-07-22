@@ -5,20 +5,20 @@ import (
 	"strconv"
 )
 
-// GetSection
+// GetSectionDetail
 // @Title
 // @Description
 // @Param body body models.File true ""
 // @Success 200 {object}
 // @Failure 403 body is empty
 // @router /chapter/section/:sid [get]
-func (p *ProjectController) GetSection() {
+func (p *ProjectController) GetSectionDetail() {
 	sid := p.GetString(":sid")
-	section, err := models.GetSectionById(sid)
+	section, err := models.GetSectionDetailById(sid)
 	if err != nil {
-		p.Data["json"] = map[string]models.Section{"section": {}}
+		p.Data["json"] = map[string]models.SectionDetail{"section": {}}
 	} else {
-		p.Data["json"] = map[string]models.Section{"section": section}
+		p.Data["json"] = map[string]models.SectionDetail{"section": section}
 	}
 	p.ServeJSON()
 }

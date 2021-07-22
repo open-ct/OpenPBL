@@ -37,16 +37,15 @@ func (p *ResourceController) GetResource() {
 // @Failure 400
 // @router / [post]
 func (p *ResourceController) CreateResource() {
-	o, err := p.GetInt("ResourceOrder")
 	s, err := p.GetInt64("SectionId")
+	h, err := p.GetBool("hasHomeWork")
 	resource := &models.Resource{
-		ResourceType:      p.GetString("resourceType"),
-		ResourceTitle:     p.GetString("ResourceTitle"),
-		ResourceIntroduce: p.GetString("ResourceIntroduce"),
-		ResourceOrder:     o,
-		Content:           p.GetString("Content"),
-		FilePath:          p.GetString("FilePath"),
 		SectionId:         s,
+		FilePath:          p.GetString("FilePath"),
+		Content:           p.GetString("Content"),
+		HasHomeWork:       h,
+		HomeWorkTitle:     p.GetString("HomeWorkTitle"),
+		HomeWorkIntroduce: p.GetString("HomeWorkIntroduce"),
 	}
 	err = resource.Create()
 	if err != nil {
@@ -72,18 +71,17 @@ func (p *ResourceController) CreateResource() {
 // @Failure 400
 // @router /:id [post]
 func (p *ResourceController) UpdateResource() {
-	o, err := p.GetInt("ResourceOrder")
+	h, err := p.GetBool("hasHomeWork")
 	s, err := p.GetInt64("SectionId")
 	id, err := p.GetInt64(":id")
 	resource := &models.Resource{
 		Id:                id,
-		ResourceType:      p.GetString("resourceType"),
-		ResourceTitle:     p.GetString("ResourceTitle"),
-		ResourceIntroduce: p.GetString("ResourceIntroduce"),
-		ResourceOrder:     o,
-		Content:           p.GetString("Content"),
-		FilePath:          p.GetString("FilePath"),
 		SectionId:         s,
+		FilePath:          p.GetString("FilePath"),
+		Content:           p.GetString("Content"),
+		HasHomeWork:       h,
+		HomeWorkTitle:     p.GetString("HomeWorkTitle"),
+		HomeWorkIntroduce: p.GetString("HomeWorkIntroduce"),
 	}
 	err = resource.Update()
 	if err != nil {
@@ -111,8 +109,8 @@ func (p *ResourceController) UpdateResource() {
 func (p *ResourceController) UpdateResourceContent() {
 	id, err := p.GetInt64(":id")
 	resource := &models.Resource{
-		Id:                id,
-		Content:           p.GetString("Content"),
+		Id:      id,
+		Content: p.GetString("Content"),
 	}
 	err = resource.Update()
 	if err != nil {
