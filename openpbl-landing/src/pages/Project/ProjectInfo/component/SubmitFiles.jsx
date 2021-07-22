@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Dropdown, Input, Menu, message, Modal, Table, Upload} from 'antd'
 import {SettingOutlined, UploadOutlined} from '@ant-design/icons';
 import QueueAnim from 'rc-queue-anim';
-import ProjectApi from "../../../../api/ProjectApi";
+import SubmitApi from "../../../../api/SubmitApi";
 
 
 const menu = (
@@ -66,7 +66,7 @@ function SubmitFiles(obj) {
   const [introduce, setIntroduce] = useState('')
 
   useEffect(() => {
-    ProjectApi.getSubmitFiles(sid, pid)
+    SubmitApi.getSubmits(sid, pid)
       .then((res) => {
         if (res.data.files === null) {
           setSubmitFiles([])
@@ -87,7 +87,7 @@ function SubmitFiles(obj) {
       filePath: '',
       fileName: ''
     }
-    ProjectApi.createSubmitFiles(s)
+    SubmitApi.createSubmits(s)
       .then((res) => {
         setIntroduce('')
         if (res.data.id) {
