@@ -27,6 +27,7 @@ func GetMyProjectListBySid(sid string, from int, size int,
 	sql1 := fmt.Sprintf(baseSql, "*", sid, learning, e1, e2, e3) +
 		fmt.Sprintf(pageSql, orderBy, orderType, from, size)
 	sql2 := fmt.Sprintf(baseSql, "count(*)", sid, learning, e1, e2, e3)
+
 	err = adapter.Engine.
 		SQL(sql1).
 		Find(&p)
@@ -43,7 +44,7 @@ func GetPublicProjectListForStudent(sid string, from int, size int,
     		select * from project where project.published = true
         	%s %s %s 
 		) as p1 left join learn_project on (
-    		p1.id = learn_project.project_id and learn_project.student_id = %s
+    		p1.id = learn_project.project_id and learn_project.student_id = '%s'
 		)
 	`
 	const pageSql = " order by p1.%s %s limit %d, %d "

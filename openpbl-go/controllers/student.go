@@ -57,7 +57,7 @@ func (u *StudentController) LearnProject() {
 		u.ServeJSON()
 		return
 	}
-	uid := user.Name
+	uid := user.Username
 
 	l := &models.LearnProject{
 		StudentId: uid,
