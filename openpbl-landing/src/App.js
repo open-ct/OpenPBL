@@ -14,7 +14,8 @@ import Register from "./pages/User/Register";
 import Learning from "./pages/Project/LearningPage";
 import EditInfo from "./pages/Project/CreateProject/EditInfo";
 import EditOutlined from "./pages/Project/CreateProject/EditOutline"
-import SectionEditPage from "./pages/Project/CreateProject/component/SectionEditPage";
+import SectionEditPage from "./pages/Project/CreateProject/SectionEditPage";
+import PreviewResource from "./pages/Project/CreateProject/PreviewResource";
 
 function App() {
   return (
@@ -35,6 +36,8 @@ function App() {
             <Route exact path="/project/edit/info/:id" component={EditInfo} />
             <Route exact path="/project/edit/outline/:id" component={EditOutlined} />
             <Route exact path="/project/edit/section/:pid/:sid" component={SectionEditPage} />
+
+            <Route exact path="/project/preview/:pid/:sid" component={PreviewResource} />
 
             <Route exact path="/project/learning/:pid/:cid/:sid" component={Learning} />
 

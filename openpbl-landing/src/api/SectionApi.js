@@ -35,7 +35,7 @@ export default {
       method: 'post',
     })
   },
-  getSection(id) {
+  getSectionDetail(id) {
     return request({
       url:'/project/chapter/section/' + id,
       method: 'get',
