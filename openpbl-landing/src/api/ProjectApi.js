@@ -60,6 +60,12 @@ export default {
       method: 'post',
     })
   },
+  getSection(id) {
+    return request({
+      url:'/project/chapter/section/' + id,
+      method: 'get',
+    })
+  },
   getChapterSections(id) {
     return request({
       url:'/project/chapter/sections/' + id,

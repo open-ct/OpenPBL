@@ -14,6 +14,7 @@ import Register from "./pages/User/Register";
 import Learning from "./pages/Project/LearningPage";
 import EditInfo from "./pages/Project/CreateProject/EditInfo";
 import EditOutlined from "./pages/Project/CreateProject/EditOutline"
+import SectionEditPage from "./pages/Project/CreateProject/component/SectionEditPage";
 
 function App() {
   return (
@@ -31,11 +32,9 @@ function App() {
             <Route exact path="/project/finished" component={FinishedProject} />
             <Route exact path="/project/info/:id" component={ProjectInfo} />
 
-            {/*
-          <Route exact path="/project/create" component={CreateProject} />
-*/}
             <Route exact path="/project/edit/info/:id" component={EditInfo} />
             <Route exact path="/project/edit/outline/:id" component={EditOutlined} />
+            <Route exact path="/project/edit/section/:pid/:sid" component={SectionEditPage} />
 
             <Route exact path="/project/learning/:pid/:cid/:sid" component={Learning} />
 

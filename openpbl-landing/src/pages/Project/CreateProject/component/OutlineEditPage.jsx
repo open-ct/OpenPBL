@@ -284,7 +284,9 @@ function OutlineEditPage(obj) {
               <Menu.Item key={index.toString() + subIndex.toString()}>
                 {subItem.sectionName}
                 <span style={{ float: 'right', marginRight: '20px' }}>
-                  <Button type="text">编辑详细信息</Button>
+                  <Link to={"/project/edit/section/" + pid + '/' + subItem.id} >
+                    <Button type="text">编辑资源</Button>
+                  </Link>
 
                   <Button shape="circle" type="text" icon={<ArrowUpOutlined />} onClick={e => exchangeSection(index, subIndex-1, subIndex)}/>
                   <Button shape="circle" type="text" icon={<ArrowDownOutlined />} onClick={e => exchangeSection(index, subIndex, subIndex+1)}/>
