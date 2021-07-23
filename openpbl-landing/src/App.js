@@ -16,6 +16,7 @@ import EditInfo from "./pages/Project/CreateProject/EditInfo";
 import EditOutlined from "./pages/Project/CreateProject/EditOutline"
 import SectionEditPage from "./pages/Project/CreateProject/SectionEditPage";
 import PreviewResource from "./pages/Project/CreateProject/PreviewResource";
+import SurveyEditPage from "./pages/Project/CreateProject/SurveyEditPage";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route exact path="/project/edit/info/:id" component={EditInfo} />
             <Route exact path="/project/edit/outline/:id" component={EditOutlined} />
             <Route exact path="/project/edit/section/:pid/:sid" component={SectionEditPage} />
+            <Route exact path="/project/edit/section/survey/:pid/:sid/:tid" component={SurveyEditPage} />
 
             <Route exact path="/project/preview/:pid/:sid" component={PreviewResource} />
 

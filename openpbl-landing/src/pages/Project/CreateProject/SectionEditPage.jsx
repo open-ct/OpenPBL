@@ -5,12 +5,12 @@ import DocumentTitle from 'react-document-title';
 import SectionApi from "../../../api/SectionApi";
 import RichWords from "./component/RichWords";
 import FileResource from "./component/FileResource";
-import HomeWork from "./component/HomeWork";
+import StudentTask from "./component/StudentTask";
 import {Link} from "react-router-dom";
 
 function SectionEditPage(obj) {
   const pid = obj.match.params.pid
-  const sid = obj.match.params.sid;
+  const sid = obj.match.params.sid
   const [section, setSection] = useState({resource:{}})
 
   useEffect(()=>{
@@ -43,7 +43,7 @@ function SectionEditPage(obj) {
           </Card>
           <RichWords section={section} />
           <FileResource section={section} />
-          <HomeWork section={section}/>
+          <StudentTask section={section} pid={pid}/>
         </div>
         <Link to={"/project/preview/" + pid + '/' + sid}>
           <Button style={{marginBottom: '20px'}}>预览</Button>

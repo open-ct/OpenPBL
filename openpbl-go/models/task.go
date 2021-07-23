@@ -11,19 +11,7 @@ type Task struct {
 	TaskTitle     string    `json:"taskTitle"`
 	TaskIntroduce string    `json:"taskIntroduce" xorm:"text"`
 
-	TaskType      string    `json:"taskType"`
-
-	SurveyId      int64     `json:"surveyId" xorm:"index"`
-}
-type Survey struct {
-	Id            int64     `json:"id" xorm:"not null pk autoincr"`
-	SurveyTitle   string    `json:"surveyTitle"`
-}
-type Question struct {
-	Id              int64     `json:"id" xorm:"not null pk autoincr"`
-	SurveyId        int64     `json:"surveyId" xorm:"not null index"`
-	QuestionTitle   string    `json:"questionTitle"`
-	QuestionOptions string    `json:"questionOptions" xorm:"text"`
+	TaskType      string    `json:"taskType" xorm:"index"`
 }
 
 func (t *Task) GetEngine() *xorm.Session {
@@ -31,7 +19,16 @@ func (t *Task) GetEngine() *xorm.Session {
 }
 
 func (t *Task) Create() (err error) {
-	_, err = t.GetEngine().Insert(t)
+	session := adapter.Engine.NewSession()
+	defer session.Close()
+	session.Begin()
+	_, err = session.Insert(t)
+	if t.TaskType == "survey" {
+		_, err = session.Insert(Survey{
+			TaskId:          t.Id,
+		})
+	}
+	session.Commit()
 	return
 }
 func (t *Task) Update() (err error) {
@@ -46,9 +43,11 @@ func (t *Task) Delete() (err error) {
 func GetSectionTasks(sid string) (t []Task, err error) {
 	err = (&Task{}).GetEngine().
 		Where("section_id = ?", sid).
+		Asc("task_order").
 		Find(&t)
 	return
 }
+
 func ExchangeTasks(cid1 string, cid2 string) (err error) {
 	_, err = adapter.Engine.
 		Exec("update task t1 join task t2 on (t1.id = ? and t2.id = ?) " +

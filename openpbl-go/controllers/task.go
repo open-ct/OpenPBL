@@ -7,11 +7,11 @@ import (
 
 // GetSectionTasks
 // @Title
-// @Description
+// @Description get all the tasks of a section
 // @Param sid path string true ""
 // @Success 200 {object}
 // @Failure 400
-// @router /chapter/section/tasks/:sid [get]
+// @router /tasks/:sid [get]
 func (p *ProjectController) GetSectionTasks() {
 	sid := p.GetString(":sid")
 	tasks, err := models.GetSectionTasks(sid)
@@ -33,14 +33,12 @@ func (p *ProjectController) GetSectionTasks() {
 func (p *ProjectController) CreateTask() {
 	sid, err := p.GetInt64("sectionId")
 	o, err := p.GetInt("taskOrder")
-	sur, err := p.GetInt64("surveyId")
 	task := &models.Task{
 		SectionId:     sid,
 		TaskOrder:     o,
 		TaskTitle:     p.GetString("taskTitle"),
 		TaskIntroduce: p.GetString("taskIntroduce"),
 		TaskType:      p.GetString("taskType"),
-		SurveyId:      sur,
 	}
 	if err != nil {
 		p.Data["json"] = map[string]string{"error": err.Error()}
@@ -72,7 +70,6 @@ func (p *ProjectController) UpdateTask() {
 	tid, err := p.GetInt64(":tid")
 	sid, err := p.GetInt64("sectionId")
 	o, err := p.GetInt("taskOrder")
-	sur, err := p.GetInt64("surveyId")
 	task := &models.Task{
 		Id:            tid,
 		SectionId:     sid,
@@ -80,7 +77,6 @@ func (p *ProjectController) UpdateTask() {
 		TaskTitle:     p.GetString("taskTitle"),
 		TaskIntroduce: p.GetString("taskIntroduce"),
 		TaskType:      p.GetString("taskType"),
-		SurveyId:      sur,
 	}
 	err = task.Update()
 	if err != nil {
@@ -106,11 +102,11 @@ func (p *ProjectController) UpdateTask() {
 // @Failure 401
 // @router /task/delete/:tid [post]
 func (p *ProjectController) DeleteTask() {
-	cid, err := p.GetInt64(":tid")
-	chapter := &models.Chapter{
-		Id:               cid,
+	tid, err := p.GetInt64(":tid")
+	task := &models.Task{
+		Id:               tid,
 	}
-	err = chapter.Delete()
+	err = task.Delete()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
