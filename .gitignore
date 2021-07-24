@@ -25,3 +25,8 @@
 .vscode
 
 tmp
+
+### Config file
+
+conf/app-dev.conf
+conf/app-prod.conf

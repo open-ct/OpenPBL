@@ -4,17 +4,31 @@ import (
 	"OpenPBL/models"
 	"OpenPBL/routers"
 	_ "OpenPBL/routers"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	"os"
 )
 
 func main() {
+/*	beego.BConfig.RunMode = "prod"
+*/
+	mode := os.Getenv("RUNMODE")
+	var err error
+	if mode == "prod" {
+		err = beego.LoadAppConfig("ini", "conf/app-prod.conf")
+	} else if mode == "dev" {
+		err = beego.LoadAppConfig("ini", "conf/app-dev.conf")
+	} else {
+		err = beego.LoadAppConfig("ini", "conf/app-dev.conf")
+	}
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(beego.AppConfig.String("dataSourceName"))
+
 	models.InitAdapter()
 
-	if beego.BConfig.RunMode == "dev" {
-		beego.BConfig.WebConfig.DirectoryIndex = true
-		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
-	}
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"*"},
@@ -22,7 +36,10 @@ func main() {
 		ExposeHeaders:	  []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
-
+	if beego.BConfig.RunMode == "dev" {
+		beego.BConfig.WebConfig.DirectoryIndex = true
+		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
+	}
 	beego.SetStaticPath("/static", "openpbl-landing/build/static")
 	beego.BConfig.WebConfig.DirectoryIndex = true
 	beego.InsertFilter("/", beego.BeforeRouter, routers.TransparentStatic)
