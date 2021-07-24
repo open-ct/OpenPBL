@@ -2,7 +2,7 @@ FROM node:lts-alpine as front-end
 WORKDIR /openpbl-landing
 COPY openpbl-landing/package.json package.json
 RUN yarn install
-COPY openpbl-landing/* *
+COPY openpbl-landing/. .
 RUN yarn build
 
 
