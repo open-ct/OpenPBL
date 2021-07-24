@@ -1,6 +1,7 @@
 package main
 
 import (
+	"OpenPBL/controllers"
 	"OpenPBL/models"
 	"OpenPBL/routers"
 	_ "OpenPBL/routers"
@@ -11,8 +12,6 @@ import (
 )
 
 func main() {
-/*	beego.BConfig.RunMode = "prod"
-*/
 	mode := os.Getenv("RUNMODE")
 	var err error
 	if mode == "prod" {
@@ -25,9 +24,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(beego.AppConfig.String("dataSourceName"))
+
+	fmt.Println(beego.AppConfig.String("casdoorEndpoint"))
+
 
 	models.InitAdapter()
+	controllers.InitCasdoor()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},

@@ -1,6 +1,8 @@
 import OSS from 'ali-oss'
 import {} from 'lodash';
 
+console.log(process.env)
+
 const ossclient = new OSS({
   region: process.env.REACT_APP_OSS_REGION,
   accessKeyId: process.env.REACT_APP_OSS_ACCESSKEYID,

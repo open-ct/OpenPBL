@@ -25,15 +25,6 @@ import (
 
 var adapter *Adapter
 
-func InitConfig() {
-	err := beego.LoadAppConfig("ini", "../conf/app.conf")
-	if err != nil {
-		panic(err)
-	}
-
-	InitAdapter()
-}
-
 func InitAdapter() {
 	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), beego.AppConfig.String("dbName"))
 	adapter.createTable()

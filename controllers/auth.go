@@ -6,18 +6,16 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-
-var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
-var ClientId = beego.AppConfig.String("clientId")
-var ClientSecret = beego.AppConfig.String("clientSecret")
-var JwtSecret = beego.AppConfig.String("jwtSecret")
-var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
-
 type AuthController struct {
 	beego.Controller
 }
 
-func init() {
+func InitCasdoor() {
+	var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
+	var ClientId = beego.AppConfig.String("clientId")
+	var ClientSecret = beego.AppConfig.String("clientSecret")
+	var JwtSecret = beego.AppConfig.String("jwtSecret")
+	var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
 	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization)
 }
 
