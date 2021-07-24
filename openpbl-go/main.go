@@ -1,6 +1,10 @@
 package main
 
 import (
+	"OpenPBL/controllers"
+	"OpenPBL/models"
+	"OpenPBL/routers"
+	_ "OpenPBL/routers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	"openpbl-go/models"
@@ -8,6 +12,19 @@ import (
 )
 
 func main() {
+	mode := os.Getenv("RUNMODE")
+	var err error
+	if mode == "prod" {
+		err = beego.LoadAppConfig("ini", "conf/app-prod.conf")
+	} else if mode == "dev" {
+		err = beego.LoadAppConfig("ini", "conf/app-dev.conf")
+	} else {
+		err = beego.LoadAppConfig("ini", "conf/app-dev.conf")
+	}
+	if err != nil {
+		panic(err)
+	}
+
 	models.InitAdapter()
 
 	if beego.BConfig.RunMode == "dev" {
