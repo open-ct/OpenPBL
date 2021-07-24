@@ -3,6 +3,7 @@ WORKDIR /openpbl-landing
 COPY openpbl-landing/package.json package.json
 RUN yarn install
 COPY openpbl-landing/. .
+RUN set NODE_OPTIONS=--max_old_space_size=2048
 RUN yarn build
 
 
