@@ -63,6 +63,7 @@ func (c *AuthController) Login() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 
+
 	token, err := auth.GetOAuthToken(code, state)
 	if err != nil {
 		panic(err)

@@ -24,7 +24,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	log.Println("start with runmode: " + mode)
+	log.Println("App start with runmode: " + mode)
 	models.InitAdapter()
 	controllers.InitCasdoor()
 
