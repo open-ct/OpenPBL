@@ -78,7 +78,7 @@ func (c *AuthController) Login() {
 
 	resp := &Response{
 		Code: 200,
-		Msg: "",
+		Msg: "登录成功",
 		Data: claims,
 	}
 	c.Data["json"] = resp

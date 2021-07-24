@@ -5,9 +5,9 @@ import (
 	"OpenPBL/models"
 	"OpenPBL/routers"
 	_ "OpenPBL/routers"
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	"log"
 	"os"
 )
 
@@ -24,10 +24,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println(beego.AppConfig.String("casdoorEndpoint"))
-
-
+	log.Println("start with runmode: " + mode)
 	models.InitAdapter()
 	controllers.InitCasdoor()
 
