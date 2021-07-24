@@ -16,7 +16,7 @@ type Question struct {
 	SurveyId        int64     `json:"surveyId" xorm:"not null index"`
 	QuestionOrder   int       `json:"questionOrder" xorm:"not null index"`
 	QuestionTitle   string    `json:"questionTitle"`
-
+	QuestionType    string    `json:"questionType"`
 	QuestionOptions string    `json:"questionOptions" xorm:"text"`
 	QuestionCount   string    `json:"question" xorm:"text"`
 }
@@ -69,15 +69,14 @@ func (q *Question) Delete() (err error) {
 	return
 }
 
-func GetSurveyByTaskId(tid string) (s SurveyDetail, err error) {
+func GetSurveyByTaskId(tid string) (s Survey, qs []Question, err error) {
 	_, err = (&Survey{}).GetEngine().
 		Where("task_id = ?", tid).
 		Get(&s)
-	var qs []Question
 	err = (&Question{}).GetEngine().
 		Where("survey_id = ?", s.Id).
+		Asc("question_order").
 		Find(&qs)
-	s.Questions = qs
 	return
 }
 

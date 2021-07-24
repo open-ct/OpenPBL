@@ -14,11 +14,11 @@ import (
 // @router /task/survey/:tid [get]
 func (p *ProjectController) GetSurveyDetailByTaskId() {
 	tid := p.GetString(":tid")
-	survey, err := models.GetSurveyByTaskId(tid)
+	survey, qns, err := models.GetSurveyByTaskId(tid)
 	if err != nil {
-		p.Data["json"] = map[string]models.SurveyDetail{"survey": {}}
+		p.Data["json"] = map[string]interface{}{"survey": nil, "questions": qns}
 	} else {
-		p.Data["json"] = map[string]models.SurveyDetail{"survey": survey}
+		p.Data["json"] = map[string]interface{}{"survey": survey, "questions": qns}
 	}
 	p.ServeJSON()
 }
@@ -103,6 +103,7 @@ func (p *ProjectController) CreateQuestion() {
 	question := &models.Question{
 		SurveyId:        sid,
 		QuestionOrder:   o,
+		QuestionType:    p.GetString("questionType"),
 		QuestionTitle:   p.GetString("questionTitle"),
 		QuestionOptions: p.GetString("questionOptions"),
 	}
@@ -139,6 +140,7 @@ func (p *ProjectController) UpdateQuestion() {
 		Id:              qid,
 		SurveyId:        sid,
 		QuestionOrder:   o,
+		QuestionType:    p.GetString("questionType"),
 		QuestionTitle:   p.GetString("questionTitle"),
 		QuestionOptions: p.GetString("questionOptions"),
 	}
