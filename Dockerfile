@@ -17,4 +17,4 @@ COPY . .
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 COPY --from=front-end /openpbl-landing/build openpbl-landing/build
 RUN go build
-CMD OpenPBL
+ENTRYPOINT ["./OpenPBL"]
