@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
-	"openpbl-go/models"
-	"openpbl-go/util"
+	"OpenPBL/models"
+	"OpenPBL/util"
 	"strings"
 	"time"
 )

@@ -9,8 +9,8 @@
 package routers
 
 import (
+	"OpenPBL/controllers"
 	"github.com/astaxie/beego"
-	"openpbl-go/controllers"
 )
 
 func init() {

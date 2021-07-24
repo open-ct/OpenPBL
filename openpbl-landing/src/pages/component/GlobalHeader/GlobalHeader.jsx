@@ -71,7 +71,7 @@ class GlobalHeader extends React.PureComponent {
       <Dropdown overlay={menu} placement="bottomRight">
         <div style={{cursor: 'pointer'}}>
           <Avatar size="large" src={this.state.account.avatar}/>&nbsp;
-          <span>{this.state.account.username}</span>
+          <span>{this.state.account.name}</span>
         </div>
       </Dropdown>
     );
@@ -97,7 +97,7 @@ class GlobalHeader extends React.PureComponent {
       <div>
         <Header style={{backgroundColor: 'white'}}>
           <Row>
-            <Col xxl={16} xl={12} lg={10} md={8} sm={10} xs={16}>
+            <Col xxl={15} xl={11} lg={9} md={7} sm={6} xs={10}>
               <Link to="/landing">
                 <div className="logo">
                   <span style={{fontSize: '25px', color: 'black', float: 'left', marginLeft: '80px'}}>OpenCT</span>
@@ -123,7 +123,7 @@ class GlobalHeader extends React.PureComponent {
                 </Menu.Item>
               </Menu>
             </Col>
-            <Col xxl={2} xl={2} lg={2} md={2} sm={2} xs={2}>
+            <Col xxl={3} xl={3} lg={3} md={3} sm={6} xs={8}>
               {
                 this.renderAccount()
               }
