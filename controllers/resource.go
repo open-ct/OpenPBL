@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"openpbl-go/models"
+	"OpenPBL/models"
 )
 
 // ResourceController

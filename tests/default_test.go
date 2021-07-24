@@ -7,7 +7,7 @@ import (
 	"testing"
 	"runtime"
 	"path/filepath"
-	_ "openpbl-go/routers"
+	_ "OpenPBL/routers"
 
 	"github.com/astaxie/beego"
 	. "github.com/smartystreets/goconvey/convey"

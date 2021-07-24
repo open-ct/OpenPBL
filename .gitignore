@@ -1,3 +1,7 @@
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+### Go template
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -13,3 +17,16 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+*.zip
+*.tmp
+
+.idea
+.vscode
+
+tmp
+
+### Config file
+
+conf/app-dev.conf
+conf/app-prod.conf

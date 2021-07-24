@@ -2,11 +2,10 @@ import {trim} from "./Util";
 import axios from "axios";
 
 export let authConfig = {
-  category: "email",
-  serverUrl: "http://121.196.149.183:8000", // your Casdoor URL, like the official one: https://door.casbin.com
-  clientId: "9145af9a92d8194b5ede",         // your Casdoor OAuth Client ID
-  appName: "openpbl",                       // your Casdoor application name, like: "app-built-in"
-  organizationName: "openct",               // your Casdoor organization name, like: "built-in"
+  serverUrl: process.env.REACT_APP_CASDOOR_ENDPOINT,
+  clientId: process.env.REACT_APP_CLIENT_ID,
+  appName: process.env.REACT_APP_APP_NAME,
+  organizationName: process.env.REACT_APP_CASDOOR_ORGANIZATION,
 }
 
 export function initAuthWithConfig(config) {

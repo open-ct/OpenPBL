@@ -5,10 +5,10 @@ import (
 	"OpenPBL/models"
 	"OpenPBL/routers"
 	_ "OpenPBL/routers"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
-	"openpbl-go/models"
-	_ "openpbl-go/routers"
+	"os"
 )
 
 func main() {
@@ -25,12 +25,12 @@ func main() {
 		panic(err)
 	}
 
-	models.InitAdapter()
+	fmt.Println(beego.AppConfig.String("casdoorEndpoint"))
 
-	if beego.BConfig.RunMode == "dev" {
-		beego.BConfig.WebConfig.DirectoryIndex = true
-		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
-	}
+
+	models.InitAdapter()
+	controllers.InitCasdoor()
+
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"*"},
@@ -38,6 +38,14 @@ func main() {
 		ExposeHeaders:	  []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
+	if beego.BConfig.RunMode == "dev" {
+		beego.BConfig.WebConfig.DirectoryIndex = true
+		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
+	}
+	beego.SetStaticPath("/static", "openpbl-landing/build/static")
+	beego.BConfig.WebConfig.DirectoryIndex = true
+	beego.InsertFilter("/", beego.BeforeRouter, routers.TransparentStatic)
+	beego.InsertFilter("/*", beego.BeforeRouter, routers.TransparentStatic)
 
 	beego.BConfig.WebConfig.Session.SessionName = "openct_session_id"
 	beego.BConfig.WebConfig.Session.SessionProvider = "file"

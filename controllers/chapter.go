@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"openpbl-go/models"
+	"OpenPBL/models"
 	"strconv"
 )
 

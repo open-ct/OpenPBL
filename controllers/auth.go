@@ -1,21 +1,24 @@
 package controllers
 
 import (
+	"OpenPBL/util"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
-	"openpbl-go/util"
 )
-
-
-var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
-var ClientId = beego.AppConfig.String("clientId")
-var ClientSecret = beego.AppConfig.String("clientSecret")
-var JwtSecret = beego.AppConfig.String("jwtSecret")
-var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
 
 type AuthController struct {
 	beego.Controller
 }
+
+func InitCasdoor() {
+	var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
+	var ClientId = beego.AppConfig.String("clientId")
+	var ClientSecret = beego.AppConfig.String("clientSecret")
+	var JwtSecret = beego.AppConfig.String("jwtSecret")
+	var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
+	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization)
+}
+
 
 func (c *AuthController) GetSessionUser() *auth.Claims {
 	s := c.GetSession("user")
@@ -46,11 +49,6 @@ type Response struct {
 	Code   int         `json:"code"`
 	Msg    string      `json:"msg"`
 	Data   interface{} `json:"data"`
-}
-
-
-func init() {
-	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization)
 }
 
 // Login

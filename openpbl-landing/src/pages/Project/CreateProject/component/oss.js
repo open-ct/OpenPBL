@@ -1,11 +1,13 @@
 import OSS from 'ali-oss'
 import {} from 'lodash';
 
+console.log(process.env)
+
 const ossclient = new OSS({
-  region: 'oss-cn-hangzhou',
-  accessKeyId: '123',
-  accessKeySecret: '123',
-  bucket: '123',
+  region: process.env.REACT_APP_OSS_REGION,
+  accessKeyId: process.env.REACT_APP_OSS_ACCESSKEYID,
+  accessKeySecret: process.env.REACT_APP_OSS_ACCESSKEYSECRET,
+  bucket: process.env.REACT_APP_OSS_BUCKET,
 });
 
 function buildFileName(path, postfix) {
