@@ -3,6 +3,7 @@ import { Route, BrowserRouter, Switch } from "react-router-dom";
 import './App.less';
 import Home from './pages/Home/index'
 import Project from "./pages/Project";
+import MyProject from "./pages/Project/MyProject";
 import ProjectInfo from "./pages/Project/ProjectInfo/index";
 import PublicProject from "./pages/Project/PublicProject";
 import LearningProject from "./pages/Project/LearningProject";
@@ -28,10 +29,12 @@ function App() {
 
             <Route exact path="/landing" component={Home} />
             <Route exact path="/project" component={Project} />
+            <Route exact path="/my-project" component={MyProject} />
 
             <Route exact path="/project/public" component={PublicProject} />
             <Route exact path="/project/learning" component={LearningProject} />
             <Route exact path="/project/finished" component={FinishedProject} />
+
             <Route exact path="/project/info/:id" component={ProjectInfo} />
 
             <Route exact path="/project/edit/info/:id" component={EditInfo} />

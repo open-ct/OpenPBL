@@ -1,6 +1,6 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
-import {Avatar, Button, Card, Col, Divider, Image, Menu, PageHeader, Popconfirm, Row} from 'antd';
+import {Avatar, Button, Card, Col, Divider, Image, Menu, PageHeader, Popconfirm, Row, message} from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import localStorage from 'localStorage';
 import {Link} from 'react-router-dom';
@@ -63,7 +63,7 @@ class ProjectInfo extends React.PureComponent {
   }
   back = e => {
     console.log('back')
-    this.props.history.push('/project')
+    window.location.href = '/my-project'
   }
   learnProject = e => {
     StudentApi.learnProject(this.state.pid)
@@ -95,11 +95,33 @@ class ProjectInfo extends React.PureComponent {
         console.log(e)
       })
   }
-
-  confirmCloseProject = e => {
-    // TODO axios close project
+  closeProject = e => {
+    ProjectApi.closeProject(this.state.pid)
+      .then(res=>{
+        if (res.data.code === 200) {
+          let p = Object.assign({}, this.state.project)
+          p.closed = true
+          this.setState({
+            project: p
+          })
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
   }
   cancelCloseProject = e => {
+  }
+  exitProject = e => {
+    StudentApi.exitProject(this.state.pid)
+      .then(res => {
+        if (res.data.code === 200) {
+          window.location.href = "/my-project"
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
   }
 
   filterTime = t => {
@@ -118,11 +140,11 @@ class ProjectInfo extends React.PureComponent {
 
     const teacherBt = (
       <div style={{float: 'right'}}>
-        {project.published ?
+        {project.published && !project.closed ?
           <Popconfirm
             title="确定结束项目?"
             placement="topRight"
-            onConfirm={this.confirmCloseProject}
+            onConfirm={this.closeProject}
             onCancel={this.cancelCloseProject}
             okText="确定"
             cancelText="取消"
@@ -136,7 +158,8 @@ class ProjectInfo extends React.PureComponent {
               结束项目
             </Button>
           </Popconfirm>
-          :
+          : null }
+        {project.editing ?
           <div>
             <Button
               shape="round"
@@ -155,21 +178,42 @@ class ProjectInfo extends React.PureComponent {
               编辑项目
               </Button>
             </Link>
+          </div> : null }
+        {project.closed ?
+          <div>
+            <Button
+              shape="round"
+              size="middle"
+              style={{margin: '5px'}}
+            >
+              已结束
+            </Button>
           </div>
-        }
+          : null }
       </div>
     )
     const studentBt = (
       <div style={{float: 'right'}}>
         {project.learning ?
-          <Link to={`/project/learning/${project.id}`}>
-            <Button
-              shape="round"
-              size="middle"
-              style={{margin: '5px'}}
-            >继续学习
-            </Button>
-          </Link>
+          <>
+            <Link to={`/project/learning/${project.id}`}>
+              <Button
+                shape="round"
+                size="middle"
+                style={{margin: '5px'}}
+              >继续学习
+              </Button>
+            </Link>
+            <Popconfirm title="确认退出项目？" onConfirm={this.exitProject} >
+              <Button
+                type="danger"
+                shape="round"
+                size="middle"
+                style={{margin: '5px'}}
+              >退出项目
+              </Button>
+            </Popconfirm>
+          </>
           :
           <Button
             type="primary"
@@ -292,4 +336,4 @@ class ProjectInfo extends React.PureComponent {
   }
 }
 
-export default ProjectInfo;
+export default ProjectInfo

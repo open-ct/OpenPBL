@@ -28,6 +28,18 @@ export default {
       method: 'post',
     })
   },
+  closeProject(pid) {
+    return request({
+      url:'/project/close/' + pid,
+      method: 'post',
+    })
+  },
+  deleteProject(pid) {
+    return request({
+      url:'/project/delete/' + pid,
+      method: 'post',
+    })
+  },
 
   getSectionFiles(id) {
     return request({

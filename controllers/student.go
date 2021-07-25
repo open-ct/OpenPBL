@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"OpenPBL/models"
+	"OpenPBL/util"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
-	"OpenPBL/models"
-	"OpenPBL/util"
 )
 
 // StudentController
@@ -75,6 +75,58 @@ func (u *StudentController) LearnProject() {
 	resp = Response{
 		Code: 200,
 		Msg:  "加入成功",
+	}
+	u.Data["json"] = resp
+	u.ServeJSON()
+}
+
+// ExitProject
+// @Title
+// @Description
+// @Param pid path string true ""
+// @Success 200 {object} Response
+// @Failure 401
+// @Failure 403
+// @router /exit/:pid [post]
+func (u *StudentController) ExitProject() {
+	pid, err := u.GetInt64(":pid")
+	var resp Response
+	user := u.GetSessionUser()
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	if user.Tag != "student" {
+		resp = Response{
+			Code: 403,
+			Msg:  "非法的用户",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	uid := user.Username
+
+	l := &models.LearnProject{
+		StudentId: uid,
+		ProjectId: pid,
+	}
+	err = l.Delete()
+	if err != nil {
+		resp = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+		u.Data["json"] = resp
+	}
+	resp = Response{
+		Code: 200,
+		Msg:  "退出成功",
 	}
 	u.Data["json"] = resp
 	u.ServeJSON()

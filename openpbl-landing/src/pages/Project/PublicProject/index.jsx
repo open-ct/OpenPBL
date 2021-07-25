@@ -5,9 +5,11 @@ import CarouselPBL from './component/CarouselPBL';
 class PublicProject extends React.PureComponent {
   render() {
     return (
-      <div style={{ minHeight: '100vh' }}>
+      <div style={{ minHeight: '100vh',margin: 'auto', maxWidth: '1200px' }}>
         <CarouselPBL/><br />
-        <ProjectList mode="public"/>
+        <div >
+          <ProjectList mode="public"/>
+        </div>
       </div>
     );
   }

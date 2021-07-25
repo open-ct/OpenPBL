@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
-	"github.com/casdoor/casdoor-go-sdk/auth"
 	"OpenPBL/models"
 	"OpenPBL/util"
+	"github.com/astaxie/beego"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 	"strconv"
 )
 
@@ -98,7 +98,7 @@ func (pl *ProjectListController) GetUserProjectList() {
 			projects, count, err = models.GetMyProjectListByTid(uid, from, size, subject, skill, text, orderBy, orderType, false, false)
 		} else if t == "published" {
 			projects, count, err = models.GetMyProjectListByTid(uid, from, size, subject, skill, text, orderBy, orderType, true, false)
-		} else if t == "closed" {
+		} else if t == "finished" {
 			projects, count, err = models.GetMyProjectListByTid(uid, from, size, subject, skill, text, orderBy, orderType, true, true)
 		} else if t == "public" {
 			projects, count, err = models.GetPublicProjectListForTeacher(uid, from, size, subject, skill, text, orderBy, orderType)

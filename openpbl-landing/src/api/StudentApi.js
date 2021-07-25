@@ -8,6 +8,12 @@ export default {
       method: 'post',
     })
   },
+  exitProject(pid) {
+    return request({
+      url: '/student/exit/' + pid,
+      method: 'post',
+    })
+  },
   FinishedProject(sid, pid) {
     return request({
       url: '/student/finished',

@@ -113,7 +113,12 @@ class GlobalHeader extends React.PureComponent {
                 </Menu.Item>
                 <Menu.Item key="project">
                   <Link to="/project">
-                    项目学习
+                    公共项目
+                  </Link>
+                </Menu.Item>
+                <Menu.Item key="my-project">
+                  <Link to="/my-project">
+                    我的空间
                   </Link>
                 </Menu.Item>
                 <Menu.Item key="bbs">

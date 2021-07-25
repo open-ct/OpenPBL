@@ -113,6 +113,11 @@ func (p *Project) Update(subjects []*ProjectSubject, skills []*ProjectSkill) (er
 	return
 }
 
+func (p *Project) Delete() (err error) {
+	_, err = p.GetEngine().ID(p.Id).Delete(p)
+	return
+}
+
 func GetOutlineByPid(pid string) (c []Outline, err error) {
 	err = adapter.Engine.
 		SQL("select * from chapter left join section s on chapter.id = s.chapter_id where chapter.project_id = 1").
@@ -123,6 +128,17 @@ func GetOutlineByPid(pid string) (c []Outline, err error) {
 }
 
 func UpdatePublished(p Project) (err error) {
-	_, err = (&Project{}).GetEngine().Where("id = ?", p.Id).Cols("published", "publish_at").Update(p)
+	_, err = (&Project{}).GetEngine().
+		Where("id = ?", p.Id).
+		Cols("published", "publish_at").
+		Update(p)
+	return
+}
+
+func UpdateClosed(p Project) (err error) {
+	_, err = (&Project{}).GetEngine().
+		Where("id = ?", p.Id).
+		Cols("closed", "closed_at").
+		Update(p)
 	return
 }

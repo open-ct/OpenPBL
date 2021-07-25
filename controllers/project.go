@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"OpenPBL/models"
+	"OpenPBL/util"
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
-	"OpenPBL/models"
-	"OpenPBL/util"
 	"strings"
 	"time"
 )
@@ -248,6 +248,113 @@ func (u *ProjectController) PublishProject() {
 	u.Data["json"] = resp
 	u.ServeJSON()
 }
+
+// CloseProject
+// @Title
+// @Description
+// @Param pid path int true ""
+// @Success 200 {object} Response
+// @Failure 400
+// @Failure 401
+// @Failure 403
+// @router /close/:pid [post]
+func (u *ProjectController) CloseProject() {
+	pid, err := u.GetInt64(":pid")
+	var resp Response
+	user := u.GetSessionUser()
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	if user.Tag != "teacher" {
+		resp = Response{
+			Code: 403,
+			Msg:  "非法的用户",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+
+	p := models.Project{
+		Id:            pid,
+		ClosedAt:      time.Now(),
+		Closed:        true,
+	}
+	err = models.UpdateClosed(p)
+	if err != nil {
+		resp = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		resp = Response{
+			Code: 200,
+			Msg:  "发布成功",
+		}
+	}
+	u.Data["json"] = resp
+	u.ServeJSON()
+}
+
+// DeleteProject
+// @Title
+// @Description
+// @Param pid path int true ""
+// @Success 200 {Response}
+// @Failure 400
+// @Failure 401
+// @Failure 403
+// @router /delete/:pid [post]
+func (u *ProjectController) DeleteProject() {
+	pid, err := u.GetInt64(":pid")
+	var resp Response
+	user := u.GetSessionUser()
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	if user.Tag != "teacher" {
+		resp = Response{
+			Code: 403,
+			Msg:  "非法的用户",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+
+	p := models.Project{
+		Id:            pid,
+	}
+	err = p.Delete()
+	if err != nil {
+		resp = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		resp = Response{
+			Code: 200,
+			Msg:  "删除成功",
+		}
+	}
+	u.Data["json"] = resp
+	u.ServeJSON()
+}
+
+
+
 
 func getProjectSubjectsAndSkills(pid int64, subjects string, skills string) (subjectList []*models.ProjectSubject, skillList []*models.ProjectSkill, err error) {
 	var (
