@@ -1,9 +1,27 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, Checkbox, Divider, Layout, Menu, message, PageHeader, Popconfirm, Radio} from "antd";
+import {
+  Affix,
+  Button,
+  Card,
+  Checkbox,
+  Divider,
+  Input,
+  Layout,
+  Menu,
+  message,
+  PageHeader,
+  Popconfirm,
+  Radio
+} from "antd";
 import DocumentTitle from 'react-document-title';
 
 import SurveyApi from "../../../api/SurveyApi";
-import {ArrowDownOutlined, ArrowUpOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
+
+import SingleChoice from "../component/SingleChoice";
+import MultipleChoice from "../component/MultipleChoice";
+import BlankFill from "../component/BlankFill";
+import BriefAnswer from "../component/BriefAnswer";
+import Question from "./Question";
 
 const qType = {
   'singleChoice': '单选',
@@ -14,12 +32,15 @@ const qType = {
   'scale7': '七点量表'
 }
 
+const blank = Question.blank
+
 function SurveyEditPage(obj) {
   const pid = obj.match.params.pid
   const sid = obj.match.params.sid
   const tid = obj.match.params.tid
   const [survey, setSurvey] = useState({})
   const [questions, setQuestions] = useState([])
+  const [editing, setEditing] = useState([])
 
   useEffect(() => {
     if (tid !== undefined) {
@@ -33,8 +54,7 @@ function SurveyEditPage(obj) {
               qs[i].questionOptions = qs[i].questionOptions.split(",")
             }
             setQuestions(qs)
-
-            console.log(qs)
+            setEditing(new Array(qs.length).fill(false))
           }
           setSurvey(res.data.survey)
         })
@@ -51,9 +71,13 @@ function SurveyEditPage(obj) {
     if (e.key === 'singleChoice' || e.key === 'multipleChoice') {
       opt = ['选项1', '选项2']
     } else if (e.key === 'blankFill') {
-      opt = ""
+      opt = ['题目描述', blank]
+    } else if (e.key === 'briefAnswer') {
+      opt = ['题目描述']
+    } else if (e.key === 'scale5') {
+      opt = ['选项1', '选项2', '选项3', '选项4', '选项5']
     } else {
-
+      opt = ['选项1', '选项2', '选项3', '选项4', '选项5', '选项6', '选项7']
     }
     let q = {
       surveyId: survey.id,
@@ -75,6 +99,25 @@ function SurveyEditPage(obj) {
         }
       })
   }
+  const saveQuestion = (item, title, opt, index) => {
+    let q = Object.assign({}, item)
+    q.questionOptions = opt.toString()
+    q.questionTitle = title
+    SurveyApi.updateQuestion(q)
+      .then(res=>{
+        editing[index] = false
+        setEditing([...editing])
+        if (res.data.code === 200) {
+          q.questionOptions = q.questionOptions.split(",")
+          questions[index] = q
+          setQuestions([...questions])
+          message.success(res.data.msg)
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
+  }
 
   const deleteQuestion = (item, index) => {
     SurveyApi.deleteQuestion(item.id)
@@ -86,6 +129,7 @@ function SurveyEditPage(obj) {
           message.error(res.data.msg)
         }
       })
+      .catch(e=>{console.log(e)})
   }
   const exchangeQuestion = (index1, index2) => {
     if (index1 < 0 || index2 >= questions.length) {
@@ -104,6 +148,10 @@ function SurveyEditPage(obj) {
     }
   }
 
+  const editQuestion = (item, index) => {
+    editing[index] = true
+    setEditing([...editing])
+  }
   const back = e => {
     window.location.href = '/project/edit/section/' + pid + '/' + sid
   }
@@ -124,48 +172,44 @@ function SurveyEditPage(obj) {
         <div style={{padding: '20px', margin: 'auto', maxWidth: '1200px'}}>
           <Card>
             <Layout>
-              <Layout.Sider breakpoint="lg" collapsedWidth="0" style={{backgroundColor: '#f2f4f5'}}>
-                <Menu theme="light" mode="inline" onClick={createQuestion}>
-                  <Menu.SubMenu title="选择" key="1">
-                    <Menu.Item key="singleChoice">单选</Menu.Item>
-                    <Menu.Item key="multipleChoice">多选</Menu.Item>
-                  </Menu.SubMenu>
-                  <Menu.SubMenu title="问答" key="2">
-                    <Menu.Item key="blankFill">填空</Menu.Item>
-                    <Menu.Item key="briefAnswer">简答</Menu.Item>
-                  </Menu.SubMenu>
-                  <Menu.SubMenu title="量表" key="3">
-                    <Menu.Item key="scale5">五点量表</Menu.Item>
-                    <Menu.Item key="scale7">七点量表</Menu.Item>
-                  </Menu.SubMenu>
-                </Menu>
-              </Layout.Sider>
+              <Affix offsetTop={0}>
+                <Layout.Sider breakpoint="lg" collapsedWidth="0" style={{backgroundColor: '#f2f4f5'}}>
+                  <Menu theme="light" mode="inline" onClick={createQuestion}>
+                    <Menu.SubMenu title="选择" key="1">
+                      <Menu.Item key="singleChoice">单选</Menu.Item>
+                      <Menu.Item key="multipleChoice">多选</Menu.Item>
+                    </Menu.SubMenu>
+                    <Menu.SubMenu title="问答" key="2">
+                      <Menu.Item key="blankFill">填空</Menu.Item>
+                      <Menu.Item key="briefAnswer">简答</Menu.Item>
+                    </Menu.SubMenu>
+                    <Menu.SubMenu title="量表" key="3">
+                      <Menu.Item key="scale5">五点量表</Menu.Item>
+                      <Menu.Item key="scale7">七点量表</Menu.Item>
+                    </Menu.SubMenu>
+                  </Menu>
+                </Layout.Sider>
+              </Affix>
               <Layout.Content style={{backgroundColor: 'white'}}>
                 <div style={{margin: '30px'}}>
                   <h2>{survey.surveyTitle}</h2>
                   {questions.map((item, index) => (
                     <div key={index.toString()}>
                       <Divider/>
-                      <div>
-                        <p style={{float: 'left'}}>{item.questionTitle}
-                          <span style={{color: 'gray'}}>
-                          &nbsp;[{getType(item.questionType)}]
-                        </span>
-                        </p>
-                        <p style={{float: 'right'}}>
-                          <Button shape="circle" type="text" icon={<EditOutlined/>}/>
-                          <Button shape="circle" type="text" icon={<ArrowUpOutlined/>}
-                                  onClick={e => exchangeQuestion(index - 1, index)}/>
-                          <Button shape="circle" type="text" icon={<ArrowDownOutlined/>}
-                                  onClick={e => exchangeQuestion(index, index + 1)}/>
-                          <Popconfirm title="确定删除小节？" onConfirm={e => deleteQuestion(item, index)} placement="topLeft">
-                            &nbsp;&nbsp;<Button shape="circle" type="text" style={{color: 'red'}}
-                                                icon={<DeleteOutlined/>}/>
-                          </Popconfirm>
-                        </p>
-                      </div>
-                      <br/><br/>
                       {item.questionType === 'singleChoice' ?
+                          <SingleChoice
+                            item={item}
+                            index={index}
+                            editing={editing[index]}
+                            getType={getType}
+                            editQuestion={editQuestion}
+                            saveQuestion={saveQuestion}
+                            deleteQuestion={deleteQuestion}
+                            exchangeQuestion={exchangeQuestion}
+                          />
+                          : null}
+
+                      {item.questionType === 'scale5' || item.questionType === 'scale7' ?
                         <div style={{textAlign: "left", marginTop: '10px'}}>
                           <Radio.Group>
                             {item.questionOptions.map((subItem, subIndex) => (
@@ -178,16 +222,45 @@ function SurveyEditPage(obj) {
                           </Radio.Group>
                         </div>
                         : null}
+
                       {item.questionType === 'multipleChoice' ?
-                        <div style={{textAlign: "left", marginTop: '10px'}}>
-                          {item.questionOptions.map((subItem, subIndex) => (
-                            <div style={{marginTop: '10px'}} key={subIndex.toString()}>
-                              <Checkbox>
-                                {subItem}
-                              </Checkbox>
-                            </div>
-                          ))}
-                        </div> : null}
+                          <MultipleChoice
+                            item={item}
+                            index={index}
+                            editing={editing[index]}
+                            getType={getType}
+                            editQuestion={editQuestion}
+                            saveQuestion={saveQuestion}
+                            deleteQuestion={deleteQuestion}
+                            exchangeQuestion={exchangeQuestion}
+                          />
+                          : null}
+
+                      {item.questionType === 'blankFill' ?
+                        <BlankFill
+                          item={item}
+                          index={index}
+                          editing={editing[index]}
+                          getType={getType}
+                          editQuestion={editQuestion}
+                          saveQuestion={saveQuestion}
+                          deleteQuestion={deleteQuestion}
+                          exchangeQuestion={exchangeQuestion}
+                        />
+                         : null}
+
+                      {item.questionType === 'briefAnswer' ?
+                        <BriefAnswer
+                          item={item}
+                          index={index}
+                          editing={editing[index]}
+                          getType={getType}
+                          editQuestion={editQuestion}
+                          saveQuestion={saveQuestion}
+                          deleteQuestion={deleteQuestion}
+                          exchangeQuestion={exchangeQuestion}
+                        />
+                         : null}
                     </div>
                   ))}
                 </div>

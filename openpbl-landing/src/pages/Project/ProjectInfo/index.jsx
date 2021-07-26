@@ -159,16 +159,23 @@ class ProjectInfo extends React.PureComponent {
             </Button>
           </Popconfirm>
           : null }
-        {project.editing ?
+        {!project.published ?
           <div>
-            <Button
-              shape="round"
-              size="middle"
-              style={{margin: '5px'}}
-              onClick={this.publishProject}
+            <Popconfirm
+                title="确定发布项目?"
+                placement="topRight"
+                onConfirm={this.publishProject}
+                okText="确定"
+                cancelText="取消"
             >
-              发布项目
-            </Button>
+              <Button
+                shape="round"
+                size="middle"
+                style={{margin: '5px'}}
+              >
+                发布项目
+              </Button>
+            </Popconfirm>
             <Link to={`/project/edit/info/${pid}`} target="_blank">
               <Button
                 shape="round"
