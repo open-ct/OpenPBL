@@ -54,13 +54,6 @@ func GetSectionsByCid(cid string) (s []Section, err error) {
 	return
 }
 
-func GetSectionById(sid string) (s Section, err error) {
-	_, err = (&Section{}).GetEngine().
-		Where("id = ?", sid).
-		Get(&s)
-	return
-}
-
 func GetSectionDetailById(sid string) (s SectionDetail, err error) {
 	_, err = adapter.Engine.
 		Table("section").

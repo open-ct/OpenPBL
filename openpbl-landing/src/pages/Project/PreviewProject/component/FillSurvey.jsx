@@ -72,7 +72,7 @@ function FillSurvey(obj) {
           </div>
         ))}
       </div>
-      <Button disabled={!obj.editable} type="primary" onClick={{submitSurvey}} style={{float: 'right', marginTop: '10px'}}>提交</Button>
+      <Button disabled={!obj.learning} type="primary" onClick={{submitSurvey}} style={{float: 'right', marginTop: '10px'}}>提交</Button>
     </div>
   )
 }

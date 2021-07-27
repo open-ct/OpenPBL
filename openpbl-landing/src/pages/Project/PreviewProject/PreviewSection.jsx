@@ -15,7 +15,7 @@ function PreviewSection(obj) {
   const pid = obj.match.params.pid
   const [section, setSection] = useState({resource:{}})
   const [tasks, setTasks] = useState([])
-  const [editable, setEditable] = useState(false)
+  const [learning, setLearning] = useState(false)
 
   useEffect(()=>{
     getSectionDetail()
@@ -25,7 +25,7 @@ function PreviewSection(obj) {
     SectionApi.getSectionDetail(sid, pid)
       .then(res=>{
         setSection(res.data.section)
-        setEditable(res.data.editable)
+        setLearning(res.data.learning)
       })
       .catch(e=>{console.log(e)})
   }
@@ -99,7 +99,7 @@ function PreviewSection(obj) {
             <p>{item.taskIntroduce}</p>
             {item.taskType === 'file' ?
               <div>
-                <Upload.Dragger {...props} disabled={!editable}>
+                <Upload.Dragger {...props} disabled={!learning}>
                   <p className="ant-upload-drag-icon">
                     <InboxOutlined />
                   </p>
@@ -113,14 +113,14 @@ function PreviewSection(obj) {
             {item.taskType === 'comment' ?
               <div>
                 <Input.TextArea />
-                <Button disabled={!editable} type="primary" style={{float: 'right', marginTop: '10px'}}>提交</Button>
+                <Button disabled={!learning} type="primary" style={{float: 'right', marginTop: '10px'}}>提交</Button>
               </div>
               : null
             }
             {item.taskType === 'survey' ?
               <FillSurvey
                 item={item}
-                editable={editable}
+                learning={learning}
               />
               : null
             }

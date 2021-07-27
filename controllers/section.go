@@ -8,7 +8,7 @@ import (
 type SectionResponse struct {
 	Response
 	Section   models.SectionDetail  `json:"section"`
-	Editable  bool                  `json:"editable"`
+	Learning  bool                  `json:"learning"`
 }
 
 // GetSectionDetail
@@ -21,7 +21,7 @@ type SectionResponse struct {
 // @router /chapter/section/:sid/:pid [get]
 func (p *ProjectController) GetSectionDetail() {
 	var resp SectionResponse
-	var editable bool
+	var learning bool
 	user := p.GetSessionUser()
 	if user == nil {
 		resp = SectionResponse{
@@ -35,23 +35,26 @@ func (p *ProjectController) GetSectionDetail() {
 		return
 	}
 	if user.Tag != "student" {
-		editable = false
+		learning = false
 	}
 	uid := user.Username
 	pid, err := p.GetInt64(":pid")
 
-	editable = models.IsLearningProject(pid, uid)
+	learning = models.IsLearningProject(pid, uid)
 	sid := p.GetString(":sid")
 	section, err := models.GetSectionDetailById(sid)
+	if learning {
+
+	}
 	if err != nil {
 		p.Data["json"] = SectionResponse{
 			Section:  models.SectionDetail{},
-			Editable: false,
+			Learning: false,
 		}
 	} else {
 		p.Data["json"] = SectionResponse{
 			Section:  section,
-			Editable: editable,
+			Learning: learning,
 		}
 	}
 	p.ServeJSON()
