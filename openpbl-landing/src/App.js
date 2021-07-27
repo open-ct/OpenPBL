@@ -16,7 +16,7 @@ import Learning from "./pages/Project/LearningPage";
 import EditInfo from "./pages/Project/CreateProject/Info";
 import EditOutlined from "./pages/Project/CreateProject/Outline"
 import SectionEditPage from "./pages/Project/CreateProject/Section/SectionEditPage";
-import PreviewResource from "./pages/Project/PreviewProject/PreviewResource";
+import PreviewSection from "./pages/Project/PreviewProject/PreviewSection";
 import SurveyEditPage from "./pages/Project/CreateProject/Survey/SurveyEditPage";
 
 function App() {
@@ -44,12 +44,9 @@ function App() {
 
             <Route exact path="/project/:pid/section/:sid/task/:tid/survey/edit" component={SurveyEditPage} />
 
-            <Route exact path="/project/:pid/section/:sid/preview" component={PreviewResource} />
+            <Route exact path="/project/:pid/section/:sid/preview" component={PreviewSection} />
 
             <Route exact path="/project/learning/:pid/:cid/:sid" component={Learning} />
-
-            <Route exact path="/user/login" component={Login} />
-            <Route exact path="/user/register" component={Register} />
 
           </Switch>
         </BrowserRouter>

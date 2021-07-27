@@ -9,7 +9,7 @@ import TaskApi from "../../../api/TaskApi";
 import FillSurvey from "./component/FillSurvey";
 
 
-function PreviewResource(obj) {
+function PreviewSection(obj) {
   const sid = obj.match.params.sid
   const pid = obj.match.params.pid
   const [section, setSection] = useState({resource:{}})
@@ -129,4 +129,4 @@ function PreviewResource(obj) {
 )
 }
 
-export default PreviewResource
+export default PreviewSection

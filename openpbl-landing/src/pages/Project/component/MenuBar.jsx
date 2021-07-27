@@ -1,26 +1,22 @@
 import React from 'react';
 import {Affix, Button, Layout, Menu} from 'antd';
 import {
-  AlignLeftOutlined,
   CheckCircleOutlined,
   CheckOutlined,
   CopyOutlined,
   HighlightOutlined,
   SyncOutlined,
-  UserOutlined
 } from '@ant-design/icons';
 
 import LearningProject from '../LearningProject';
 import './menu-bar.less';
 
-import PublicProject from '../PublicProject';
 import FinishedProject from '../FinishedProject';
 import PublishedProject from "../PublishedProject";
 import EditingProject from "../EditingProject";
 import localStorage from "localStorage";
 import ProjectApi from "../../../api/ProjectApi";
 
-const {SubMenu} = Menu;
 const {Sider, Content} = Layout;
 
 class MenuBar extends React.PureComponent {

@@ -20,7 +20,6 @@ const topColResponsiveProps = {
 
 function ProjectList(obj) {
   const [learningProjectList, setLearningProjectList] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
 
@@ -71,10 +70,6 @@ function ProjectList(obj) {
 
   useEffect(() => {
     loadPage(1, 10);
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 100);
 
     setSubjects(['语文', '数学', '英语', '科学', '信息技术']);
     setSkills(['学习与创新技能', '信息、媒体与技术技能', '生活与职业技能']);
