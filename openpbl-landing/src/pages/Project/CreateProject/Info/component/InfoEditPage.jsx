@@ -2,9 +2,9 @@ import React, {useEffect, useState} from "react";
 import {Button, Col, Input, message, Row, Select, Upload} from "antd";
 import {Link} from 'react-router-dom'
 import ImgCrop from 'antd-img-crop';
-import '../index.less'
+import '../../Outline/index.less'
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
-import ProjectApi from "../../../../api/ProjectApi";
+import ProjectApi from "../../../../../api/ProjectApi";
 
 
 function InfoEditPage(obj) {

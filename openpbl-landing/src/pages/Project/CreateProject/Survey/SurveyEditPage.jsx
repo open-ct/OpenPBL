@@ -1,27 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {
-  Affix,
-  Button,
-  Card,
-  Checkbox,
-  Divider,
-  Input,
-  Layout,
-  Menu,
-  message,
-  PageHeader,
-  Popconfirm,
-  Radio
-} from "antd";
+import {Affix, Card, Divider, Layout, Menu, message, PageHeader, Radio} from "antd";
 import DocumentTitle from 'react-document-title';
 
-import SurveyApi from "../../../api/SurveyApi";
+import SurveyApi from "../../../../api/SurveyApi";
 
-import SingleChoice from "../component/SingleChoice";
-import MultipleChoice from "../component/MultipleChoice";
-import BlankFill from "../component/BlankFill";
-import BriefAnswer from "../component/BriefAnswer";
-import Question from "./Question";
+import SingleChoice from "./component/SingleChoice";
+import MultipleChoice from "./component/MultipleChoice";
+import BlankFill from "./component/BlankFill";
+import BriefAnswer from "./component/BriefAnswer";
+import Question from "./component/Question";
 
 const qType = {
   'singleChoice': '单选',
@@ -105,7 +92,7 @@ function SurveyEditPage(obj) {
     q.questionOptions = opt.toString()
     q.questionTitle = title
     SurveyApi.updateQuestion(q)
-      .then(res=>{
+      .then(res => {
         editing[index] = false
         setEditing([...editing])
         if (res.data.code === 200) {
@@ -117,7 +104,9 @@ function SurveyEditPage(obj) {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
 
   const deleteQuestion = (item, index) => {
@@ -130,7 +119,9 @@ function SurveyEditPage(obj) {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const exchangeQuestion = (index1, index2) => {
     if (index1 < 0 || index2 >= questions.length) {
@@ -198,17 +189,17 @@ function SurveyEditPage(obj) {
                     <div key={index.toString()}>
                       <Divider/>
                       {item.questionType === 'singleChoice' ?
-                          <SingleChoice
-                            item={item}
-                            index={index}
-                            editing={editing[index]}
-                            getType={getType}
-                            editQuestion={editQuestion}
-                            saveQuestion={saveQuestion}
-                            deleteQuestion={deleteQuestion}
-                            exchangeQuestion={exchangeQuestion}
-                          />
-                          : null}
+                        <SingleChoice
+                          item={item}
+                          index={index}
+                          editing={editing[index]}
+                          getType={getType}
+                          editQuestion={editQuestion}
+                          saveQuestion={saveQuestion}
+                          deleteQuestion={deleteQuestion}
+                          exchangeQuestion={exchangeQuestion}
+                        />
+                        : null}
 
                       {item.questionType === 'scale5' || item.questionType === 'scale7' ?
                         <div style={{textAlign: "left", marginTop: '10px'}}>
@@ -225,17 +216,17 @@ function SurveyEditPage(obj) {
                         : null}
 
                       {item.questionType === 'multipleChoice' ?
-                          <MultipleChoice
-                            item={item}
-                            index={index}
-                            editing={editing[index]}
-                            getType={getType}
-                            editQuestion={editQuestion}
-                            saveQuestion={saveQuestion}
-                            deleteQuestion={deleteQuestion}
-                            exchangeQuestion={exchangeQuestion}
-                          />
-                          : null}
+                        <MultipleChoice
+                          item={item}
+                          index={index}
+                          editing={editing[index]}
+                          getType={getType}
+                          editQuestion={editQuestion}
+                          saveQuestion={saveQuestion}
+                          deleteQuestion={deleteQuestion}
+                          exchangeQuestion={exchangeQuestion}
+                        />
+                        : null}
 
                       {item.questionType === 'blankFill' ?
                         <BlankFill
@@ -248,7 +239,7 @@ function SurveyEditPage(obj) {
                           deleteQuestion={deleteQuestion}
                           exchangeQuestion={exchangeQuestion}
                         />
-                         : null}
+                        : null}
 
                       {item.questionType === 'briefAnswer' ?
                         <BriefAnswer
@@ -261,7 +252,7 @@ function SurveyEditPage(obj) {
                           deleteQuestion={deleteQuestion}
                           exchangeQuestion={exchangeQuestion}
                         />
-                         : null}
+                        : null}
                     </div>
                   ))}
                 </div>

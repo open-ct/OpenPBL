@@ -1,15 +1,16 @@
 import React, {useState} from "react";
-import {Button, Checkbox, Input, message, Popconfirm, Radio} from "antd";
+import {Button, Input, message, Popconfirm, Radio} from "antd";
 import {
   ArrowDownOutlined,
   ArrowUpOutlined,
   DeleteOutlined,
   EditOutlined,
-  MinusOutlined, PlusOutlined,
+  MinusOutlined,
+  PlusOutlined,
   SaveOutlined
 } from "@ant-design/icons";
 
-function MultipleChoice(obj) {
+function SingleChoice(obj) {
   const [opt, setOpt] = useState(obj.item.questionOptions)
   const [title, setTitle] = useState(obj.item.questionTitle)
 
@@ -21,7 +22,7 @@ function MultipleChoice(obj) {
     setOpt([...opt])
   }
   const addOpt = index => {
-    opt.splice(index+1, 0, '')
+    opt.splice(index + 1, 0, '')
     setOpt([...opt])
   }
   const delOpt = index => {
@@ -37,7 +38,7 @@ function MultipleChoice(obj) {
       <div>
         {obj.editing ?
           <p style={{float: 'left'}}>
-            <Input value={title} onChange={changeTitle} />
+            <Input value={title} onChange={changeTitle}/>
           </p>
           :
           <p style={{float: 'left'}}>{obj.item.questionTitle}
@@ -49,7 +50,7 @@ function MultipleChoice(obj) {
         <p style={{float: 'right'}}>
           {obj.editing ?
             <Button shape="circle" type="text" onClick={e => obj.saveQuestion(obj.item, title, opt, obj.index)}
-                    icon={<SaveOutlined />}/>
+                    icon={<SaveOutlined/>}/>
             :
             <>
               <Button shape="circle" type="text" onClick={e => obj.editQuestion(obj.item, obj.index)}
@@ -73,24 +74,27 @@ function MultipleChoice(obj) {
 
       {obj.editing ?
         <div style={{textAlign: "left", marginTop: '10px'}}>
-          {opt.map((item, index) => (
-            <div style={{marginTop: '10px'}} key={index.toString()}>
-              <Checkbox>
-                <Input value={item} onChange={value=>changeOpt(value, index)}/>
-              </Checkbox>
-              <Button type="circle" size="small" icon={<MinusOutlined />} onClick={e=>delOpt(index)}/>
-              <Button type="circle" size="small" icon={<PlusOutlined />} onClick={e=>addOpt(index)} style={{marginLeft: '10px'}}/>
-            </div>
-          ))}
+          <Radio.Group>
+            {opt.map((item, index) => (
+              <div style={{marginTop: '10px'}} key={index.toString()}>
+                <Radio value={index}>
+                  <Input value={item} onChange={value => changeOpt(value, index)}/>
+                </Radio>
+                <Button type="circle" size="small" icon={<MinusOutlined/>} onClick={e => delOpt(index)}/>
+                <Button type="circle" size="small" icon={<PlusOutlined/>} onClick={e => addOpt(index)}
+                        style={{marginLeft: '10px'}}/>
+              </div>
+            ))}
+          </Radio.Group>
         </div>
         :
         <div style={{textAlign: "left", marginTop: '10px'}}>
           <Radio.Group>
             {obj.item.questionOptions.map((subItem, subIndex) => (
               <div style={{marginTop: '10px'}} key={subIndex.toString()}>
-                <Checkbox>
+                <Radio value={subIndex}>
                   {subItem}
-                </Checkbox>
+                </Radio>
               </div>
             ))}
           </Radio.Group>
@@ -101,4 +105,4 @@ function MultipleChoice(obj) {
 
 }
 
-export default MultipleChoice
+export default SingleChoice

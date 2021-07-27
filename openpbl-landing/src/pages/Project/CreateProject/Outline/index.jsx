@@ -8,7 +8,7 @@ import OutlineEditPage from "./component/OutlineEditPage";
 const {Step} = Steps;
 
 
-class EditInfo extends React.PureComponent {
+class EditOutline extends React.PureComponent {
   state = {
     current: 0,
     pid: this.props.match.params.id
@@ -56,4 +56,4 @@ class EditInfo extends React.PureComponent {
   }
 }
 
-export default EditInfo
+export default EditOutline

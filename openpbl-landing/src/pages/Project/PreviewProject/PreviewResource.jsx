@@ -3,7 +3,7 @@ import {Card, PageHeader, Input, Upload, message, Button, Collapse, Spin, Radio,
 import DocumentTitle from 'react-document-title';
 import {InboxOutlined} from '@ant-design/icons'
 import SectionApi from "../../../api/SectionApi";
-import "./section-edit.less"
+import "../CreateProject/Section/component/section-edit.less"
 import "./preview.less"
 import TaskApi from "../../../api/TaskApi";
 import FillSurvey from "./component/FillSurvey";

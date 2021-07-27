@@ -2,7 +2,7 @@ import React from "react";
 import DocumentTitle from 'react-document-title';
 import {Card, Divider, PageHeader, Steps} from "antd";
 
-import './index.less'
+import '../Outline/index.less'
 import InfoEditPage from "./component/InfoEditPage";
 
 const {Step} = Steps;

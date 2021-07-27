@@ -1,8 +1,16 @@
 import React, {useState} from "react";
-import {Button, Input, Popconfirm, Radio, message} from "antd";
-import {ArrowDownOutlined, ArrowUpOutlined, DeleteOutlined, MinusOutlined, PlusOutlined, EditOutlined, SaveOutlined} from "@ant-design/icons";
+import {Button, Checkbox, Input, message, Popconfirm, Radio} from "antd";
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  MinusOutlined,
+  PlusOutlined,
+  SaveOutlined
+} from "@ant-design/icons";
 
-function SingleChoice(obj) {
+function MultipleChoice(obj) {
   const [opt, setOpt] = useState(obj.item.questionOptions)
   const [title, setTitle] = useState(obj.item.questionTitle)
 
@@ -14,7 +22,7 @@ function SingleChoice(obj) {
     setOpt([...opt])
   }
   const addOpt = index => {
-    opt.splice(index+1, 0, '')
+    opt.splice(index + 1, 0, '')
     setOpt([...opt])
   }
   const delOpt = index => {
@@ -30,19 +38,19 @@ function SingleChoice(obj) {
       <div>
         {obj.editing ?
           <p style={{float: 'left'}}>
-            <Input value={title} onChange={changeTitle} />
+            <Input value={title} onChange={changeTitle}/>
           </p>
           :
           <p style={{float: 'left'}}>{obj.item.questionTitle}
-          <span style={{color: 'gray'}}>&nbsp;
-            [{obj.getType(obj.item.questionType)}]
+            <span style={{color: 'gray'}}>&nbsp;
+              [{obj.getType(obj.item.questionType)}]
           </span>
-        </p>
+          </p>
         }
         <p style={{float: 'right'}}>
           {obj.editing ?
             <Button shape="circle" type="text" onClick={e => obj.saveQuestion(obj.item, title, opt, obj.index)}
-                    icon={<SaveOutlined />}/>
+                    icon={<SaveOutlined/>}/>
             :
             <>
               <Button shape="circle" type="text" onClick={e => obj.editQuestion(obj.item, obj.index)}
@@ -66,26 +74,25 @@ function SingleChoice(obj) {
 
       {obj.editing ?
         <div style={{textAlign: "left", marginTop: '10px'}}>
-          <Radio.Group>
-            {opt.map((item, index) => (
-              <div style={{marginTop: '10px'}} key={index.toString()}>
-                <Radio value={index}>
-                  <Input value={item} onChange={value=>changeOpt(value, index)}/>
-                </Radio>
-                <Button type="circle" size="small" icon={<MinusOutlined />} onClick={e=>delOpt(index)}/>
-                <Button type="circle" size="small" icon={<PlusOutlined />} onClick={e=>addOpt(index)} style={{marginLeft: '10px'}}/>
-              </div>
-            ))}
-          </Radio.Group>
+          {opt.map((item, index) => (
+            <div style={{marginTop: '10px'}} key={index.toString()}>
+              <Checkbox>
+                <Input value={item} onChange={value => changeOpt(value, index)}/>
+              </Checkbox>
+              <Button type="circle" size="small" icon={<MinusOutlined/>} onClick={e => delOpt(index)}/>
+              <Button type="circle" size="small" icon={<PlusOutlined/>} onClick={e => addOpt(index)}
+                      style={{marginLeft: '10px'}}/>
+            </div>
+          ))}
         </div>
         :
         <div style={{textAlign: "left", marginTop: '10px'}}>
           <Radio.Group>
             {obj.item.questionOptions.map((subItem, subIndex) => (
               <div style={{marginTop: '10px'}} key={subIndex.toString()}>
-                <Radio value={subIndex}>
+                <Checkbox>
                   {subItem}
-                </Radio>
+                </Checkbox>
               </div>
             ))}
           </Radio.Group>
@@ -96,4 +103,4 @@ function SingleChoice(obj) {
 
 }
 
-export default SingleChoice
+export default MultipleChoice

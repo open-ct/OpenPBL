@@ -1,9 +1,9 @@
 import React from "react";
 import {Button, Checkbox, Divider, Input, Radio} from "antd";
 
-import Question from "../Question"
+import Question from "../../CreateProject/Survey/component/Question"
 import "../preview.less"
-import "../section-edit.less"
+import "../../CreateProject/Section/component/section-edit.less"
 
 const blank = Question.blank
 

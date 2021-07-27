@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {Button, Card, Divider, Input, message, Upload} from "antd";
-import {LoadingOutlined, InboxOutlined} from "@ant-design/icons";
+import {InboxOutlined} from "@ant-design/icons";
 
 
-import "../section-edit.less"
+import "../Section/component/section-edit.less"
 import ResourceApi from "../../../../api/ResourceApi";
 
-const { Dragger } = Upload;
+const {Dragger} = Upload;
 
 function FileResource(obj) {
 
@@ -14,7 +14,7 @@ function FileResource(obj) {
   const [fileIntroduce, setFileIntroduce] = useState('')
   const [filePath, setFilePath] = useState('')
 
-  useEffect(()=>{
+  useEffect(() => {
     setFileTitle(obj.section.resource.fileTitle)
     setFileIntroduce(obj.section.resource.fileIntroduce)
     setFilePath(obj.section.resource.filePath)
@@ -30,14 +30,16 @@ function FileResource(obj) {
       filePath: filePath
     }
     ResourceApi.updateResource(q)
-      .then(res=>{
-        if (res.data.code === 200){
+      .then(res => {
+        if (res.data.code === 200) {
           message.success(res.data.msg)
         } else {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const changeTitle = value => {
     setFileTitle(value.target.value)
@@ -51,7 +53,7 @@ function FileResource(obj) {
     multiple: false,
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
     onChange(info) {
-      const { status } = info.file;
+      const {status} = info.file;
       if (status !== 'uploading') {
         console.log(info.file, info.fileList);
       }
@@ -71,13 +73,13 @@ function FileResource(obj) {
   return (
     <Card className="resource-card">
       <p className="card-title">上传文件资源</p>
-      <Divider />
-      <Input value={fileTitle} placeholder="文件标题" maxLength={50} onChange={changeTitle} />
-      <Input.TextArea value={fileIntroduce} placeholder="文件描述" onChange={changeIntroduce} style={{marginTop: '20px'}} />
+      <Divider/>
+      <Input value={fileTitle} placeholder="文件标题" maxLength={50} onChange={changeTitle}/>
+      <Input.TextArea value={fileIntroduce} placeholder="文件描述" onChange={changeIntroduce} style={{marginTop: '20px'}}/>
 
       <Dragger {...props} style={{marginTop: '20px'}}>
         <p className="ant-upload-drag-icon">
-          <InboxOutlined />
+          <InboxOutlined/>
         </p>
         <p className="ant-upload-text">点击或拖动文件上传</p>
         <p className="ant-upload-hint">

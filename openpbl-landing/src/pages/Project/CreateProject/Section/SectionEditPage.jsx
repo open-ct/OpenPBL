@@ -1,24 +1,27 @@
 import React, {useEffect, useState} from "react";
-import {PageHeader, Card, Button} from "antd";
+import {Button, Card, PageHeader} from "antd";
 import DocumentTitle from 'react-document-title';
-
-import SectionApi from "../../../api/SectionApi";
-import RichWords from "./component/RichWords";
-import FileResource from "./component/FileResource";
-import StudentTask from "./component/StudentTask";
 import {Link} from "react-router-dom";
+
+
+import SectionApi from "../../../../api/SectionApi";
+import RichWords from "./component/RichWords";
+import FileResource from "../component/FileResource";
+import StudentTask from "./component/StudentTask";
 
 function SectionEditPage(obj) {
   const pid = obj.match.params.pid
   const sid = obj.match.params.sid
-  const [section, setSection] = useState({resource:{}})
+  const [section, setSection] = useState({resource: {}})
 
-  useEffect(()=>{
+  useEffect(() => {
     SectionApi.getSectionDetail(sid)
-      .then(res=>{
+      .then(res => {
         setSection(res.data.section)
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
 
   }, [])
 
@@ -37,12 +40,12 @@ function SectionEditPage(obj) {
           title="返回"
           subTitle="我的项目"
         />
-        <div style={{ padding: '20px', margin: 'auto', maxWidth: '1200px' }}>
+        <div style={{padding: '20px', margin: 'auto', maxWidth: '1200px'}}>
           <Card>
-            <h2 style={{ fontWeight: 'bold' }}>{section.sectionName}</h2>
+            <h2 style={{fontWeight: 'bold'}}>{section.sectionName}</h2>
           </Card>
-          <RichWords section={section} />
-          <FileResource section={section} />
+          <RichWords section={section}/>
+          <FileResource section={section}/>
           <StudentTask section={section} pid={pid}/>
         </div>
         <Link to={`/project/${pid}/section/${sid}/preview`}>

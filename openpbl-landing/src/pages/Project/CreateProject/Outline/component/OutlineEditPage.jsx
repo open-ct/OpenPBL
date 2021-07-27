@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {Button, Input, Menu, Modal, Row, Col, message, Popconfirm} from 'antd'
-import {EditOutlined, DeleteOutlined, ArrowUpOutlined, ArrowDownOutlined} from '@ant-design/icons'
+import {Button, Col, Input, Menu, message, Modal, Popconfirm, Row} from 'antd'
+import {ArrowDownOutlined, ArrowUpOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons'
 import {Link} from 'react-router-dom'
 
-import ChapterApi from "../../../../api/ChapterApi"
-import SectionApi from "../../../../api/SectionApi"
+import ChapterApi from "../../../../../api/ChapterApi"
+import SectionApi from "../../../../../api/SectionApi"
 
 const {SubMenu} = Menu;
 
@@ -34,7 +34,9 @@ function OutlineEditPage(obj) {
           setChapters(res.data.chapters)
         }
       })
-      .catch((e)=>{console.log(e)})
+      .catch((e) => {
+        console.log(e)
+      })
   }, [])
 
   const handleClick = (item, key) => {
@@ -81,18 +83,20 @@ function OutlineEditPage(obj) {
   }
   const deleteChapter = (c, index) => {
     ChapterApi.deleteProjectChapter(c.id)
-      .then((res)=>{
+      .then((res) => {
         if (res.data.code === 200) {
           chapters.splice(index, 1)
           setChapters([...chapters])
           message.success(res.data.msg)
         }
       })
-      .catch((e)=>{console.log(e)})
+      .catch((e) => {
+        console.log(e)
+      })
   }
   const deleteSection = (s, index, subIndex) => {
     SectionApi.deleteChapterSection(s.id)
-      .then((res)=>{
+      .then((res) => {
         if (res.data.code === 200) {
           let sections = chapters[index].sections
           sections.splice(subIndex, 1)
@@ -115,7 +119,7 @@ function OutlineEditPage(obj) {
         chapterNumber: chapter.chapterNumber,
       }
       ChapterApi.updateProjectChapter(c)
-        .then((res)=>{
+        .then((res) => {
           if (res.data.code === 200) {
             let s = chapters[index].sections
             c.sections = s
@@ -126,12 +130,14 @@ function OutlineEditPage(obj) {
             setChapterName('')
           }
         })
-        .catch((e)=>{console.log(e)})
+        .catch((e) => {
+          console.log(e)
+        })
     } else if (opt === 'add') {
       let len = chapters.length
       let l = 0
       if (len > 0) {
-        l = chapters[len-1].chapterNumber + 1
+        l = chapters[len - 1].chapterNumber + 1
       }
       let cp = {chapterName: chapterName, chapterNumber: l, projectId: pid}
       ChapterApi.createProjectChapter(cp)
@@ -162,7 +168,7 @@ function OutlineEditPage(obj) {
         sectionNumber: section.sectionNumber
       }
       SectionApi.updateChapterSection(s)
-        .then((res)=>{
+        .then((res) => {
           if (res.data.code === 200) {
             chapters[index].sections[subIndex] = s
             setChapters([...chapters])
@@ -171,7 +177,9 @@ function OutlineEditPage(obj) {
             setSectionName('')
           }
         })
-        .catch((e)=>{console.log(e)})
+        .catch((e) => {
+          console.log(e)
+        })
     } else if (opt === 'add') {
       let l = 0
       if (chapters[index].sections !== null) {
@@ -231,7 +239,9 @@ function OutlineEditPage(obj) {
             setChapters([...chapters])
           }
         })
-        .catch(e=>{console.log(e)})
+        .catch(e => {
+          console.log(e)
+        })
     }
   }
   const exchangeSection = (index, subIndex, subIndex2) => {
@@ -240,7 +250,7 @@ function OutlineEditPage(obj) {
       let id1 = chapters[index].sections[subIndex].id
       let id2 = chapters[index].sections[subIndex2].id
       SectionApi.exchangeChapterSection(id1, id2)
-        .then(res=>{
+        .then(res => {
           if (res.data.code === 200) {
             let s1 = chapters[index].sections[subIndex]
             chapters[index].sections[subIndex] = chapters[index].sections[subIndex2]
@@ -248,7 +258,9 @@ function OutlineEditPage(obj) {
             setChapters([...chapters])
           }
         })
-        .catch(e=>{console.log(e)})
+        .catch(e => {
+          console.log(e)
+        })
     }
   }
 
@@ -266,12 +278,14 @@ function OutlineEditPage(obj) {
           title={
             <div>
               {item.chapterName}
-              <span style={{ float: 'right', marginRight: '20px' }}>
-                <Button shape="circle" type="text" icon={<ArrowUpOutlined />} onClick={e => exchangeChapter(index - 1, index)} />
-                <Button shape="circle" type="text" icon={<ArrowDownOutlined />} onClick={e => exchangeChapter(index, index + 1)}/>
-                <Button shape="circle" type="text" onClick={e => modifyChapter(item, index)} icon={<EditOutlined/>} />
+              <span style={{float: 'right', marginRight: '20px'}}>
+                <Button shape="circle" type="text" icon={<ArrowUpOutlined/>}
+                        onClick={e => exchangeChapter(index - 1, index)}/>
+                <Button shape="circle" type="text" icon={<ArrowDownOutlined/>}
+                        onClick={e => exchangeChapter(index, index + 1)}/>
+                <Button shape="circle" type="text" onClick={e => modifyChapter(item, index)} icon={<EditOutlined/>}/>
                 <Popconfirm title="确定删除章节？" onConfirm={e => deleteChapter(item, index)}>
-                  <Button shape="circle" type="text" icon={<DeleteOutlined/>} />
+                  <Button shape="circle" type="text" icon={<DeleteOutlined/>}/>
                 </Popconfirm>
               </span>
             </div>
@@ -282,25 +296,29 @@ function OutlineEditPage(obj) {
             item.sections.map((subItem, subIndex) => (
               <Menu.Item key={index.toString() + subIndex.toString()}>
                 {subItem.sectionName}
-                <span style={{ float: 'right', marginRight: '20px' }}>
-                  <Link to={`/project/${pid}/section/${subItem.id}/edit`} >
+                <span style={{float: 'right', marginRight: '20px'}}>
+                  <Link to={`/project/${pid}/section/${subItem.id}/edit`}>
                     <Button type="text">编辑资源</Button>
                   </Link>
 
-                  <Button shape="circle" type="text" icon={<ArrowUpOutlined />} onClick={e => exchangeSection(index, subIndex-1, subIndex)}/>
-                  <Button shape="circle" type="text" icon={<ArrowDownOutlined />} onClick={e => exchangeSection(index, subIndex, subIndex+1)}/>
+                  <Button shape="circle" type="text" icon={<ArrowUpOutlined/>}
+                          onClick={e => exchangeSection(index, subIndex - 1, subIndex)}/>
+                  <Button shape="circle" type="text" icon={<ArrowDownOutlined/>}
+                          onClick={e => exchangeSection(index, subIndex, subIndex + 1)}/>
 
-                  <Button shape="circle" type="text" onClick={e => modifySection(subItem, index, subIndex)} icon={<EditOutlined/>} />
+                  <Button shape="circle" type="text" onClick={e => modifySection(subItem, index, subIndex)}
+                          icon={<EditOutlined/>}/>
 
                   <Popconfirm title="确定删除小节？" onConfirm={e => deleteSection(subItem, index, subIndex)}>
-                    <Button shape="circle" type="text" icon={<DeleteOutlined/>} />
+                    <Button shape="circle" type="text" icon={<DeleteOutlined/>}/>
                   </Popconfirm>
 
                 </span>
               </Menu.Item>
             ))
           }
-          <Button type="round" style={{float: 'right', margin: '3px'}} onClick={e => addSection(item, index)}>添加小节</Button>
+          <Button type="round" style={{float: 'right', margin: '3px'}}
+                  onClick={e => addSection(item, index)}>添加小节</Button>
         </SubMenu>
       ))}
       </Menu>
@@ -323,7 +341,7 @@ function OutlineEditPage(obj) {
             <p>章名：</p>
           </Col>
           <Col span={20}>
-            <Input value={chapterName} onChange={changeChapterName} />
+            <Input value={chapterName} onChange={changeChapterName}/>
           </Col>
         </Row>
       </Modal>
@@ -335,7 +353,7 @@ function OutlineEditPage(obj) {
             <p>小节名：</p>
           </Col>
           <Col span={20}>
-            <Input value={sectionName} onChange={changeSectionName} />
+            <Input value={sectionName} onChange={changeSectionName}/>
           </Col>
         </Row>
       </Modal>

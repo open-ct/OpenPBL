@@ -1,14 +1,15 @@
 import React, {useState} from "react";
-import {Button, Input, Menu, message, Popconfirm, Dropdown} from "antd";
+import {Button, Dropdown, Input, Menu, message, Popconfirm} from "antd";
 import {
   ArrowDownOutlined,
   ArrowUpOutlined,
   DeleteOutlined,
   EditOutlined,
-  MinusOutlined, PlusOutlined,
+  MinusOutlined,
+  PlusOutlined,
   SaveOutlined
 } from "@ant-design/icons";
-import Question from "../CreateProject/Question";
+import Question from "./Question";
 
 
 const blank = Question.blank
@@ -45,7 +46,7 @@ function BlankFill(obj) {
       <div>
         {obj.editing ?
           <p style={{float: 'left'}}>
-            <Input value={title} onChange={changeTitle} />
+            <Input value={title} onChange={changeTitle}/>
           </p>
           :
           <p style={{float: 'left'}}>{obj.item.questionTitle}
@@ -57,7 +58,7 @@ function BlankFill(obj) {
         <p style={{float: 'right'}}>
           {obj.editing ?
             <Button shape="circle" type="text" onClick={e => obj.saveQuestion(obj.item, title, opt, obj.index)}
-                    icon={<SaveOutlined />}/>
+                    icon={<SaveOutlined/>}/>
             :
             <>
               <Button shape="circle" type="text" onClick={e => obj.editQuestion(obj.item, obj.index)}
@@ -89,20 +90,21 @@ function BlankFill(obj) {
                 </span>
                 :
                 <span style={{float: 'left', margin: '5px'}}>
-                  <Input value={item} onChange={value=>changeOpt(value, index)} />
+                  <Input value={item} onChange={value => changeOpt(value, index)}/>
                 </span>
               }
               <span style={{float: 'left', margin: '5px'}}>
-                <Button type="circle" size="small" icon={<MinusOutlined />} onClick={e=>delOpt(index)}/>
+                <Button type="circle" size="small" icon={<MinusOutlined/>} onClick={e => delOpt(index)}/>
                 <Dropdown
                   overlay={
-                    <Menu onClick={key=>addOpt(key, index)}>
+                    <Menu onClick={key => addOpt(key, index)}>
                       <Menu.Item key="1">文字</Menu.Item>
                       <Menu.Item key="2">填空</Menu.Item>
                     </Menu>
                   }
                   trigger={['click']}>
-                  <Button type="circle" size="small" className="ant-dropdown-link" icon={<PlusOutlined/>} onClick={e => e.preventDefault()} style={{marginLeft: '4px'}}/>
+                  <Button type="circle" size="small" className="ant-dropdown-link" icon={<PlusOutlined/>}
+                          onClick={e => e.preventDefault()} style={{marginLeft: '4px'}}/>
                 </Dropdown>
               </span>
             </div>

@@ -1,5 +1,4 @@
 import OSS from 'ali-oss'
-import {} from 'lodash';
 
 const ossclient = new OSS({
   region: process.env.REACT_APP_OSS_REGION,

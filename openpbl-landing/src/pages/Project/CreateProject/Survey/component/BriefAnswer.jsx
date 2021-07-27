@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Input, message, Popconfirm} from "antd";
+import {Button, Input, Popconfirm} from "antd";
 import {ArrowDownOutlined, ArrowUpOutlined, DeleteOutlined, EditOutlined, SaveOutlined} from "@ant-design/icons";
 
 
@@ -19,7 +19,7 @@ function BriefAnswer(obj) {
       <div>
         {obj.editing ?
           <p style={{float: 'left'}}>
-            <Input value={title} onChange={changeTitle} />
+            <Input value={title} onChange={changeTitle}/>
           </p>
           :
           <p style={{float: 'left'}}>{obj.item.questionTitle}
@@ -31,7 +31,7 @@ function BriefAnswer(obj) {
         <p style={{float: 'right'}}>
           {obj.editing ?
             <Button shape="circle" type="text" onClick={e => obj.saveQuestion(obj.item, title, opt, obj.index)}
-                    icon={<SaveOutlined />}/>
+                    icon={<SaveOutlined/>}/>
             :
             <>
               <Button shape="circle" type="text" onClick={e => obj.editQuestion(obj.item, obj.index)}

@@ -4,9 +4,9 @@ import LzEditor from "react-lz-editor"
 import uniqBy from 'lodash/uniqBy';
 import findIndex from 'lodash/findIndex';
 
-import OSSUploaderFile from "./oss";
-import ResourceApi from "../../../../api/ResourceApi";
-import "../section-edit.less"
+import OSSUploaderFile from "../../component/oss";
+import ResourceApi from "../../../../../api/ResourceApi";
+import "./section-edit.less"
 
 function RichWords(obj) {
   const sid = obj.section.id

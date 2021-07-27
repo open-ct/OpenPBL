@@ -13,11 +13,11 @@ import AuthCallback from "./pages/User/Auth/AuthCallback";
 import Login from "./pages/User/Login";
 import Register from "./pages/User/Register";
 import Learning from "./pages/Project/LearningPage";
-import EditInfo from "./pages/Project/CreateProject/EditInfo";
-import EditOutlined from "./pages/Project/CreateProject/EditOutline"
-import SectionEditPage from "./pages/Project/CreateProject/SectionEditPage";
-import PreviewResource from "./pages/Project/CreateProject/PreviewResource";
-import SurveyEditPage from "./pages/Project/CreateProject/SurveyEditPage";
+import EditInfo from "./pages/Project/CreateProject/Info";
+import EditOutlined from "./pages/Project/CreateProject/Outline"
+import SectionEditPage from "./pages/Project/CreateProject/Section/SectionEditPage";
+import PreviewResource from "./pages/Project/PreviewProject/PreviewResource";
+import SurveyEditPage from "./pages/Project/CreateProject/Survey/SurveyEditPage";
 
 function App() {
   return (
