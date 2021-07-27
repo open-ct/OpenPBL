@@ -46,6 +46,18 @@ func (l *LearnProject) Delete() (err error) {
 	return
 }
 
+func IsLearningProject(pid int64, uid string) (e bool) {
+	var err error
+	e, err = (&LearnProject{}).GetEngine().Exist(&LearnProject{
+		StudentId: uid,
+		ProjectId: pid,
+		Learning:  true,
+	})
+	if err != nil {
+		e = false
+	}
+	return
+}
 
 func GetProjectStudents(pid string, from int, size int) (s []StudentInfo, err error) {
 	err = adapter.Engine.

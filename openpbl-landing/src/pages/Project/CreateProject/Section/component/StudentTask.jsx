@@ -106,7 +106,7 @@ function StudentTask(obj) {
     <Card className="resource-card">
       <p className="card-title">学生任务</p>
       {tasks.map((item, index) => (
-        <div>
+        <div key={index.toString()}>
           <Divider/>
           <p className="task-title">
             {item.taskType === 'file' ? '学生上传文件' : null}

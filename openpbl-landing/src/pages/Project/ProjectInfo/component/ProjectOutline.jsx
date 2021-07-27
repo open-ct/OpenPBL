@@ -36,7 +36,7 @@ function ProjectOutline(obj) {
     }
   }
   const gotoLearning = (item, subItem) => {
-    window.open('/project/learning/' + pid + '/' + item.id + '/' + subItem.id)
+    window.open(`/project/${pid}/section/${subItem.id}/preview`)
   }
 
   return (

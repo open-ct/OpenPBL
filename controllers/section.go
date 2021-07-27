@@ -5,20 +5,54 @@ import (
 	"strconv"
 )
 
+type SectionResponse struct {
+	Response
+	Section   models.SectionDetail  `json:"section"`
+	Editable  bool                  `json:"editable"`
+}
+
 // GetSectionDetail
 // @Title
 // @Description
-// @Param body body models.File true ""
+// @Param sid path string true ""
+// @Param pid path string true ""
 // @Success 200 {object}
 // @Failure 403 body is empty
-// @router /chapter/section/:sid [get]
+// @router /chapter/section/:sid/:pid [get]
 func (p *ProjectController) GetSectionDetail() {
+	var resp SectionResponse
+	var editable bool
+	user := p.GetSessionUser()
+	if user == nil {
+		resp = SectionResponse{
+			Response: Response{
+				Code: 401,
+				Msg:  "请先登录",
+			},
+		}
+		p.Data["json"] = resp
+		p.ServeJSON()
+		return
+	}
+	if user.Tag != "student" {
+		editable = false
+	}
+	uid := user.Username
+	pid, err := p.GetInt64(":pid")
+
+	editable = models.IsLearningProject(pid, uid)
 	sid := p.GetString(":sid")
 	section, err := models.GetSectionDetailById(sid)
 	if err != nil {
-		p.Data["json"] = map[string]models.SectionDetail{"section": {}}
+		p.Data["json"] = SectionResponse{
+			Section:  models.SectionDetail{},
+			Editable: false,
+		}
 	} else {
-		p.Data["json"] = map[string]models.SectionDetail{"section": section}
+		p.Data["json"] = SectionResponse{
+			Section:  section,
+			Editable: editable,
+		}
 	}
 	p.ServeJSON()
 }

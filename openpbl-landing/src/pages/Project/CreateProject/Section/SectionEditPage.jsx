@@ -15,7 +15,7 @@ function SectionEditPage(obj) {
   const [section, setSection] = useState({resource: {}})
 
   useEffect(() => {
-    SectionApi.getSectionDetail(sid)
+    SectionApi.getSectionDetail(sid, pid)
       .then(res => {
         setSection(res.data.section)
       })

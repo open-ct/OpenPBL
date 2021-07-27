@@ -108,18 +108,18 @@ func init() {
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "GetSectionDetail",
+            Method: "UpdateChapterSection",
             Router: "/chapter/section/:sid",
-            AllowHTTPMethods: []string{"get"},
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "UpdateChapterSection",
-            Router: "/chapter/section/:sid",
-            AllowHTTPMethods: []string{"post"},
+            Method: "GetSectionDetail",
+            Router: "/chapter/section/:sid/:pid",
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

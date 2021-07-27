@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {Card, PageHeader, Input, Upload, message, Button, Collapse, Spin, Radio, Divider} from "antd";
+import {Card, PageHeader, Input, Upload, message, Button} from "antd";
 import DocumentTitle from 'react-document-title';
 import {InboxOutlined} from '@ant-design/icons'
+
 import SectionApi from "../../../api/SectionApi";
 import "../CreateProject/Section/component/section-edit.less"
 import "./preview.less"
@@ -14,15 +15,17 @@ function PreviewSection(obj) {
   const pid = obj.match.params.pid
   const [section, setSection] = useState({resource:{}})
   const [tasks, setTasks] = useState([])
+  const [editable, setEditable] = useState(false)
 
   useEffect(()=>{
-    getSectionResource()
+    getSectionDetail()
     getTasks()
   }, [])
-  const getSectionResource = () => {
-    SectionApi.getSectionDetail(sid)
+  const getSectionDetail = () => {
+    SectionApi.getSectionDetail(sid, pid)
       .then(res=>{
         setSection(res.data.section)
+        setEditable(res.data.editable)
       })
       .catch(e=>{console.log(e)})
   }
@@ -96,7 +99,7 @@ function PreviewSection(obj) {
             <p>{item.taskIntroduce}</p>
             {item.taskType === 'file' ?
               <div>
-                <Upload.Dragger {...props}>
+                <Upload.Dragger {...props} disabled={!editable}>
                   <p className="ant-upload-drag-icon">
                     <InboxOutlined />
                   </p>
@@ -110,13 +113,14 @@ function PreviewSection(obj) {
             {item.taskType === 'comment' ?
               <div>
                 <Input.TextArea />
-                <Button type="primary" style={{float: 'right', marginTop: '10px'}}>提交</Button>
+                <Button disabled={!editable} type="primary" style={{float: 'right', marginTop: '10px'}}>提交</Button>
               </div>
               : null
             }
             {item.taskType === 'survey' ?
               <FillSurvey
                 item={item}
+                editable={editable}
               />
               : null
             }
