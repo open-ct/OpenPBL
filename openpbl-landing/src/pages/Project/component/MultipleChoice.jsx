@@ -88,9 +88,9 @@ function MultipleChoice(obj) {
           <Radio.Group>
             {obj.item.questionOptions.map((subItem, subIndex) => (
               <div style={{marginTop: '10px'}} key={subIndex.toString()}>
-                <Radio value={subIndex}>
+                <Checkbox>
                   {subItem}
-                </Radio>
+                </Checkbox>
               </div>
             ))}
           </Radio.Group>

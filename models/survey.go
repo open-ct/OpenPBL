@@ -21,7 +21,7 @@ type Question struct {
 	QuestionCount   string    `json:"question" xorm:"text"`
 }
 type SurveyDetail struct {
-	Survey               `xorm:"extends"`
+	Survey               `json:"survey" xorm:"extends"`
 	Questions []Question `json:"questions" xorm:"extends"`
 }
 

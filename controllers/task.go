@@ -16,9 +16,9 @@ func (p *ProjectController) GetSectionTasks() {
 	sid := p.GetString(":sid")
 	tasks, err := models.GetSectionTasks(sid)
 	if err != nil {
-		p.Data["json"] = map[string][]models.Task{"tasks": nil}
+		p.Data["json"] = map[string][]models.TaskDetail{"tasks": nil}
 	} else {
-		p.Data["json"] = map[string][]models.Task{"tasks": tasks}
+		p.Data["json"] = map[string][]models.TaskDetail{"tasks": tasks}
 	}
 	p.ServeJSON()
 }

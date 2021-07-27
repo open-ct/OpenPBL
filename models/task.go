@@ -14,6 +14,12 @@ type Task struct {
 	TaskType      string    `json:"taskType" xorm:"index"`
 }
 
+type TaskDetail struct {
+	Task         `xorm:"extends"`
+	SurveyDetail `xorm:"extends"`
+
+}
+
 func (t *Task) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(t)
 }
@@ -40,11 +46,26 @@ func (t *Task) Delete() (err error) {
 	return
 }
 
-func GetSectionTasks(sid string) (t []Task, err error) {
+func GetSectionTasks(sid string) (t []TaskDetail, err error) {
 	err = (&Task{}).GetEngine().
 		Where("section_id = ?", sid).
 		Asc("task_order").
 		Find(&t)
+	var s Survey
+	var qs []Question
+	for i := 0; i < len(t); i ++ {
+		if t[i].TaskType == "survey" {
+			_, err = (&Survey{}).GetEngine().
+				Where("task_id = ?", t[i].Id).
+				Get(&s)
+			err = (&Question{}).GetEngine().
+				Where("survey_id = ?", s.Id).
+				Asc("question_order").
+				Find(&qs)
+			t[i].Survey = s
+			t[i].Questions = qs
+		}
+	}
 	return
 }
 
