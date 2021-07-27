@@ -38,6 +38,7 @@ function SurveyEditPage(obj) {
   const pid = obj.match.params.pid
   const sid = obj.match.params.sid
   const tid = obj.match.params.tid
+
   const [survey, setSurvey] = useState({})
   const [questions, setQuestions] = useState([])
   const [editing, setEditing] = useState([])
@@ -153,7 +154,7 @@ function SurveyEditPage(obj) {
     setEditing([...editing])
   }
   const back = e => {
-    window.location.href = '/project/edit/section/' + pid + '/' + sid
+    window.location.href = `/project/${pid}/section/${sid}/edit`
   }
 
   const getType = t => {

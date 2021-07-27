@@ -152,7 +152,7 @@ function ProjectList(obj) {
           {
             learningProjectList.map((item, index) => (
               <Col key={index.toString()} {...topColResponsiveProps}>
-                <Link to={`/project/info/${item.id}`}>
+                <Link to={`/project/${item.id}/info`}>
                   <Card
                     hoverable
                     bordered={false}

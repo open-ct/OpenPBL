@@ -35,14 +35,16 @@ function App() {
             <Route exact path="/project/learning" component={LearningProject} />
             <Route exact path="/project/finished" component={FinishedProject} />
 
-            <Route exact path="/project/info/:id" component={ProjectInfo} />
+            <Route exact path="/project/:id/info" component={ProjectInfo} />
 
-            <Route exact path="/project/edit/info/:id" component={EditInfo} />
-            <Route exact path="/project/edit/outline/:id" component={EditOutlined} />
-            <Route exact path="/project/edit/section/:pid/:sid" component={SectionEditPage} />
-            <Route exact path="/project/edit/section/survey/:pid/:sid/:tid" component={SurveyEditPage} />
+            <Route exact path="/project/:id/info/edit" component={EditInfo} />
+            <Route exact path="/project/:id/outline/edit" component={EditOutlined} />
 
-            <Route exact path="/project/preview/:pid/:sid" component={PreviewResource} />
+            <Route exact path="/project/:pid/section/:sid/edit" component={SectionEditPage} />
+
+            <Route exact path="/project/:pid/section/:sid/task/:tid/survey/edit" component={SurveyEditPage} />
+
+            <Route exact path="/project/:pid/section/:sid/preview" component={PreviewResource} />
 
             <Route exact path="/project/learning/:pid/:cid/:sid" component={Learning} />
 

@@ -19,7 +19,7 @@ class EditInfo extends React.PureComponent {
   }
 
   back = e => {
-    this.props.history.push('/project/info/' + this.state.pid)
+    this.props.history.push(`/project/${this.state.pid}/info/`)
   }
 
   render() {

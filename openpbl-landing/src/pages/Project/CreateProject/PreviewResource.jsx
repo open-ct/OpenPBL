@@ -46,7 +46,7 @@ function PreviewResource(obj) {
       .catch(e=>{console.log(e)})
   }
   const back = e => {
-    window.location.href = '/project/edit/section/' + pid + '/' + sid
+    window.location.href = `/project/${pid}/section/${sid}/edit`
   }
   const props = {
     name: 'file',

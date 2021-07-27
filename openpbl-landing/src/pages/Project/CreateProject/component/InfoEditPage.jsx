@@ -109,7 +109,7 @@ function InfoEditPage(obj) {
     ProjectApi.updateProject(data, pid)
       .then((res) => {
         if (res.data.code === 200) {
-          window.location.href = '/project/edit/outline/' + pid
+          window.location.href = `/project/${pid}/outline/edit`
         }
       })
       .catch((e) => {
@@ -206,7 +206,7 @@ function InfoEditPage(obj) {
       </Row>
       <Row style={{marginTop: '20px'}}>
         <Col span={4} offset={20}>
-          <Link to={"/project/edit/outline/" + pid}>
+          <Link to={`/project/${pid}/outline/edit`}>
             <Button
               size="middle"
               style={{marginRight: '20px'}}

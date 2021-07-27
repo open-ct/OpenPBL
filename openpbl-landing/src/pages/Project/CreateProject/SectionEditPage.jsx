@@ -24,7 +24,7 @@ function SectionEditPage(obj) {
 
 
   const back = e => {
-    window.location.href = '/project/edit/outline/' + pid
+    window.location.href = `/project/${pid}/outline/edit`
   }
 
 
@@ -45,7 +45,7 @@ function SectionEditPage(obj) {
           <FileResource section={section} />
           <StudentTask section={section} pid={pid}/>
         </div>
-        <Link to={"/project/preview/" + pid + '/' + sid}>
+        <Link to={`/project/${pid}/section/${sid}/preview`}>
           <Button style={{marginBottom: '20px'}}>预览</Button>
         </Link>
       </div>

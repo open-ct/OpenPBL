@@ -97,8 +97,7 @@ function StudentTask(obj) {
     }
   }
   const gotoSurvey = item => {
-    console.log(obj.section)
-    window.location.href = '/project/edit/section/survey/' + pid + '/' + obj.section.id + '/' + item.id
+    window.location.href = `/project/${pid}/section/${obj.section.id}/task/${item.id}/survey/edit`
   }
 
   return (
