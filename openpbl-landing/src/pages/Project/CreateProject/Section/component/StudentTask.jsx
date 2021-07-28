@@ -16,7 +16,7 @@ function StudentTask(obj) {
     }
   }, [sid])
   const getTasks = () => {
-    TaskApi.getSectionTasks(sid)
+    TaskApi.getSectionTasks(sid, pid)
       .then(res => {
         if (res.data.tasks === null) {
           setTasks([])

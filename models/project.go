@@ -74,10 +74,10 @@ func GetProjectByPidForTeacher(pid string) (pd ProjectDetail, err error) {
 	return
 }
 
-func GetProjectByPidForStudent(pid string) (pd ProjectDetail, err error) {
+func GetProjectByPidForStudent(pid string, uid string) (pd ProjectDetail, err error) {
 	c, err := (&Project{}).GetEngine().
 		Where("project.id = ?", pid).
-		Join("LEFT OUTER", LearnProject{}, "project.id = learn_project.project_id").
+		Join("LEFT OUTER", LearnProject{}, "project.id = learn_project.project_id and student_id = ?", uid).
 		Get(&pd)
 	if !c {
 		err = errors.New("404")

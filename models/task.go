@@ -1,6 +1,8 @@
 package models
 
-import "xorm.io/xorm"
+import (
+	"xorm.io/xorm"
+)
 
 type Task struct {
 	Id            int64     `json:"id" xorm:"not null pk autoincr"`
@@ -17,7 +19,7 @@ type Task struct {
 type TaskDetail struct {
 	Task         `xorm:"extends"`
 	SurveyDetail `xorm:"extends"`
-
+	SubmitDetail `xorm:"extends"`
 }
 
 func (t *Task) GetEngine() *xorm.Session {
@@ -46,13 +48,16 @@ func (t *Task) Delete() (err error) {
 	return
 }
 
-func GetSectionTasks(sid string) (t []TaskDetail, err error) {
+func GetSectionTasks(sid string, uid string, learning bool) (t []TaskDetail, err error) {
 	err = (&Task{}).GetEngine().
 		Where("section_id = ?", sid).
 		Asc("task_order").
 		Find(&t)
 	var s Survey
+	var m Submit
 	var qs []Question
+	var c []Choice
+	var b bool
 	for i := 0; i < len(t); i ++ {
 		if t[i].TaskType == "survey" {
 			_, err = (&Survey{}).GetEngine().
@@ -64,6 +69,34 @@ func GetSectionTasks(sid string) (t []TaskDetail, err error) {
 				Find(&qs)
 			t[i].Survey = s
 			t[i].Questions = qs
+
+			if learning {
+				b, err = (&Submit{}).GetEngine().
+					Where("task_id = ?", t[i].Id).
+					Where("student_id = ?", uid).
+					Get(&m)
+				if b {
+					t[i].Submitted = true
+				}
+				t[i].Submit = m
+
+				err = (&Choice{}).GetEngine().
+					Where("submit_id = ?", m.Id).
+					Asc("choice_order").
+					Find(&c)
+				t[i].Choices = c
+			}
+		} else {
+			if learning {
+				b, err = (&Submit{}).GetEngine().
+					Where("task_id = ?", t[i].Id).
+					Where("student_id = ?", uid).
+					Get(&m)
+				t[i].Submit = m
+				if b {
+					t[i].Submitted = true
+				}
+			}
 		}
 	}
 	return

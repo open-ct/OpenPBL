@@ -45,18 +45,18 @@ func init() {
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "UpdateProject",
+            Method: "GetProjectDetail",
             Router: "/:id",
-            AllowHTTPMethods: []string{"post"},
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "GetProjectDetail",
+            Method: "UpdateProject",
             Router: "/:id",
-            AllowHTTPMethods: []string{"get"},
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -198,15 +198,6 @@ func init() {
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "CreateSubmit",
-            Router: "/submit",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
             Method: "CreateTask",
             Router: "/task",
             AllowHTTPMethods: []string{"post"},
@@ -218,6 +209,24 @@ func init() {
         beego.ControllerComments{
             Method: "UpdateTask",
             Router: "/task/:tid",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "CreateSubmit",
+            Router: "/task/:tid/submit",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "UpdateSubmit",
+            Router: "/task/:tid/submit/:sid",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -307,7 +316,7 @@ func init() {
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
             Method: "GetSectionTasks",
-            Router: "/tasks/:sid",
+            Router: "/tasks/:sid/:pid",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,

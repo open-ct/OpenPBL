@@ -8,7 +8,6 @@ import (
 type SectionResponse struct {
 	Response
 	Section   models.SectionDetail  `json:"section"`
-	Learning  bool                  `json:"learning"`
 }
 
 // GetSectionDetail
@@ -20,41 +19,22 @@ type SectionResponse struct {
 // @Failure 403 body is empty
 // @router /chapter/section/:sid/:pid [get]
 func (p *ProjectController) GetSectionDetail() {
-	var resp SectionResponse
-	var learning bool
-	user := p.GetSessionUser()
-	if user == nil {
-		resp = SectionResponse{
-			Response: Response{
-				Code: 401,
-				Msg:  "请先登录",
-			},
-		}
-		p.Data["json"] = resp
-		p.ServeJSON()
-		return
-	}
-	if user.Tag != "student" {
-		learning = false
-	}
-	uid := user.Username
-	pid, err := p.GetInt64(":pid")
-
-	learning = models.IsLearningProject(pid, uid)
 	sid := p.GetString(":sid")
 	section, err := models.GetSectionDetailById(sid)
-	if learning {
-
-	}
 	if err != nil {
 		p.Data["json"] = SectionResponse{
 			Section:  models.SectionDetail{},
-			Learning: false,
+			Response: Response{
+				Code: 400,
+				Msg: err.Error(),
+			},
 		}
 	} else {
 		p.Data["json"] = SectionResponse{
 			Section:  section,
-			Learning: learning,
+			Response: Response{
+				Code: 200,
+			},
 		}
 	}
 	p.ServeJSON()

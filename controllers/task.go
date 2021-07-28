@@ -5,20 +5,59 @@ import (
 	"strconv"
 )
 
+type TaskResponse struct {
+	Response
+	Tasks       []models.TaskDetail `json:"tasks"`
+	Learning    bool                `json:"learning"`
+}
+
 // GetSectionTasks
 // @Title
 // @Description get all the tasks of a section
 // @Param sid path string true ""
 // @Success 200 {object}
 // @Failure 400
-// @router /tasks/:sid [get]
+// @router /tasks/:sid/:pid [get]
 func (p *ProjectController) GetSectionTasks() {
+	var resp TaskResponse
 	sid := p.GetString(":sid")
-	tasks, err := models.GetSectionTasks(sid)
+	var learning bool
+	user := p.GetSessionUser()
+	if user == nil {
+		resp = TaskResponse{
+			Response: Response{
+				Code: 401,
+				Msg:  "请先登录",
+			},
+		}
+		p.Data["json"] = resp
+		p.ServeJSON()
+		return
+	}
+	if user.Tag != "student" {
+		learning = false
+	}
+	uid := user.Username
+	pid, err := p.GetInt64(":pid")
+	learning = models.IsLearningProject(pid, uid)
+	tasks, err := models.GetSectionTasks(sid, uid, learning)
 	if err != nil {
-		p.Data["json"] = map[string][]models.TaskDetail{"tasks": nil}
+		p.Data["json"] = TaskResponse{
+			Response: Response{
+				Code: 400,
+				Msg:  err.Error(),
+			},
+			Tasks:    nil,
+			Learning: false,
+		}
 	} else {
-		p.Data["json"] = map[string][]models.TaskDetail{"tasks": tasks}
+		p.Data["json"] = TaskResponse{
+			Response: Response{
+				Code: 200,
+			},
+			Tasks:    tasks,
+			Learning: learning,
+		}
 	}
 	p.ServeJSON()
 }

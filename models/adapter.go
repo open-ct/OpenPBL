@@ -104,8 +104,10 @@ func (a *Adapter) createTable() {
 		new(Resource),
 		new(Task),
 		new(Survey),
-		new(Answer),
 		new(Question),
+
+		new(Submit),
+		new(Choice),
 
 		new(ProjectSkill),
 		new(ProjectSubject),

@@ -48,7 +48,7 @@ function SectionEditPage(obj) {
           <FileResource section={section}/>
           <StudentTask section={section} pid={pid}/>
         </div>
-        <Link to={`/project/${pid}/section/${sid}/preview`}>
+        <Link to={`/project/${pid}/section/${sid}/preview?back=/project/${pid}/section/${sid}/edit`}>
           <Button style={{marginBottom: '20px'}}>预览</Button>
         </Link>
       </div>

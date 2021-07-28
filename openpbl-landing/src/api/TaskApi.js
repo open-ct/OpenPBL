@@ -2,9 +2,9 @@ import request from "./request";
 import qs from 'qs'
 
 export default {
-  getSectionTasks(sid) {
+  getSectionTasks(sid, pid) {
     return request({
-      url: '/project/tasks/' + sid,
+      url: '/project/tasks/' + sid + '/' + pid,
       method: 'get',
     })
   },

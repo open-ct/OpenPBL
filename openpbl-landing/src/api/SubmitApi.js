@@ -2,15 +2,16 @@ import request from "./request";
 import qs from "qs";
 
 export default {
-  getSubmits(sid, pid) {
+  createSubmit(tid, data) {
     return request({
-      url:'/project/submit/' + pid + '/' + sid,
-      method: 'get',
+      url: `/project/task/${tid}/submit`,
+      method: 'post',
+      data: qs.stringify(data, {arrayFormat: 'repeat'})
     })
   },
-  createSubmits(data) {
+  updateSubmit(tid, sid, data) {
     return request({
-      url:'/project/submit',
+      url: `/project/task/${tid}/submit/${sid}`,
       method: 'post',
       data: qs.stringify(data)
     })

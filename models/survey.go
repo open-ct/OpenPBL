@@ -25,18 +25,6 @@ type SurveyDetail struct {
 	Questions []Question `json:"questions" xorm:"extends"`
 }
 
-type Answer struct {
-	Id              int64     `json:"id" xorm:"not null pk autoincr"`
-	SubmitId        int64     `json:"submitId" xorm:"not null index"`
-	SurveyIntroduce string    `json:"surveyIntroduce"`
-}
-type Choice struct {
-	Id            int64     `json:"id" xorm:"not null pk autoincr"`
-	AnswerId      int64     `json:"answerId" xorm:"not null index"`
-	ChoiceOrder   int       `json:"choiceOrder" xorm:"not null index"`
-	Options       string    `json:"options"`
-}
-
 func (s *Survey) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(s)
 }

@@ -30,15 +30,12 @@ class MenuBar extends React.PureComponent {
     let key = e.key;
     this.setState({menu: key});
   }
-  gotoEditPage = e => {
-    this.props.history.push('/project/edit/')
-  }
 
   createProject = e => {
     ProjectApi.createProject()
       .then((res)=>{
         if (res.data.code === 200) {
-          window.open('/project/edit/info/' + res.data.data)
+          window.open(`/project/${res.data.data}/info/edit`)
         }
       })
       .catch((e)=>{console.log(e)})

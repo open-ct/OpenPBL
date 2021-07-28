@@ -55,10 +55,11 @@ func (p *ProjectController) GetProjectDetail() {
 		p.ServeJSON()
 		return
 	}
+	uid := user.Username
 	var err error
 	var project models.ProjectDetail
 	if user.Tag == "student" {
-		project, err = models.GetProjectByPidForStudent(pid)
+		project, err = models.GetProjectByPidForStudent(pid, uid)
 	} else if user.Tag == "teacher" {
 		project, err = models.GetProjectByPidForTeacher(pid)
 	}

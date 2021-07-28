@@ -10,8 +10,6 @@ import LearningProject from "./pages/Project/LearningProject";
 import FinishedProject from "./pages/Project/FinishedProject";
 
 import AuthCallback from "./pages/User/Auth/AuthCallback";
-import Login from "./pages/User/Login";
-import Register from "./pages/User/Register";
 import Learning from "./pages/Project/LearningPage";
 import EditInfo from "./pages/Project/CreateProject/Info";
 import EditOutlined from "./pages/Project/CreateProject/Outline"
