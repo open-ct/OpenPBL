@@ -54,12 +54,12 @@ func GetSectionTasks(sid string, uid string, learning bool) (t []TaskDetail, err
 		Asc("task_order").
 		Find(&t)
 	var s Survey
-	var m Submit
 	var qs []Question
 	var c []Choice
 	var b bool
 	for i := 0; i < len(t); i ++ {
 		if t[i].TaskType == "survey" {
+			var m Submit
 			_, err = (&Survey{}).GetEngine().
 				Where("task_id = ?", t[i].Id).
 				Get(&s)
@@ -87,6 +87,7 @@ func GetSectionTasks(sid string, uid string, learning bool) (t []TaskDetail, err
 				t[i].Choices = c
 			}
 		} else {
+			var m Submit
 			if learning {
 				b, err = (&Submit{}).GetEngine().
 					Where("task_id = ?", t[i].Id).

@@ -46,9 +46,12 @@ func (p *ProjectController) CreateSubmit() {
 		SubmitIntroduce: p.GetString("submitIntroduce"),
 		SubmitContent:   p.GetString("submitContent"),
 		FilePath:        p.GetString("filePath"),
+		CreateAt:        time.Now(),
 	}
-	var c []models.Choice
-	err = json.Unmarshal([]byte(p.GetString("choices")), &c)
+	var c = make([]models.Choice, 0)
+	if f.SubmitType == "survey" {
+		err = json.Unmarshal([]byte(p.GetString("choices")), &c)
+	}
 	err = f.Create(c)
 	if err != nil {
 		p.Data["json"] = Response{
@@ -107,8 +110,10 @@ func (p *ProjectController) UpdateSubmit() {
 		FilePath:        p.GetString("filePath"),
 		CreateAt:        time.Now(),
 	}
-	var c []models.Choice
-	err = json.Unmarshal([]byte(p.GetString("choices")), &c)
+	var c =make([]models.Choice, 0)
+	if f.SubmitType == "survey" {
+		err = json.Unmarshal([]byte(p.GetString("choices")), &c)
+	}
 	err = f.Update(c)
 	if err != nil {
 		p.Data["json"] = Response{

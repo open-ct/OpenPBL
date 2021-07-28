@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {Card, PageHeader, Input, Upload, message, Button} from "antd";
 import DocumentTitle from 'react-document-title';
 import {InboxOutlined} from '@ant-design/icons'
-import qs from 'qs'
 
 import SectionApi from "../../../api/SectionApi";
 import "../CreateProject/Section/component/section-edit.less"
@@ -85,6 +84,7 @@ function PreviewSection(obj) {
       .then(res=>{
         if (res.data.code === 200) {
           message.success(res.data.msg)
+          getTasks()
         } else {
           message.error(res.data.msg)
         }
@@ -96,6 +96,7 @@ function PreviewSection(obj) {
       .then(res=>{
         if (res.data.code === 200) {
           message.success(res.data.msg)
+          getTasks()
         } else {
           message.error(res.data.msg)
         }
@@ -189,6 +190,7 @@ function PreviewSection(obj) {
               <FillSurvey
                 item={item}
                 index={index}
+                getTasks={getTasks}
                 learning={learning}
                 setTaskItem={setTaskItem}
               />

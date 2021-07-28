@@ -18,7 +18,7 @@ type Submit struct {
 	SubmitContent   string    `json:"submitContent" xorm:"text"`
 
 	FilePath        string    `json:"filePath"`
-	CreateAt        time.Time `json:"createAt" xorm:"created"`
+	CreateAt        time.Time `json:"createAt"`
 }
 
 type Choice struct {

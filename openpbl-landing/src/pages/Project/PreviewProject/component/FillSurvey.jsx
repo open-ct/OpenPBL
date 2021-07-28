@@ -10,7 +10,6 @@ import SubmitApi from "../../../../api/SubmitApi";
 const blank = Question.blank
 
 function FillSurvey(obj) {
-
   const submitSurvey = e => {
     obj.item.submit.submitType = 'survey'
     let data = Object.assign({}, obj.item.submit)
@@ -23,6 +22,7 @@ function FillSurvey(obj) {
       .then(res=>{
         if (res.data.code === 200) {
           message.success(res.data.msg)
+          obj.getTasks()
         } else {
           message.error(res.data.msg)
         }
@@ -41,6 +41,7 @@ function FillSurvey(obj) {
       .then(res=>{
         if (res.data.code === 200) {
           message.success(res.data.msg)
+          obj.getTasks()
         } else {
           message.error(res.data.msg)
         }
