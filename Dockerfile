@@ -1,20 +1,28 @@
-FROM node:lts-alpine as front-end
-WORKDIR /openpbl-landing
-COPY openpbl-landing/package.json package.json
-RUN yarn install
-COPY openpbl-landing/. .
-RUN yarn build
+FROM golang:1.16-rc-buster
+WORKDIR /openpbl
+COPY ./ /openpbl
+RUN go env -w CGO_ENABLED=0 GOPROXY=https://goproxy.io,direct GOOS=linux GOARCH=amd64 \
+    && apt update && apt install sudo \
+    && wget https://nodejs.org/dist/v12.22.0/node-v12.22.0-linux-x64.tar.gz \
+    && sudo tar xf node-v12.22.0-linux-x64.tar.gz \
+    && sudo apt install wait-for-it
+ENV PATH=$PATH:/openpbl/node-v12.22.0-linux-x64/bin
+RUN npm install -g yarn \
+    && cd openpbl-landing \
+    && yarn install \
+    && yarn run build \
+    && rm -rf node_modules \
+    && cd /openpbl \
+    && go build main.go
 
 
-FROM golang:alpine3.13
+FROM alpine:3.7
+COPY --from=0 /openpbl   /
+COPY --from=0 /usr/bin/wait-for-it  /
+RUN set -eux \
+    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+    && apk update \
+    && apk upgrade \
+    && apk add bash
 ENV RUNMODE=prod
-WORKDIR /OpenPBL
-RUN  go env -w GO111MODULE=on ;go env -w GOPROXY=https://goproxy.cn,direct
-RUN apk add --update alpine-sdk
-COPY go.mod .
-RUN go mod download
-COPY . .
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
-COPY --from=front-end /openpbl-landing/build openpbl-landing/build
-RUN go build
-ENTRYPOINT ["./OpenPBL"]
+CMD ./wait-for-it db:3308 && ./main
