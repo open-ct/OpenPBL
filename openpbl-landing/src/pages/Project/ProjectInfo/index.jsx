@@ -286,7 +286,7 @@ class ProjectInfo extends React.PureComponent {
                         <div>
                           <span>{project.readNum}&nbsp;人看过</span>
                           <Divider type="vertical"/>
-                          <span>{project.readNum}&nbsp;人加入学习</span>
+                          <span>{project.joinNum}&nbsp;人加入学习</span>
                           <Divider type="vertical"/>
                           <span>授课教师：&nbsp;
                             <Avatar src={teacher.avatar} />&nbsp;&nbsp;

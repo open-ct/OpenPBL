@@ -23,9 +23,8 @@ func (sp *ProjectDetail) GetEngine() *xorm.Session {
 
 func (l *LearnProject) Create() (err error) {
 	_, err = (&LearnProject{}).GetEngine().Insert(l)
-	err = adapter.Engine.
-		SQL("update project set join_num = join_num + 1 where id = ?", l.ProjectId).
-		Commit()
+	_, err = adapter.Engine.
+		Exec("update project set join_num = join_num + 1 where id = ?", l.ProjectId)
 	return
 }
 
