@@ -7,8 +7,8 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      - db
-  db:
+      - openpbl-db
+  openpbl-db:
     restart: always
     image: mysql:8.0.25
     ports:
@@ -16,4 +16,4 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - /usr/local/docker/mysql:/var/lib/mysql
+      - /usr/local/docker/openpbl-mysql:/var/lib/mysql

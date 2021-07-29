@@ -25,4 +25,4 @@ RUN set -eux \
     && apk upgrade \
     && apk add bash
 ENV RUNMODE=prod
-CMD ./wait-for-it db:3308 && ./main
+CMD ./wait-for-it openpbl-db:3308 && ./main
