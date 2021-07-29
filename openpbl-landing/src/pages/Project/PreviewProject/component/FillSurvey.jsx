@@ -70,7 +70,7 @@ function FillSurvey(obj) {
       <div style={{marginLeft: '20px', marginRight: '20px'}}>
         {obj.item.questions.map((subItem, subIndex)=>(
           <div key={subIndex.toString()}>
-            {subItem.questionType==='singleChoice' ?
+            {subItem.questionType==='singleChoice' || subItem.questionType==='scale5' || subItem.questionType==='scale7' ?
               <div style={{textAlign: "left", marginTop: '10px'}}>
                 <p>{subItem.questionTitle}</p>
                 <Radio.Group value={obj.item.choices[subIndex].choiceOptions[0]} onChange={v=>changeRadio(v, subIndex)}>

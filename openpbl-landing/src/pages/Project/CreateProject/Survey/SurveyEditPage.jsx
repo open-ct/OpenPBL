@@ -9,6 +9,7 @@ import MultipleChoice from "./component/MultipleChoice";
 import BlankFill from "./component/BlankFill";
 import BriefAnswer from "./component/BriefAnswer";
 import Question from "./component/Question";
+import Scale from "./component/Scale";
 
 const qType = {
   'singleChoice': '单选',
@@ -202,17 +203,16 @@ function SurveyEditPage(obj) {
                         : null}
 
                       {item.questionType === 'scale5' || item.questionType === 'scale7' ?
-                        <div style={{textAlign: "left", marginTop: '10px'}}>
-                          <Radio.Group>
-                            {item.questionOptions.map((subItem, subIndex) => (
-                              <div style={{marginTop: '10px'}} key={subIndex.toString()}>
-                                <Radio value={subIndex}>
-                                  {subItem}
-                                </Radio>
-                              </div>
-                            ))}
-                          </Radio.Group>
-                        </div>
+                        <Scale
+                          item={item}
+                          index={index}
+                          editing={editing[index]}
+                          getType={getType}
+                          editQuestion={editQuestion}
+                          saveQuestion={saveQuestion}
+                          deleteQuestion={deleteQuestion}
+                          exchangeQuestion={exchangeQuestion}
+                        />
                         : null}
 
                       {item.questionType === 'multipleChoice' ?
