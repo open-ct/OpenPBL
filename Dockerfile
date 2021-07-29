@@ -11,8 +11,10 @@ RUN npm install -g yarn
 COPY openpbl-landing/package.json /openpbl/openpbl-landing/package.json
 RUN cd openpbl-landing && yarn install
 
-COPY ./ /openpbl
+COPY openpbl-landing /openpbl/openpbl-landing
 RUN cd openpbl-landing && yarn build && rm -rf node_modules
+
+COPY ./ /openpbl
 RUN cd /openpbl && go build main.go
 
 
