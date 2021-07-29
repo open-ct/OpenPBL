@@ -39,7 +39,6 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
