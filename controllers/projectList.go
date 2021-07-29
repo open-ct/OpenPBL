@@ -16,6 +16,7 @@ type ProjectListController struct {
 
 type ProjectList struct {
 	Code     int                    `json:"code"`
+	Msg      string                 `json:"msg"`
 	Count    int64                  `json:"count"`
 	Projects []models.ProjectDetail `json:"projects"`
 }
@@ -75,6 +76,7 @@ func (pl *ProjectListController) GetUserProjectList() {
 	if user == nil {
 		data = ProjectList{
 			Code:     401,
+			Msg:      "请先登录",
 		}
 		pl.Data["json"] = data
 		pl.ServeJSON()

@@ -46,6 +46,7 @@ class GlobalHeader extends React.PureComponent {
               account: null
             })
             localStorage.setItem("type", "")
+            window.location.href = '/'
           }
         })
         .catch(e => {

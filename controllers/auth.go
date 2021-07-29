@@ -112,8 +112,8 @@ func (c *AuthController) GetAccount() {
 	var resp Response
 	if c.GetSessionUser() == nil {
 		resp = Response{
-			Code: 401,
-			Msg: "请先登录",
+			Code: 404,
+			Msg: "账号不存在",
 			Data: c.GetSessionUser(),
 		}
 		c.Data["json"] = resp
