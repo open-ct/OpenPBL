@@ -1,6 +1,6 @@
 import request from './request'
 
-export default {
+const ProjectListApi = {
   getUserProjectList(mode, q) {
     return request({
       url: '/project-list/' + mode,
@@ -9,3 +9,5 @@ export default {
     })
   },
 }
+
+export default ProjectListApi

@@ -1,7 +1,7 @@
 import request from './request'
 import qs from 'qs'
 
-export default {
+const ProjectApi = {
   getProjectDetail(id) {
     return request({
       url:'/project/' + id,
@@ -63,3 +63,5 @@ export default {
   }
 
 }
+
+export default ProjectApi

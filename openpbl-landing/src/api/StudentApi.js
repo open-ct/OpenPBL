@@ -1,7 +1,7 @@
 import request from './request'
 import qs from 'qs'
 
-export default {
+const StudentApi = {
   learnProject(pid) {
     return request({
       url: '/student/learn/' + pid,
@@ -25,6 +25,6 @@ export default {
       })
     })
   }
-
-
 }
+
+export default StudentApi

@@ -1,7 +1,7 @@
 import request from "./request";
 import qs from 'qs'
 
-export default {
+const SurveyApi = {
   getSurveyDetailByTaskId(tid) {
     return request({
       url: '/project/task/survey/' + tid,
@@ -42,3 +42,5 @@ export default {
     })
   }
 }
+
+export default SurveyApi

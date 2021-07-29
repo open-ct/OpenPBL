@@ -1,7 +1,7 @@
 import request from "./request";
 import qs from "qs";
 
-export default {
+const SubmitApi = {
   createSubmit(tid, data) {
     return request({
       url: `/project/task/${tid}/submit`,
@@ -17,3 +17,5 @@ export default {
     })
   },
 }
+
+export default SubmitApi

@@ -1,7 +1,7 @@
 import request from "./request";
 import qs from 'qs'
 
-export default {
+const ResourceApi = {
   getResource(id) {
     return request({
       url:'/resource/' + id,
@@ -31,3 +31,5 @@ export default {
   },
 
 }
+
+export default ResourceApi

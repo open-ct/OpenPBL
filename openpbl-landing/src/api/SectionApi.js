@@ -2,7 +2,7 @@ import request from "./request";
 import qs from "qs";
 
 
-export default {
+const SectionApi = {
   getChapterSections(id) {
     return request({
       url:'/project/chapter/sections/' + id,
@@ -42,3 +42,5 @@ export default {
     })
   },
 }
+
+export default SectionApi

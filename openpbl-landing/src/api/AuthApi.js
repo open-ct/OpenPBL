@@ -1,7 +1,7 @@
 import request from './request'
 import qs from 'qs';
 
-export default {
+const AuthApi = {
   login(code, state) {
     return request({
       url: '/auth/login',
@@ -22,3 +22,5 @@ export default {
     })
   }
 }
+
+export default AuthApi

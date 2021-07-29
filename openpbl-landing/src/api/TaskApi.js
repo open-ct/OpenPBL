@@ -1,7 +1,7 @@
 import request from "./request";
 import qs from 'qs'
 
-export default {
+const TaskApi = {
   getSectionTasks(sid, pid) {
     return request({
       url: '/project/tasks/' + sid + '/' + pid,
@@ -35,3 +35,5 @@ export default {
     })
   }
 }
+
+export default TaskApi
