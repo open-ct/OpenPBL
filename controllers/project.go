@@ -205,9 +205,9 @@ func (p *ProjectController) UpdateProject() {
 // @Failure 400
 // @Failure 401
 // @Failure 403
-// @router /publish/:pid [post]
+// @router /:id/publish [post]
 func (u *ProjectController) PublishProject() {
-	pid, err := u.GetInt64(":pid")
+	pid, err := u.GetInt64(":id")
 	var resp Response
 	user := u.GetSessionUser()
 	if user == nil {
@@ -258,9 +258,9 @@ func (u *ProjectController) PublishProject() {
 // @Failure 400
 // @Failure 401
 // @Failure 403
-// @router /close/:pid [post]
+// @router /:id/close [post]
 func (u *ProjectController) CloseProject() {
-	pid, err := u.GetInt64(":pid")
+	pid, err := u.GetInt64(":id")
 	var resp Response
 	user := u.GetSessionUser()
 	if user == nil {
@@ -311,9 +311,9 @@ func (u *ProjectController) CloseProject() {
 // @Failure 400
 // @Failure 401
 // @Failure 403
-// @router /delete/:pid [post]
+// @router /:id/delete [post]
 func (u *ProjectController) DeleteProject() {
-	pid, err := u.GetInt64(":pid")
+	pid, err := u.GetInt64(":id")
 	var resp Response
 	user := u.GetSessionUser()
 	if user == nil {

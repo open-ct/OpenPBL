@@ -13,7 +13,7 @@ import (
 // @Param body body models.Submit true ""
 // @Success 200 {object}
 // @Failure 403 body is empty
-// @router /task/:tid/submit [post]
+// @router /:projectId/task/:taskId/submit [post]
 func (p *ProjectController) CreateSubmit() {
 	var resp Response
 	user := p.GetSessionUser()
@@ -36,7 +36,7 @@ func (p *ProjectController) CreateSubmit() {
 		return
 	}
 	uid := user.Username
-	tid, err := p.GetInt64(":tid")
+	tid, err := p.GetInt64(":taskId")
 
 	f := &models.Submit{
 		StudentId:       uid,
@@ -74,7 +74,7 @@ func (p *ProjectController) CreateSubmit() {
 // @Param body body models.Submit true ""
 // @Success 200 {object}
 // @Failure 403 body is empty
-// @router /task/:tid/submit/:sid [post]
+// @router /:projectId/task/:taskId/submit/:submitId [post]
 func (p *ProjectController) UpdateSubmit() {
 	var resp Response
 	user := p.GetSessionUser()
@@ -97,8 +97,8 @@ func (p *ProjectController) UpdateSubmit() {
 		return
 	}
 	uid := user.Username
-	tid, err := p.GetInt64(":tid")
-	sid, err := p.GetInt64(":sid")
+	tid, err := p.GetInt64(":taskId")
+	sid, err := p.GetInt64(":submitId")
 	f := &models.Submit{
 		Id:              sid,
 		StudentId:       uid,

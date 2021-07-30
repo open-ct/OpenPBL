@@ -80,7 +80,7 @@ function PreviewSection(obj) {
   }
   const submitComment = (item, index) => {
     item.submit.submitType = item.taskType
-    SubmitApi.createSubmit(item.id, item.submit)
+    SubmitApi.createSubmit(pid, item.id, item.submit)
       .then(res=>{
         if (res.data.code === 200) {
           message.success(res.data.msg)
@@ -92,7 +92,7 @@ function PreviewSection(obj) {
       .catch(e=>{console.log(e)})
   }
   const updateComment = (item, index) => {
-    SubmitApi.updateSubmit(item.id, item.submit.id, item.submit)
+    SubmitApi.updateSubmit(pid, item.id, item.submit.id, item.submit)
       .then(res=>{
         if (res.data.code === 200) {
           message.success(res.data.msg)
@@ -188,6 +188,7 @@ function PreviewSection(obj) {
             }
             {item.taskType === 'survey' ?
               <FillSurvey
+                pid={pid}
                 item={item}
                 index={index}
                 getTasks={getTasks}

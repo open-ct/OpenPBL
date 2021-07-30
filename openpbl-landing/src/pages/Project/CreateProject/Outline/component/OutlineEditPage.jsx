@@ -41,7 +41,7 @@ function OutlineEditPage(obj) {
 
   const handleClick = (item, key) => {
     if (item.sections === undefined) {
-      SectionApi.getChapterSections(item.id)
+      SectionApi.getChapterSections(item)
         .then((res) => {
           if (res.data.sections == null) {
             item.sections = []
@@ -82,7 +82,7 @@ function OutlineEditPage(obj) {
     setSectionModalVisible(true)
   }
   const deleteChapter = (c, index) => {
-    ChapterApi.deleteProjectChapter(c.id)
+    ChapterApi.deleteProjectChapter(c)
       .then((res) => {
         if (res.data.code === 200) {
           chapters.splice(index, 1)
@@ -95,7 +95,7 @@ function OutlineEditPage(obj) {
       })
   }
   const deleteSection = (s, index, subIndex) => {
-    SectionApi.deleteChapterSection(s.id)
+    SectionApi.deleteChapterSection(pid, s)
       .then((res) => {
         if (res.data.code === 200) {
           let sections = chapters[index].sections
@@ -189,7 +189,7 @@ function OutlineEditPage(obj) {
         }
       }
       let sec = {sectionName: sectionName, sectionNumber: l, chapterId: chapters[index].id}
-      SectionApi.createChapterSection(sec)
+      SectionApi.createChapterSection(pid, sec)
         .then((res) => {
           setSectionModalVisible(false)
           setSectionName('')
@@ -230,7 +230,7 @@ function OutlineEditPage(obj) {
     } else {
       let id1 = chapters[index].id
       let id2 = chapters[index2].id
-      ChapterApi.exchangeProjectChapter(id1, id2)
+      ChapterApi.exchangeProjectChapter(pid, id1, id2)
         .then((res) => {
           if (res.data.code === 200) {
             let c1 = chapters[index]
@@ -249,7 +249,7 @@ function OutlineEditPage(obj) {
     } else {
       let id1 = chapters[index].sections[subIndex].id
       let id2 = chapters[index].sections[subIndex2].id
-      SectionApi.exchangeChapterSection(id1, id2)
+      SectionApi.exchangeChapterSection(chapters[index], id1, id2)
         .then(res => {
           if (res.data.code === 200) {
             let s1 = chapters[index].sections[subIndex]

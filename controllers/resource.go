@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
 	"OpenPBL/models"
+	"github.com/astaxie/beego"
 )
 
 // ResourceController
@@ -101,7 +101,7 @@ func (p *ResourceController) UpdateResource() {
 // @Param content body string true ""
 // @Success 200 {object} models.TeacherProject
 // @Failure 400
-// @router /content/:id [post]
+// @router /:id/content [post]
 func (p *ResourceController) UpdateResourceContent() {
 	id, err := p.GetInt64(":id")
 	resource := &models.Resource{

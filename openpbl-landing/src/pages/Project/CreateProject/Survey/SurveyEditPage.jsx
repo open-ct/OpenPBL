@@ -33,7 +33,7 @@ function SurveyEditPage(obj) {
 
   useEffect(() => {
     if (tid !== undefined) {
-      SurveyApi.getSurveyDetailByTaskId(tid)
+      SurveyApi.getSurveyDetailByTaskId(pid, tid)
         .then(res => {
           if (res.data.questions === null) {
             setQuestions([])
@@ -76,7 +76,7 @@ function SurveyEditPage(obj) {
       questionOptions: opt
     }
     q.questionOptions = q.questionOptions.toString()
-    SurveyApi.createQuestion(q)
+    SurveyApi.createQuestion(pid, tid, q)
       .then(res => {
         if (res.data.code === 200) {
           q.id = res.data.data
@@ -92,7 +92,7 @@ function SurveyEditPage(obj) {
     let q = Object.assign({}, item)
     q.questionOptions = opt.toString()
     q.questionTitle = title
-    SurveyApi.updateQuestion(q)
+    SurveyApi.updateQuestion(pid, tid, q)
       .then(res => {
         editing[index] = false
         setEditing([...editing])
@@ -111,7 +111,7 @@ function SurveyEditPage(obj) {
   }
 
   const deleteQuestion = (item, index) => {
-    SurveyApi.deleteQuestion(item.id)
+    SurveyApi.deleteQuestion(pid, tid, item.surveyId, item.id)
       .then(res => {
         if (res.data.code === 200) {
           questions.splice(index, 1)
@@ -127,7 +127,7 @@ function SurveyEditPage(obj) {
   const exchangeQuestion = (index1, index2) => {
     if (index1 < 0 || index2 >= questions.length) {
     } else {
-      SurveyApi.exchangeQuestion(questions[index1].id, questions[index2].id)
+      SurveyApi.exchangeQuestion(pid, tid, questions[index1].surveyId, questions[index1].id, questions[index2].id)
         .then(res => {
           if (res.data.code === 200) {
             let q1 = questions[index1]
@@ -162,7 +162,7 @@ function SurveyEditPage(obj) {
           title="返回"
           subTitle="编辑资源"
         />
-        <div style={{padding: '20px', margin: 'auto', maxWidth: '1200px'}}>
+        <div style={{padding: '20px', margin: 'auto'}}>
           <Card>
             <Layout>
               <Affix offsetTop={0}>

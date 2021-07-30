@@ -18,7 +18,7 @@ function FillSurvey(obj) {
       c[i].choiceOptions = c[i].choiceOptions.toString()
     }
     data['choices'] = JSON.stringify(c)
-    SubmitApi.createSubmit(obj.item.id, data)
+    SubmitApi.createSubmit(obj.pid, obj.item.id, data)
       .then(res=>{
         if (res.data.code === 200) {
           message.success(res.data.msg)
@@ -37,7 +37,7 @@ function FillSurvey(obj) {
       c[i].choiceOptions = c[i].choiceOptions.toString()
     }
     data['choices'] = JSON.stringify(c)
-    SubmitApi.updateSubmit(obj.item.id, obj.item.submit.id, data)
+    SubmitApi.updateSubmit(obj.pid, obj.item.id, obj.item.submit.id, data)
       .then(res=>{
         if (res.data.code === 200) {
           message.success(res.data.msg)

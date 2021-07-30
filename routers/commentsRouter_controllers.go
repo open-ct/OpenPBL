@@ -45,15 +45,6 @@ func init() {
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "UpdateProject",
-            Router: "/:id",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
             Method: "GetProjectDetail",
             Router: "/:id",
             AllowHTTPMethods: []string{"get"},
@@ -63,90 +54,18 @@ func init() {
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
+            Method: "UpdateProject",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
             Method: "CreateProjectChapter",
-            Router: "/chapter",
+            Router: "/:id/chapter",
             AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "UpdateProjectChapter",
-            Router: "/chapter/:cid",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "DeleteProjectChapter",
-            Router: "/chapter/delete/:cid",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "ExchangeProjectChapter",
-            Router: "/chapter/exchange/:cid1/:cid2",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "CreateChapterSection",
-            Router: "/chapter/section",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "UpdateChapterSection",
-            Router: "/chapter/section/:sid",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "GetSectionDetail",
-            Router: "/chapter/section/:sid/:pid",
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "DeleteChapterSection",
-            Router: "/chapter/section/delete/:sid",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "ExchangeChapterSection",
-            Router: "/chapter/section/exchange/:sid1/:sid2",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "GetChapterSections",
-            Router: "/chapter/sections/:cid",
-            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -154,7 +73,7 @@ func init() {
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
             Method: "GetProjectChapters",
-            Router: "/chapters/:pid",
+            Router: "/:id/chapters",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -163,7 +82,7 @@ func init() {
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
             Method: "CloseProject",
-            Router: "/close/:pid",
+            Router: "/:id/close",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -172,7 +91,7 @@ func init() {
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
             Method: "DeleteProject",
-            Router: "/delete/:pid",
+            Router: "/:id/delete",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -181,7 +100,214 @@ func init() {
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
             Method: "PublishProject",
-            Router: "/publish/:pid",
+            Router: "/:id/publish",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "UpdateProjectChapter",
+            Router: "/:projectId/chapter/:chapterId",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "DeleteProjectChapter",
+            Router: "/:projectId/chapter/:chapterId/delete",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "CreateChapterSection",
+            Router: "/:projectId/chapter/:chapterId/section",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "UpdateChapterSection",
+            Router: "/:projectId/chapter/:chapterId/section/:sectionId",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "DeleteChapterSection",
+            Router: "/:projectId/chapter/:chapterId/section/:sectionId/delete",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "GetChapterSections",
+            Router: "/:projectId/chapter/:chapterId/sections",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "ExchangeChapterSection",
+            Router: "/:projectId/chapter/:chapterId/sections/exchange",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "ExchangeProjectChapter",
+            Router: "/:projectId/chapters/exchange",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "GetSectionDetail",
+            Router: "/:projectId/section/:sectionId",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "GetSectionTasks",
+            Router: "/:projectId/section/:sectionId/tasks",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "CreateTask",
+            Router: "/:projectId/task",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "UpdateTask",
+            Router: "/:projectId/task/:taskId",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "DeleteTask",
+            Router: "/:projectId/task/:taskId/delete",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "CreateSubmit",
+            Router: "/:projectId/task/:taskId/submit",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "UpdateSubmit",
+            Router: "/:projectId/task/:taskId/submit/:submitId",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "GetSurveyDetailByTaskId",
+            Router: "/:projectId/task/:taskId/survey",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "CreateSurvey",
+            Router: "/:projectId/task/:taskId/survey",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "UpdateSurvey",
+            Router: "/:projectId/task/:taskId/survey/:sid",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "CreateQuestion",
+            Router: "/:projectId/task/:taskId/survey/:surveyId/question",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "UpdateQuestion",
+            Router: "/:projectId/task/:taskId/survey/:surveyId/question/:questionId",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "DeleteQuestion",
+            Router: "/:projectId/task/:taskId/survey/:surveyId/question/:questionId/delete",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "ExchangeQuestion",
+            Router: "/:projectId/task/:taskId/survey/:surveyId/questions/exchange",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "ExchangeTask",
+            Router: "/:projectId/tasks/exchange",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -191,132 +317,6 @@ func init() {
         beego.ControllerComments{
             Method: "GetProjectStudents",
             Router: "/students/:pid",
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "CreateTask",
-            Router: "/task",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "UpdateTask",
-            Router: "/task/:tid",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "CreateSubmit",
-            Router: "/task/:tid/submit",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "UpdateSubmit",
-            Router: "/task/:tid/submit/:sid",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "DeleteTask",
-            Router: "/task/delete/:tid",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "ExchangeTask",
-            Router: "/task/exchange/:tid1/:tid2",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "CreateSurvey",
-            Router: "/task/survey/",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "UpdateSurvey",
-            Router: "/task/survey/:sid",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "GetSurveyDetailByTaskId",
-            Router: "/task/survey/:tid",
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "CreateQuestion",
-            Router: "/task/survey/question",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "UpdateQuestion",
-            Router: "/task/survey/question/:qid",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "DeleteQuestion",
-            Router: "/task/survey/question/delete/:qid",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "ExchangeQuestion",
-            Router: "/task/survey/question/exchange/:id1/:id2",
-            AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "GetSectionTasks",
-            Router: "/tasks/:sid/:pid",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -361,7 +361,7 @@ func init() {
     beego.GlobalControllerRouter["OpenPBL/controllers:ResourceController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ResourceController"],
         beego.ControllerComments{
             Method: "UpdateResourceContent",
-            Router: "/content/:id",
+            Router: "/:id/content",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -370,7 +370,7 @@ func init() {
     beego.GlobalControllerRouter["OpenPBL/controllers:StudentController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:StudentController"],
         beego.ControllerComments{
             Method: "ExitProject",
-            Router: "/exit/:pid",
+            Router: "/exit/:projectId",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -388,7 +388,7 @@ func init() {
     beego.GlobalControllerRouter["OpenPBL/controllers:StudentController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:StudentController"],
         beego.ControllerComments{
             Method: "LearnProject",
-            Router: "/learn/:pid",
+            Router: "/learn/:projectId",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,

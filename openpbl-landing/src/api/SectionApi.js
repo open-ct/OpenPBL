@@ -3,41 +3,45 @@ import qs from "qs";
 
 
 const SectionApi = {
-  getChapterSections(id) {
+  getChapterSections(item) {
     return request({
-      url:'/project/chapter/sections/' + id,
+      url: `/project/${item.projectId}/chapter/${item.id}/sections`,
       method: 'get',
     })
   },
-  createChapterSection(section) {
+  createChapterSection(pid, section) {
     return request({
-      url:'/project/chapter/section',
+      url: `/project/${pid}/chapter/${section.chapterId}/section`,
       method: 'post',
       data: qs.stringify(section)
     })
   },
-  updateChapterSection(section) {
+  updateChapterSection(pid, section) {
     return request({
-      url:'/project/chapter/section/' + section.id,
+      url: `/project/${pid}/chapter/${section.chapterId}/section/${section.id}`,
       method: 'post',
       data: qs.stringify(section)
     })
   },
-  deleteChapterSection(id) {
+  deleteChapterSection(pid, s) {
     return request({
-      url:'/project/chapter/section/delete/' + id,
+      url: `/project/${pid}/chapter/${s.chapterId}/section/${s.id}/delete`,
       method: 'post',
     })
   },
-  exchangeChapterSection(id1, id2) {
+  exchangeChapterSection(chapter, id1, id2) {
     return request({
-      url:'/project/chapter/section/exchange/' + id1 + '/' + id2,
+      url: `/project/${chapter.projectId}/chapter/${chapter.id}/sections/exchange`,
       method: 'post',
+      data: qs.stringify({
+        sectionId1: id1,
+        sectionId2: id2
+      })
     })
   },
   getSectionDetail(id, pid) {
     return request({
-      url: `/project/chapter/section/${id}/${pid}`,
+      url: `/project/${pid}/section/${id}`,
       method: 'get',
     })
   },

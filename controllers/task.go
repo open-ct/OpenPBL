@@ -17,10 +17,10 @@ type TaskResponse struct {
 // @Param sid path string true ""
 // @Success 200 {object}
 // @Failure 400
-// @router /tasks/:sid/:pid [get]
+// @router /:projectId/section/:sectionId/tasks [get]
 func (p *ProjectController) GetSectionTasks() {
 	var resp TaskResponse
-	sid := p.GetString(":sid")
+	sid := p.GetString(":sectionId")
 	var learning bool
 	user := p.GetSessionUser()
 	if user == nil {
@@ -68,7 +68,7 @@ func (p *ProjectController) GetSectionTasks() {
 // @Param body body models.Task true ""
 // @Success 200 {object} Response
 // @Failure 400
-// @router /task [post]
+// @router /:projectId/task [post]
 func (p *ProjectController) CreateTask() {
 	sid, err := p.GetInt64("sectionId")
 	o, err := p.GetInt("taskOrder")
@@ -104,9 +104,9 @@ func (p *ProjectController) CreateTask() {
 // @Param body body models.Task true ""
 // @Success 200 {object} Response
 // @Failure 401
-// @router /task/:tid [post]
+// @router /:projectId/task/:taskId [post]
 func (p *ProjectController) UpdateTask() {
-	tid, err := p.GetInt64(":tid")
+	tid, err := p.GetInt64(":taskId")
 	sid, err := p.GetInt64("sectionId")
 	o, err := p.GetInt("taskOrder")
 	task := &models.Task{
@@ -139,9 +139,9 @@ func (p *ProjectController) UpdateTask() {
 // @Param cid path string true ""
 // @Success 200 {object} Response
 // @Failure 401
-// @router /task/delete/:tid [post]
+// @router /:projectId/task/:taskId/delete [post]
 func (p *ProjectController) DeleteTask() {
-	tid, err := p.GetInt64(":tid")
+	tid, err := p.GetInt64(":taskId")
 	task := &models.Task{
 		Id:               tid,
 	}
@@ -167,10 +167,10 @@ func (p *ProjectController) DeleteTask() {
 // @Param cid path string true ""
 // @Success 200 {object} Response
 // @Failure 401
-// @router /task/exchange/:tid1/:tid2 [post]
+// @router /:projectId/tasks/exchange [post]
 func (p *ProjectController) ExchangeTask() {
-	tid1 := p.GetString(":tid1")
-	tid2 := p.GetString(":tid2")
+	tid1 := p.GetString(":taskId1")
+	tid2 := p.GetString(":taskId2")
 	err := models.ExchangeTasks(tid1, tid2)
 	if err != nil {
 		p.Data["json"] = Response{

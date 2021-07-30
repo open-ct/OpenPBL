@@ -17,9 +17,9 @@ type SectionResponse struct {
 // @Param pid path string true ""
 // @Success 200 {object}
 // @Failure 403 body is empty
-// @router /chapter/section/:sid/:pid [get]
+// @router /:projectId/section/:sectionId [get]
 func (p *ProjectController) GetSectionDetail() {
-	sid := p.GetString(":sid")
+	sid := p.GetString(":sectionId")
 	section, err := models.GetSectionDetailById(sid)
 	if err != nil {
 		p.Data["json"] = SectionResponse{
@@ -45,48 +45,15 @@ type StudentList struct {
 	Students []models.StudentInfo `json:"students"`
 }
 
-// GetProjectStudents
-// todo need refactor
-// @Title
-// @Description
-// @Param from query int true ""
-// @Param size query int true ""
-// @Success 200 {object} []models.StudentInfo
-// @Failure 403 body is empty
-// @router /students/:pid [get]
-func (p *ProjectController) GetProjectStudents() {
-	pid := p.GetString(":pid")
-	from, err := p.GetInt("from")
-	if err != nil {
-		from = 0
-	}
-	size, err := p.GetInt("size")
-	if err != nil {
-		size = 10
-	}
-	if pid != "" {
-		students, err := models.GetProjectStudents(pid, from, size)
-		rows, err := models.CountProjectStudents(pid, from, size)
-		if err != nil {
-			p.Data["json"] = map[string]string{"error": err.Error()}
-		}
-		p.Data["json"] = StudentList{
-			Count: rows,
-			Students: students,
-		}
-	}
-	p.ServeJSON()
-}
-
 // GetChapterSections
 // @Title
 // @Description
 // @Param cid path string true "chapter id"
 // @Success 200 {object} []models.Section
 // @Failure 403 body is empty
-// @router /chapter/sections/:cid [get]
+// @router /:projectId/chapter/:chapterId/sections [get]
 func (p *ProjectController) GetChapterSections() {
-	cid := p.GetString(":cid")
+	cid := p.GetString(":chapterId")
 	if cid != "" {
 		sections, err := models.GetSectionsByCid(cid)
 		if err != nil {
@@ -97,15 +64,16 @@ func (p *ProjectController) GetChapterSections() {
 	}
 	p.ServeJSON()
 }
+
 // CreateChapterSection
 // @Title
 // @Description
 // @Param body body models.Section true ""
 // @Success 200 {object}
 // @Failure 403 body is empty
-// @router /chapter/section [post]
+// @router /:projectId/chapter/:chapterId/section [post]
 func (p *ProjectController) CreateChapterSection() {
-	cid, err := p.GetInt64("chapterId")
+	cid, err := p.GetInt64(":chapterId")
 	num, err := p.GetInt("sectionNumber")
 	section := &models.Section{
 		ChapterId:        cid,
@@ -129,10 +97,10 @@ func (p *ProjectController) CreateChapterSection() {
 // @Param body body models.Section true ""
 // @Success 200 {object}
 // @Failure 401
-// @router /chapter/section/:sid [post]
+// @router /:projectId/chapter/:chapterId/section/:sectionId [post]
 func (p *ProjectController) UpdateChapterSection() {
-	sid, err := p.GetInt64(":sid")
-	cid, err := p.GetInt64("chapterId")
+	sid, err := p.GetInt64(":sectionId")
+	cid, err := p.GetInt64(":chapterId")
 	num, err := p.GetInt("sectionNumber")
 	section := &models.Section{
 		Id:               sid,
@@ -162,9 +130,9 @@ func (p *ProjectController) UpdateChapterSection() {
 // @Param sid path string true ""
 // @Success 200 {object}
 // @Failure 401
-// @router /chapter/section/delete/:sid [post]
+// @router /:projectId/chapter/:chapterId/section/:sectionId/delete [post]
 func (p *ProjectController) DeleteChapterSection() {
-	sid, err := p.GetInt64(":sid")
+	sid, err := p.GetInt64(":sectionId")
 	section := &models.Section{
 		Id:               sid,
 	}
@@ -190,10 +158,10 @@ func (p *ProjectController) DeleteChapterSection() {
 // @Param sid path string true ""
 // @Success 200 {object}
 // @Failure 401
-// @router /chapter/section/exchange/:sid1/:sid2 [post]
+// @router /:projectId/chapter/:chapterId/sections/exchange [post]
 func (p *ProjectController) ExchangeChapterSection() {
-	sid1 := p.GetString(":sid1")
-	sid2 := p.GetString(":sid2")
+	sid1 := p.GetString("sectionId1")
+	sid2 := p.GetString("sectionId2")
 	err := models.ExchangeSections(sid1, sid2)
 	if err != nil {
 		p.Data["json"] = Response{

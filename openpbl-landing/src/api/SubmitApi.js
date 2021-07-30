@@ -2,16 +2,16 @@ import request from "./request";
 import qs from "qs";
 
 const SubmitApi = {
-  createSubmit(tid, data) {
+  createSubmit(pid, tid, data) {
     return request({
-      url: `/project/task/${tid}/submit`,
+      url: `/project/${pid}/task/${tid}/submit`,
       method: 'post',
       data: qs.stringify(data, {arrayFormat: 'repeat'})
     })
   },
-  updateSubmit(tid, sid, data) {
+  updateSubmit(pid, tid, sid, data) {
     return request({
-      url: `/project/task/${tid}/submit/${sid}`,
+      url: `/project/${pid}/task/${tid}/submit/${sid}`,
       method: 'post',
       data: qs.stringify(data)
     })

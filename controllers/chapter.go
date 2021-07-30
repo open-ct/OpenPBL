@@ -11,9 +11,9 @@ import (
 // @Param pid path string true "project id"
 // @Success 200 {object} []models.Chapter
 // @Failure 403 body is empty
-// @router /chapters/:pid [get]
+// @router /:id/chapters [get]
 func (p *ProjectController) GetProjectChapters() {
-	pid := p.GetString(":pid")
+	pid := p.GetString(":id")
 	if pid != "" {
 		chapters, err := models.GetChaptersByPid(pid)
 		if err != nil {
@@ -30,9 +30,9 @@ func (p *ProjectController) GetProjectChapters() {
 // @Param body body models.Chapter true ""
 // @Success 200 {object} Response
 // @Failure 401
-// @router /chapter [post]
+// @router /:id/chapter [post]
 func (p *ProjectController) CreateProjectChapter() {
-	pid, err := p.GetInt64("projectId")
+	pid, err := p.GetInt64(":id")
 	num, err := p.GetInt("chapterNumber")
 	chapter := &models.Chapter{
 		ProjectId:        pid,
@@ -56,10 +56,10 @@ func (p *ProjectController) CreateProjectChapter() {
 // @Param body body models.Chapter true ""
 // @Success 200 {object} Response
 // @Failure 401
-// @router /chapter/:cid [post]
+// @router /:projectId/chapter/:chapterId [post]
 func (p *ProjectController) UpdateProjectChapter() {
-	cid, err := p.GetInt64(":cid")
-	pid, err := p.GetInt64("projectId")
+	cid, err := p.GetInt64(":chapterId")
+	pid, err := p.GetInt64(":projectId")
 	num, err := p.GetInt("chapterNumber")
 	chapter := &models.Chapter{
 		Id:               cid,
@@ -89,9 +89,9 @@ func (p *ProjectController) UpdateProjectChapter() {
 // @Param cid path string true ""
 // @Success 200 {object} Response
 // @Failure 401
-// @router /chapter/delete/:cid [post]
+// @router /:projectId/chapter/:chapterId/delete [post]
 func (p *ProjectController) DeleteProjectChapter() {
-	cid, err := p.GetInt64(":cid")
+	cid, err := p.GetInt64(":chapterId")
 	chapter := &models.Chapter{
 		Id:               cid,
 	}
@@ -117,10 +117,10 @@ func (p *ProjectController) DeleteProjectChapter() {
 // @Param cid path string true ""
 // @Success 200 {object} Response
 // @Failure 401
-// @router /chapter/exchange/:cid1/:cid2 [post]
+// @router /:projectId/chapters/exchange [post]
 func (p *ProjectController) ExchangeProjectChapter() {
-	cid1 := p.GetString(":cid1")
-	cid2 := p.GetString(":cid2")
+	cid1 := p.GetString(":chapterId1")
+	cid2 := p.GetString(":chapterId2")
 
 	err := models.ExchangeChapters(cid1, cid2)
 	if err != nil {

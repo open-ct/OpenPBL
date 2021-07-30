@@ -24,7 +24,7 @@ function ProjectOutline(obj) {
 
   const handleClick = (item, key) => {
     if (item.sections === undefined) {
-      SectionApi.getChapterSections(item.id)
+      SectionApi.getChapterSections(item)
         .then((res) => {
           item.sections = res.data.sections
           chapters[key] = item

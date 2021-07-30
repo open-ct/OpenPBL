@@ -2,43 +2,40 @@ import request from "./request";
 import qs from 'qs'
 
 const SurveyApi = {
-  getSurveyDetailByTaskId(tid) {
+  getSurveyDetailByTaskId(pid, tid) {
     return request({
-      url: '/project/task/survey/' + tid,
+      url: `/project/${pid}/task/${tid}/survey`,
       method: 'get'
     })
   },
-  updateSurvey(q) {
+  createQuestion(pid, tid, q) {
     return request({
-      url: '/project/task/survey/' + q.id,
+      url: `/project/${pid}/task/${tid}/survey/${q.surveyId}/question`,
       method: 'post',
       data: qs.stringify(q)
     })
   },
-  createQuestion(q) {
+  updateQuestion(pid, tid, q) {
     return request({
-      url: '/project/task/survey/question/',
+      url: `/project/${pid}/task/${tid}/survey/${q.surveyId}/question/${q.id}`,
       method: 'post',
       data: qs.stringify(q)
     })
   },
-  updateQuestion(q) {
+  deleteQuestion(pid, tid, sid, qid) {
     return request({
-      url: '/project/task/survey/question/' + q.id,
-      method: 'post',
-      data: qs.stringify(q)
-    })
-  },
-  deleteQuestion(qid) {
-    return request({
-      url: '/project/task/survey/question/delete/' + qid,
+      url: `/project/${pid}/task/${tid}/survey/${sid}/question/${qid}/delete`,
       method: 'post',
     })
   },
-  exchangeQuestion(id1, id2) {
+  exchangeQuestion(pid, tid, suid, id1, id2) {
     return request({
-      url: '/project/task/survey/question/exchange/' + id1 + '/' + id2,
+      url: `/project/${pid}/task/${tid}/survey/${suid}/questions/exchange`,
       method: 'post',
+      data: qs.stringify({
+        questionId1: id1,
+        questionId2: id2
+      })
     })
   }
 }

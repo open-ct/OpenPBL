@@ -34,9 +34,9 @@ func (u *StudentController) GetSessionUser() *auth.Claims {
 // @Success 200 {object} Response
 // @Failure 401
 // @Failure 403
-// @router /learn/:pid [post]
+// @router /learn/:projectId [post]
 func (u *StudentController) LearnProject() {
-	pid, err := u.GetInt64(":pid")
+	pid, err := u.GetInt64(":projectId")
 	var resp Response
 	user := u.GetSessionUser()
 	if user == nil {
@@ -87,9 +87,9 @@ func (u *StudentController) LearnProject() {
 // @Success 200 {object} Response
 // @Failure 401
 // @Failure 403
-// @router /exit/:pid [post]
+// @router /exit/:projectId [post]
 func (u *StudentController) ExitProject() {
-	pid, err := u.GetInt64(":pid")
+	pid, err := u.GetInt64(":projectId")
 	var resp Response
 	user := u.GetSessionUser()
 	if user == nil {
@@ -137,7 +137,7 @@ func (u *StudentController) ExitProject() {
 // @Description
 // @Param body body models.LearnProject true ""
 // @Success 200 {object} models.Project
-// @Failure 403 :id is empty
+// @Failure 403
 // @router /finished [post]
 func (u *StudentController) FinishedProject() {
 	var l models.LearnProject
@@ -153,4 +153,37 @@ func (u *StudentController) FinishedProject() {
 	}
 	u.Data["json"] = map[string]bool{"result": true}
 	u.ServeJSON()
+}
+
+// GetProjectStudents
+// todo need refactor
+// @Title
+// @Description
+// @Param from query int true ""
+// @Param size query int true ""
+// @Success 200 {object} []models.StudentInfo
+// @Failure 403 body is empty
+// @router /students/:pid [get]
+func (p *ProjectController) GetProjectStudents() {
+	pid := p.GetString(":pid")
+	from, err := p.GetInt("from")
+	if err != nil {
+		from = 0
+	}
+	size, err := p.GetInt("size")
+	if err != nil {
+		size = 10
+	}
+	if pid != "" {
+		students, err := models.GetProjectStudents(pid, from, size)
+		rows, err := models.CountProjectStudents(pid, from, size)
+		if err != nil {
+			p.Data["json"] = map[string]string{"error": err.Error()}
+		}
+		p.Data["json"] = StudentList{
+			Count: rows,
+			Students: students,
+		}
+	}
+	p.ServeJSON()
 }

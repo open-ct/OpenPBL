@@ -27,7 +27,7 @@ function StudentTask(obj) {
   }
 
   const saveContent = (item, index) => {
-    TaskApi.updateTask(item)
+    TaskApi.updateTask(pid, item)
       .then(res => {
         if (res.data.code === 200) {
           message.success(res.data.msg)
@@ -48,7 +48,7 @@ function StudentTask(obj) {
       taskOrder: o,
       taskType: tp.key,
     }
-    TaskApi.createTask(t)
+    TaskApi.createTask(pid, t)
       .then(res => {
         if (res.data.code === 200) {
           t.id = res.data.data
@@ -67,7 +67,7 @@ function StudentTask(obj) {
     setTasks([...tasks])
   }
   const deleteTask = (item, index) => {
-    TaskApi.deleteTask(item.id)
+    TaskApi.deleteTask(pid, item.id)
       .then(res => {
         if (res.data.code === 200) {
           tasks.splice(index, 1)

@@ -11,9 +11,9 @@ import (
 // @Param sid path string true ""
 // @Success 200 {object}
 // @Failure 400
-// @router /task/survey/:tid [get]
+// @router /:projectId/task/:taskId/survey [get]
 func (p *ProjectController) GetSurveyDetailByTaskId() {
-	tid := p.GetString(":tid")
+	tid := p.GetString(":taskId")
 	survey, qns, err := models.GetSurveyByTaskId(tid)
 	if err != nil {
 		p.Data["json"] = map[string]interface{}{"survey": nil, "questions": qns}
@@ -23,15 +23,15 @@ func (p *ProjectController) GetSurveyDetailByTaskId() {
 	p.ServeJSON()
 }
 
-// CreateSurvey
+// CreateSurvey unused
 // @Title
 // @Description
 // @Param body body models.Survey true ""
 // @Success 200 {object} Response
 // @Failure 400
-// @router /task/survey/ [post]
+// @router /:projectId/task/:taskId/survey [post]
 func (p *ProjectController) CreateSurvey() {
-	tid, err := p.GetInt64("taskId")
+	tid, err := p.GetInt64(":taskId")
 	survey := &models.Survey{
 		TaskId:          tid,
 		SurveyTitle:     p.GetString("surveyTitle"),
@@ -56,13 +56,13 @@ func (p *ProjectController) CreateSurvey() {
 	p.ServeJSON()
 }
 
-// UpdateSurvey
+// UpdateSurvey  unused
 // @Title
 // @Description
 // @Param body body models.Survey true ""
 // @Success 200 {object} Response
 // @Failure 400
-// @router /task/survey/:sid [post]
+// @router /:projectId/task/:taskId/survey/:sid [post]
 func (p *ProjectController) UpdateSurvey() {
 	sid, err := p.GetInt64(":sid")
 	tid, err := p.GetInt64(":tid")
@@ -96,9 +96,9 @@ func (p *ProjectController) UpdateSurvey() {
 // @Param body body models.Question true ""
 // @Success 200 {object} Response
 // @Failure 400
-// @router /task/survey/question [post]
+// @router /:projectId/task/:taskId/survey/:surveyId/question [post]
 func (p *ProjectController) CreateQuestion() {
-	sid, err := p.GetInt64("surveyId")
+	sid, err := p.GetInt64(":surveyId")
 	o, err := p.GetInt("questionOrder")
 	question := &models.Question{
 		SurveyId:        sid,
@@ -131,10 +131,10 @@ func (p *ProjectController) CreateQuestion() {
 // @Param body body models.Survey true ""
 // @Success 200 {object} Response
 // @Failure 400
-// @router /task/survey/question/:qid [post]
+// @router /:projectId/task/:taskId/survey/:surveyId/question/:questionId [post]
 func (p *ProjectController) UpdateQuestion() {
-	qid, err := p.GetInt64(":qid")
-	sid, err := p.GetInt64("surveyId")
+	qid, err := p.GetInt64(":questionId")
+	sid, err := p.GetInt64(":surveyId")
 	o, err := p.GetInt("questionOrder")
 	question := &models.Question{
 		Id:              qid,
@@ -168,10 +168,10 @@ func (p *ProjectController) UpdateQuestion() {
 // @Param body body string true ""
 // @Success 200 {object} Response
 // @Failure 400
-// @router /task/survey/question/exchange/:id1/:id2 [post]
+// @router /:projectId/task/:taskId/survey/:surveyId/questions/exchange [post]
 func (p *ProjectController) ExchangeQuestion() {
-	id1 := p.GetString(":id1")
-	id2 := p.GetString(":id2")
+	id1 := p.GetString("questionId1")
+	id2 := p.GetString("questionId2")
 
 	err := models.ExchangeQuestion(id1, id2)
 	if err != nil {
@@ -194,9 +194,9 @@ func (p *ProjectController) ExchangeQuestion() {
 // @Param qid path string true ""
 // @Success 200 {object} Response
 // @Failure 400
-// @router /task/survey/question/delete/:qid [post]
+// @router /:projectId/task/:taskId/survey/:surveyId/question/:questionId/delete [post]
 func (p *ProjectController) DeleteQuestion() {
-	qid, err := p.GetInt64(":qid")
+	qid, err := p.GetInt64(":questionId")
 	question := &models.Question{
 		Id:              qid,
 	}

@@ -4,34 +4,38 @@ import qs from 'qs'
 const TaskApi = {
   getSectionTasks(sid, pid) {
     return request({
-      url: '/project/tasks/' + sid + '/' + pid,
+      url: `/project/${pid}/section/${sid}/tasks`,
       method: 'get',
     })
   },
-  createTask(q) {
+  createTask(pid, q) {
     return request({
-      url: '/project/task',
+      url: `/project/${pid}/task`,
       method: 'post',
       data: qs.stringify(q)
     })
   },
-  updateTask(q) {
+  updateTask(pid, q) {
     return request({
-      url: '/project/task/' + q.id,
+      url: `/project/${pid}/task/${q.id}`,
       method: 'post',
       data: qs.stringify(q)
     })
   },
-  deleteTask(id) {
+  deleteTask(pid, id) {
     return request({
-      url: '/project/task/delete/' + id,
+      url: `/project/${pid}/task/${id}/delete`,
       method: 'post'
     })
   },
-  exchangeTask(id1, id2) {
+  exchangeTask(pid, id1, id2) {
     return request({
-      url: '/project/task/exchange/' + id1 + '/' + id2,
-      method: 'post'
+      url: `/project/${pid}/tasks/exchange`,
+      method: 'post',
+      data: qs.stringify({
+        taskId1: id1,
+        taskId2: id2
+      })
     })
   }
 }

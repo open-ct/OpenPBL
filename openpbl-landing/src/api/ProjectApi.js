@@ -24,19 +24,19 @@ const ProjectApi = {
   },
   publishProject(pid) {
     return request({
-      url:'/project/publish/' + pid,
+      url: `/project/${pid}/publish`,
       method: 'post',
     })
   },
   closeProject(pid) {
     return request({
-      url:'/project/close/' + pid,
+      url: `/project/${pid}/close`,
       method: 'post',
     })
   },
   deleteProject(pid) {
     return request({
-      url:'/project/delete/' + pid,
+      url: `/project/${pid}/delete`,
       method: 'post',
     })
   },

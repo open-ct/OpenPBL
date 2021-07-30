@@ -4,35 +4,36 @@ import qs from "qs";
 const ChapterApi = {
   getProjectChapters(id) {
     return request({
-      url: '/project/chapters/' + id,
+      url: `/project/${id}/chapters`,
       method: 'get',
     })
   },
   createProjectChapter(chapter) {
     return request({
-      url: '/project/chapter',
+      url: `/project/${chapter.projectId}/chapter`,
       method: 'post',
       data: qs.stringify(chapter)
     })
   },
   updateProjectChapter(chapter) {
     return request({
-      url: '/project/chapter/' + chapter.id,
+      url: `/project/${chapter.projectId}/chapter/${chapter.id}`,
       method: 'post',
       data: qs.stringify(chapter)
     })
   },
 
-  deleteProjectChapter(id) {
+  deleteProjectChapter(c) {
     return request({
-      url: '/project/chapter/delete/' + id,
+      url: `/project/${c.projectId}/chapter/${c.id}/delete`,
       method: 'post',
     })
   },
-  exchangeProjectChapter(id1, id2) {
+  exchangeProjectChapter(pid, id1, id2) {
     return request({
-      url: '/project/chapter/exchange/' + id1 + '/' + id2,
+      url: `/project/${pid}/chapters/exchange`,
       method: 'post',
+      data: qs.stringify({chapterId1: id1, chapterId2: id2})
     })
   },
 }
