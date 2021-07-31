@@ -154,7 +154,6 @@ function ProjectList(obj) {
                     className="item-card"
                     cover={
                       <Image
-                        alt="example"
                         src={item.image}
                         preview={false}
                       />

@@ -14,6 +14,7 @@ import StudentApi from "../../../api/StudentApi";
 import StudentAdmin from "./component/StudentAdmin";
 import SubmitFiles from "./component/SubmitFiles";
 import {getUser} from "../../User/Auth/Auth";
+import {DeleteOutlined} from "@ant-design/icons";
 
 
 class ProjectInfo extends React.PureComponent {
@@ -110,11 +111,20 @@ class ProjectInfo extends React.PureComponent {
       })
       .catch(e=>{console.log(e)})
   }
-  cancelCloseProject = e => {
-  }
   exitProject = e => {
     StudentApi.exitProject(this.state.pid)
       .then(res => {
+        if (res.data.code === 200) {
+          window.location.href = "/my-project"
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
+  }
+  deleteProject = e => {
+    ProjectApi.deleteProject(this.state.pid)
+      .then(res=>{
         if (res.data.code === 200) {
           window.location.href = "/my-project"
         } else {
@@ -185,16 +195,35 @@ class ProjectInfo extends React.PureComponent {
               编辑项目
               </Button>
             </Link>
+            <Popconfirm
+              title="确定删除项目？删除后不能恢复"
+              onConfirm={this.deleteProject}
+              placement="topLeft"
+            >
+              <Button
+                shape="circle"
+                size="middle"
+                type="danger"
+                style={{marginTop: '5px', marginLeft: '20px', marginBottom: '5px', marginRight: '5px'}}
+                icon={<DeleteOutlined/>}
+              />
+            </Popconfirm>
           </div> : null }
         {project.closed ?
           <div>
-            <Button
-              shape="round"
-              size="middle"
-              style={{margin: '5px'}}
+            <Popconfirm
+              title="确定删除项目？删除后不能恢复"
+              onConfirm={this.deleteProject}
+              placement="topLeft"
             >
-              已结束
-            </Button>
+              <Button
+                shape="circle"
+                size="middle"
+                type="danger"
+                style={{marginTop: '5px', marginLeft: '20px', marginBottom: '5px', marginRight: '5px'}}
+                icon={<DeleteOutlined/>}
+              />
+            </Popconfirm>
           </div>
           : null }
       </div>
