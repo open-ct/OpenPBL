@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import QueueAnim from 'rc-queue-anim';
-import {Avatar, Button, Popconfirm, Table, message, Pagination} from "antd";
-import {DeleteOutlined} from "@ant-design/icons"
+import {Avatar, Button, Popconfirm, Table, message, Pagination, Tooltip} from "antd";
+import {DeleteOutlined,ArrowRightOutlined} from "@ant-design/icons"
 
 import ProjectApi from "../../../../api/ProjectApi";
-
+import util from "../../component/Util"
+import {Link} from "react-router-dom";
 
 function StudentAdmin(obj) {
   const pid = obj.project.id
@@ -62,7 +63,10 @@ function StudentAdmin(obj) {
               {
                 title: '加入时间',
                 dataIndex: 'joinTime',
-                key: 'joinTime'
+                key: 'joinTime',
+                render: joinTime => (
+                  <span>{util.FilterTime(joinTime)}</span>
+                )
               },
               {
                 title: '操作',
@@ -70,6 +74,11 @@ function StudentAdmin(obj) {
                 key: 'action',
                 render: (action, record) => (
                   <>
+                    <Tooltip placement="topLeft" title="点击查看学习证据">
+                      <Link to={`/project/${pid}/student/${record.studentId}/evidence`}>
+                        <Button type="text" icon={<ArrowRightOutlined />} style={{marginRight: '30px', width: '50px'}}/>
+                      </Link>
+                    </Tooltip>
                     <Popconfirm title="确定移除学生？" onConfirm={e=>removeStudent(action, record)}>
                       <Button shape="circle" type="text" style={{color: 'red'}} icon={<DeleteOutlined/>}/>
                     </Popconfirm>

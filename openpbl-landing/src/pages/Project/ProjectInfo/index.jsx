@@ -4,7 +4,6 @@ import {Avatar, Button, Card, Col, Divider, Image, Menu, PageHeader, Popconfirm,
 import QueueAnim from 'rc-queue-anim';
 import localStorage from 'localStorage';
 import {Link} from 'react-router-dom';
-import moment from 'moment'
 
 import ProjectIntroduce from './component/ProjectIntroduce';
 import ProjectOutline from './component/ProjectOutline';
