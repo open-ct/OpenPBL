@@ -9,6 +9,7 @@ import "./preview.less"
 import TaskApi from "../../../api/TaskApi";
 import FillSurvey from "./component/FillSurvey";
 import SubmitApi from "../../../api/SubmitApi";
+import util from "../component/Util"
 
 
 function PreviewSection(obj) {
@@ -153,7 +154,7 @@ function PreviewSection(obj) {
           <Card className="resource-card" key={index.toString()}>
             <p className="card-title">学生任务
               {item.submitted ?
-                <span className="submit-status" style={{color: 'green'}}>已提交&nbsp;&nbsp;{item.submit.createAt}</span>
+                <span className="submit-status" style={{color: 'green'}}>已提交&nbsp;&nbsp;{util.FilterTime(item.submit.createAt)}</span>
                 :
                 <span className="submit-status" style={{color: 'gray'}}>未提交</span>
               }

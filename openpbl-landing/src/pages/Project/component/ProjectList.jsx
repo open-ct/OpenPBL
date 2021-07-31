@@ -5,8 +5,8 @@ import {EyeOutlined, TeamOutlined} from '@ant-design/icons';
 import {Link} from 'react-router-dom';
 
 import './project-list.less';
-
 import ProjectListApi from '../../../api/ProjectListApi'
+import util from './Util'
 
 const {Meta} = Card;
 const {Search} = Input;
@@ -197,7 +197,7 @@ function ProjectList(obj) {
                         float: 'right',
                       }}
                     >
-                      {item.createTime}
+                      {util.FilterMoment(item.createAt)}
                     </span>
                   </Card>
                 </Link>

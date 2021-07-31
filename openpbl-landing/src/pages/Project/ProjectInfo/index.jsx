@@ -4,6 +4,7 @@ import {Avatar, Button, Card, Col, Divider, Image, Menu, PageHeader, Popconfirm,
 import QueueAnim from 'rc-queue-anim';
 import localStorage from 'localStorage';
 import {Link} from 'react-router-dom';
+import moment from 'moment'
 
 import ProjectIntroduce from './component/ProjectIntroduce';
 import ProjectOutline from './component/ProjectOutline';
@@ -15,7 +16,7 @@ import StudentAdmin from "./component/StudentAdmin";
 import SubmitFiles from "./component/SubmitFiles";
 import {getUser} from "../../User/Auth/Auth";
 import {DeleteOutlined} from "@ant-design/icons";
-
+import util from "../component/Util"
 
 class ProjectInfo extends React.PureComponent {
   constructor(props) {
@@ -133,17 +134,6 @@ class ProjectInfo extends React.PureComponent {
       })
       .catch(e=>{console.log(e)})
   }
-
-  filterTime = t => {
-    let d = new Date(t)
-    return d.getFullYear().toString() + '-' +
-      (d.getMonth() + 1).toString() + '-' +
-      d.getDate().toString() + ' ' +
-      d.getHours().toString() + ':' +
-      d.getMinutes().toString() + ':' +
-      d.getSeconds().toString()
-  }
-
 
   render() {
     const {project, teacher, menu, type, pid } = this.state;
@@ -306,11 +296,9 @@ class ProjectInfo extends React.PureComponent {
                       <Col span={1}>&nbsp;</Col>
                       <Col flex="auto">
                         <p style={{fontSize: '20px'}}>{project.projectTitle}</p>
-                        <p style={{
-                          fontSize: '13px',
-                          color: 'gray',
-                        }}
-                        >发布时间：{this.filterTime(project.createAt)}
+                        <p
+                          style={{fontSize: '14px', color: 'gray'}}
+                        >发布时间：{util.FilterTime(project.createAt)}
                         </p>
                         <div>
                           <span>{project.readNum}&nbsp;人看过</span>
