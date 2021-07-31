@@ -40,11 +40,6 @@ func (p *ProjectController) GetSectionDetail() {
 	p.ServeJSON()
 }
 
-type StudentList struct {
-	Count    int64                `json:"count"`
-	Students []models.StudentInfo `json:"students"`
-}
-
 // GetChapterSections
 // @Title
 // @Description

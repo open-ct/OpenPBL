@@ -45,18 +45,18 @@ func init() {
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "UpdateProject",
+            Method: "GetProjectDetail",
             Router: "/:id",
-            AllowHTTPMethods: []string{"post"},
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "GetProjectDetail",
+            Method: "UpdateProject",
             Router: "/:id",
-            AllowHTTPMethods: []string{"get"},
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -180,6 +180,15 @@ func init() {
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
+            Method: "RemoveStudent",
+            Router: "/:projectId/remove/:studentId",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
             Method: "GetSectionDetail",
             Router: "/:projectId/section/:sectionId",
             AllowHTTPMethods: []string{"get"},
@@ -191,6 +200,15 @@ func init() {
         beego.ControllerComments{
             Method: "GetSectionTasks",
             Router: "/:projectId/section/:sectionId/tasks",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
+        beego.ControllerComments{
+            Method: "GetProjectStudents",
+            Router: "/:projectId/students",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -243,18 +261,18 @@ func init() {
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "CreateSurvey",
+            Method: "GetSurveyDetailByTaskId",
             Router: "/:projectId/task/:taskId/survey",
-            AllowHTTPMethods: []string{"post"},
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "GetSurveyDetailByTaskId",
+            Method: "CreateSurvey",
             Router: "/:projectId/task/:taskId/survey",
-            AllowHTTPMethods: []string{"get"},
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -309,15 +327,6 @@ func init() {
             Method: "ExchangeTask",
             Router: "/:projectId/tasks/exchange",
             AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
-        beego.ControllerComments{
-            Method: "GetProjectStudents",
-            Router: "/students/:pid",
-            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

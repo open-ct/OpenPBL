@@ -57,8 +57,14 @@ const ProjectApi = {
 
   getProjectStudents(pid) {
     return request({
-      url: '/project/students/' + pid,
+      url: `/project/${pid}/students`,
       method: 'get',
+    })
+  },
+  removeStudent(pid, sid) {
+    return request({
+      url: `/project/${pid}/remove/${sid}`,
+      method: 'post'
     })
   }
 

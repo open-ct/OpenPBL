@@ -45,6 +45,9 @@ type ProjectResponse struct {
 func (p *ProjectController) GetProjectDetail() {
 	pid := p.GetString(":id")
 	user := p.GetSessionUser()
+
+	fmt.Println(user.Subject)
+
 	var resp ProjectResponse
 	if user == nil {
 		resp = ProjectResponse{
@@ -354,7 +357,47 @@ func (u *ProjectController) DeleteProject() {
 	u.ServeJSON()
 }
 
-
+// RemoveStudent
+// @Title
+// @Description
+// @Param pid path string true ""
+// @Success 200 {object} Response
+// @Failure 401
+// @router /:projectId/remove/:studentId [post]
+func (u *ProjectController) RemoveStudent() {
+	pid, err := u.GetInt64(":projectId")
+	sid := u.GetString(":studentId")
+	var resp Response
+	user := u.GetSessionUser()
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	l := &models.LearnProject{
+		StudentId: sid,
+		ProjectId: pid,
+	}
+	err = l.Delete()
+	if err != nil {
+		resp = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+		u.Data["json"] = resp
+	} else {
+		resp = Response{
+			Code: 200,
+			Msg:  "移除成功",
+		}
+	}
+	u.Data["json"] = resp
+	u.ServeJSON()
+}
 
 
 func getProjectSubjectsAndSkills(pid int64, subjects string, skills string) (subjectList []*models.ProjectSubject, skillList []*models.ProjectSkill, err error) {
@@ -391,4 +434,44 @@ func getProjectSubjectsAndSkills(pid int64, subjects string, skills string) (sub
 		}
 	}
 	return
+}
+
+type StudentsResponse struct {
+	Code        int                   `json:"code"`
+	Students    []models.LearnProject `json:"students"`
+	Count       int64                 `json:"count"`
+}
+
+// GetProjectStudents
+// @Title
+// @Description
+// @Param from query int true ""
+// @Param size query int true ""
+// @Success 200 {object} StudentsResponse
+// @Failure 403
+// @router /:projectId/students [get]
+func (p *ProjectController) GetProjectStudents() {
+	pid := p.GetString(":projectId")
+	from, err := p.GetInt("from")
+	if err != nil {
+		from = 0
+	}
+	size, err := p.GetInt("size")
+	if err != nil {
+		size = 10
+	}
+	students, rows, err := models.GetProjectStudents(pid, from, size)
+	if err != nil {
+		p.Data["json"] = StudentsResponse{
+			Code:     400,
+			Students: nil,
+		}
+	} else {
+		p.Data["json"] = StudentsResponse{
+			Code:     200,
+			Students: students,
+			Count:    rows,
+		}
+	}
+	p.ServeJSON()
 }

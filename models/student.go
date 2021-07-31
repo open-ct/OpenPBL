@@ -1,17 +1,17 @@
 package models
 
 import (
+	"time"
 	"xorm.io/xorm"
 )
 
 type LearnProject struct {
-	StudentId  string   `json:"studentId" xorm:"not null index pk"`
-	ProjectId  int64    `json:"projectId" xorm:"not null index pk"`
-	Learning   bool     `json:"learning" xorm:"index default 0"`
-}
-
-type StudentInfo struct {
-
+	Avatar     string    `json:"avatar" xorm:"text"`
+	Name       string    `json:"name"`
+	StudentId  string    `json:"studentId" xorm:"not null index pk"`
+	ProjectId  int64     `json:"projectId" xorm:"not null index pk"`
+	Learning   bool      `json:"learning" xorm:"index default 0"`
+	JoinTime   time.Time `json:"joinTime" xorm:"created"`
 }
 
 func (l *LearnProject) GetEngine() *xorm.Session {
@@ -42,6 +42,8 @@ func (l *LearnProject) Delete() (err error) {
 		Where("student_id = ?", l.StudentId).
 		Where("project_id = ?", l.ProjectId).
 		Delete(l)
+	_, err = adapter.Engine.
+		Exec("update project set join_num = join_num - 1 where id = ?", l.ProjectId)
 	return
 }
 
@@ -58,22 +60,14 @@ func IsLearningProject(pid int64, uid string) (e bool) {
 	return
 }
 
-func GetProjectStudents(pid string, from int, size int) (s []StudentInfo, err error) {
-	err = adapter.Engine.
-		SQL("select * from student " +
-			"inner join " +
-			"( select * from learn_project where project_id = ?) as l " +
-			"on student.id = l.student_id limit ?, ?", pid, from, size).
+func GetProjectStudents(pid string, from int, size int) (s []LearnProject, rows int64, err error) {
+	err = (&LearnProject{}).GetEngine().
+		Where("project_id = ?", pid).
+		Desc("join_time").
+		Limit(size, from).
 		Find(&s)
+	rows, err = (&LearnProject{}).GetEngine().
+		Where("project_id = ?", pid).
+		Count()
 	return
 }
-func CountProjectStudents(pid string, from int, size int) (rows int64, err error) {
-	_, err = adapter.Engine.
-		SQL("select count(*) from student " +
-			"inner join " +
-			"( select * from learn_project where project_id = ?) as l " +
-			"on student.id = l.student_id", pid).
-		Get(&rows)
-	return
-}
-

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"OpenPBL/util"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
@@ -62,17 +63,26 @@ type Response struct {
 func (c *AuthController) Login() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
-
-
 	token, err := auth.GetOAuthToken(code, state)
 	if err != nil {
-		panic(err)
+		c.Data["json"] = Response{
+			Code: 403,
+			Msg:  err.Error(),
+		}
+		c.ServeJSON()
+		return
 	}
-
 	claims, err := auth.ParseJwtToken(token.AccessToken)
 	if err != nil {
-		panic(err)
+		c.Data["json"] = Response{
+			Code: 403,
+			Msg:  err.Error(),
+		}
+		c.ServeJSON()
+		return
 	}
+
+	fmt.Println(claims.StandardClaims)
 
 	claims.AccessToken = token.AccessToken
 	c.SetSessionUser(claims)
@@ -110,22 +120,20 @@ func (c *AuthController) Logout() {
 // @router /account [get]
 func (c *AuthController) GetAccount() {
 	var resp Response
-	if c.GetSessionUser() == nil {
+	user := c.GetSessionUser()
+	if user == nil {
 		resp = Response{
 			Code: 404,
 			Msg: "账号不存在",
-			Data: c.GetSessionUser(),
 		}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
 	}
-	claims := c.GetSessionUser()
-	userObj := claims
 	resp = Response{
 		Code: 200,
 		Msg: "",
-		Data: userObj,
+		Data: user,
 	}
 	c.Data["json"] = resp
 	c.ServeJSON()

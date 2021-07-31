@@ -60,6 +60,8 @@ func (u *StudentController) LearnProject() {
 	uid := user.Username
 
 	l := &models.LearnProject{
+		Avatar:    user.Avatar,
+		Name:      user.Name,
 		StudentId: uid,
 		ProjectId: pid,
 		Learning:  true,
@@ -153,37 +155,4 @@ func (u *StudentController) FinishedProject() {
 	}
 	u.Data["json"] = map[string]bool{"result": true}
 	u.ServeJSON()
-}
-
-// GetProjectStudents
-// todo need refactor
-// @Title
-// @Description
-// @Param from query int true ""
-// @Param size query int true ""
-// @Success 200 {object} []models.StudentInfo
-// @Failure 403 body is empty
-// @router /students/:pid [get]
-func (p *ProjectController) GetProjectStudents() {
-	pid := p.GetString(":pid")
-	from, err := p.GetInt("from")
-	if err != nil {
-		from = 0
-	}
-	size, err := p.GetInt("size")
-	if err != nil {
-		size = 10
-	}
-	if pid != "" {
-		students, err := models.GetProjectStudents(pid, from, size)
-		rows, err := models.CountProjectStudents(pid, from, size)
-		if err != nil {
-			p.Data["json"] = map[string]string{"error": err.Error()}
-		}
-		p.Data["json"] = StudentList{
-			Count: rows,
-			Students: students,
-		}
-	}
-	p.ServeJSON()
 }

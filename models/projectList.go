@@ -28,6 +28,8 @@ func GetMyProjectListBySid(sid string, from int, size int,
 		fmt.Sprintf(pageSql, orderBy, orderType, from, size)
 	sql2 := fmt.Sprintf(baseSql, "count(*)", sid, learning, e1, e2, e3)
 
+	fmt.Println(sql1)
+
 	err = adapter.Engine.
 		SQL(sql1).
 		Find(&p)
