@@ -6,7 +6,7 @@ const SubmitApi = {
     return request({
       url: `/project/${pid}/task/${tid}/submit`,
       method: 'post',
-      data: qs.stringify(data, {arrayFormat: 'repeat'})
+      data: qs.stringify(data)
     })
   },
   updateSubmit(pid, tid, sid, data) {

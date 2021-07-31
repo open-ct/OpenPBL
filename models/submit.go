@@ -52,7 +52,7 @@ func (c *Choice) Update() (err error) {
 func (p *Submit) Create(c []Choice) (err error) {
 	_, err = p.GetEngine().Insert(p)
 	if p.SubmitType == "survey" {
-		for i:=0; i< len(c); i++ {
+		for i := 0; i < len(c); i ++ {
 			ci := &Choice{
 				SubmitId:      p.Id,
 				ChoiceOrder:   c[i].ChoiceOrder,
@@ -60,15 +60,27 @@ func (p *Submit) Create(c []Choice) (err error) {
 			}
 			err = ci.Create()
 		}
+		CountSubmit(c, nil, p.TaskId)
 	}
 	return
 }
 func (p *Submit) Update(c []Choice) (err error) {
 	_, err = p.GetEngine().ID(p.Id).Update(p)
 	if p.SubmitType == "survey" {
+		var cs []Choice
+		err = (&Choice{}).GetEngine().
+			Where("submit_id = ?", p.Id).
+			Find(&cs)
 		for i:=0; i< len(c); i++ {
 			err = (&c[i]).Update()
 		}
+		CountSubmit(c, cs, p.TaskId)
 	}
 	return
+}
+
+
+func CountSubmit(c []Choice, cl []Choice, taskId int64) {
+	
+
 }

@@ -38,7 +38,7 @@ func (p *ProjectController) CreateSubmit() {
 	uid := user.Username
 	tid, err := p.GetInt64(":taskId")
 
-	f := &models.Submit{
+	submit := &models.Submit{
 		StudentId:       uid,
 		TaskId:          tid,
 		SubmitType:      p.GetString("submitType"),
@@ -49,10 +49,10 @@ func (p *ProjectController) CreateSubmit() {
 		CreateAt:        time.Now(),
 	}
 	var c = make([]models.Choice, 0)
-	if f.SubmitType == "survey" {
+	if submit.SubmitType == "survey" {
 		err = json.Unmarshal([]byte(p.GetString("choices")), &c)
 	}
-	err = f.Create(c)
+	err = submit.Create(c)
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -62,7 +62,7 @@ func (p *ProjectController) CreateSubmit() {
 		p.Data["json"] = Response{
 			Code: 200,
 			Msg:  "提交成功",
-			Data: strconv.FormatInt(f.Id, 10),
+			Data: strconv.FormatInt(submit.Id, 10),
 		}
 	}
 	p.ServeJSON()
