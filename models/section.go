@@ -9,11 +9,17 @@ type Section struct {
 	ChapterId          int64   `json:"chapterId" xorm:"index"`
 	SectionName        string  `json:"sectionName"`
 	SectionNumber      int     `json:"sectionNumber" xorm:"index"`
+	ChapterNumber      int     `json:"chapterNumber" xorm:"index"`
 }
 
 type SectionDetail struct {
 	Section     `xorm:"extends"`
 	Resource    `json:"resource" xorm:"extends"`
+}
+
+type SectionOutline struct {
+	Section        `xorm:"extends"`
+	Tasks   []Task `json:"tasks" xorm:"extends"`
 }
 
 func (p *Section) GetEngine() *xorm.Session {
@@ -36,6 +42,8 @@ func (p *Section) Update() (err error) {
 	return
 }
 func (p *Section) Delete() (err error) {
+	_, err = p.GetEngine().
+		Exec("update section set section_number = section_number - 1 where section_number > ", p.SectionNumber)
 	_, err = p.GetEngine().ID(p.Id).Delete(p)
 	return
 }

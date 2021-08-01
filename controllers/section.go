@@ -69,11 +69,13 @@ func (p *ProjectController) GetChapterSections() {
 // @router /:projectId/chapter/:chapterId/section [post]
 func (p *ProjectController) CreateChapterSection() {
 	cid, err := p.GetInt64(":chapterId")
-	num, err := p.GetInt("sectionNumber")
+	sectionNumber, err := p.GetInt("sectionNumber")
+	chapterNumber, err := p.GetInt("chapterNumber")
 	section := &models.Section{
 		ChapterId:        cid,
 		SectionName:      p.GetString("sectionName"),
-		SectionNumber:    num,
+		SectionNumber:    sectionNumber,
+		ChapterNumber:    chapterNumber,
 	}
 	if err != nil {
 		p.Data["json"] = map[string]string{"error": err.Error()}
@@ -96,12 +98,14 @@ func (p *ProjectController) CreateChapterSection() {
 func (p *ProjectController) UpdateChapterSection() {
 	sid, err := p.GetInt64(":sectionId")
 	cid, err := p.GetInt64(":chapterId")
-	num, err := p.GetInt("sectionNumber")
+	sectionNumber, err := p.GetInt("sectionNumber")
+	chapterNumber, err := p.GetInt("chapterNumber")
 	section := &models.Section{
 		Id:               sid,
 		ChapterId:        cid,
 		SectionName:      p.GetString("sectionName"),
-		SectionNumber:    num,
+		SectionNumber:    sectionNumber,
+		ChapterNumber:    chapterNumber,
 	}
 	err = section.Update()
 	if err != nil {

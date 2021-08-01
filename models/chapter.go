@@ -27,8 +27,10 @@ func (p *Chapter) Update() (err error) {
 	return
 }
 func (p *Chapter) Delete() (err error) {
+	_, err = p.GetEngine().
+		Exec("update chapter set chapter_number = chapter_number - 1 where chapter_number > ", p.ChapterNumber)
+	_, err = (&Section{}).GetEngine().Delete(Section{ChapterId: p.Id})
 	_, err = p.GetEngine().ID(p.Id).Delete(p)
-	// TODO need modify delete all sections belong to this chapter
 	return
 }
 func ExchangeChapters(cid1 string, cid2 string) (err error) {

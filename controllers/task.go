@@ -62,6 +62,30 @@ func (p *ProjectController) GetSectionTasks() {
 	p.ServeJSON()
 }
 
+// GetProjectTasks
+// @Title
+// @Description get all the tasks of a section
+// @Param sid path string true ""
+// @Success 200 {object}
+// @Failure 400
+// @router /:projectId/tasks [get]
+func (p *ProjectController) GetProjectTasks() {
+	pid := p.GetString(":pid")
+	tasks, err := models.GetProjectTasks(pid)
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Data: tasks,
+		}
+	}
+	p.ServeJSON()
+}
+
 // CreateTask
 // @Title
 // @Description
@@ -71,9 +95,16 @@ func (p *ProjectController) GetSectionTasks() {
 // @router /:projectId/task [post]
 func (p *ProjectController) CreateTask() {
 	sid, err := p.GetInt64("sectionId")
+	pid, err := p.GetInt64(":projectId")
 	o, err := p.GetInt("taskOrder")
+	sn, err := p.GetInt("sectionNumber")
+	cn, err := p.GetInt("chapterNumber")
+
 	task := &models.Task{
 		SectionId:     sid,
+		ProjectId:     pid,
+		SectionNumber: sn,
+		ChapterNumber: cn,
 		TaskOrder:     o,
 		TaskTitle:     p.GetString("taskTitle"),
 		TaskIntroduce: p.GetString("taskIntroduce"),
@@ -108,10 +139,17 @@ func (p *ProjectController) CreateTask() {
 func (p *ProjectController) UpdateTask() {
 	tid, err := p.GetInt64(":taskId")
 	sid, err := p.GetInt64("sectionId")
+	pid, err := p.GetInt64(":projectId")
 	o, err := p.GetInt("taskOrder")
+	sn, err := p.GetInt("sectionNumber")
+	cn, err := p.GetInt("chapterNumber")
+
 	task := &models.Task{
 		Id:            tid,
 		SectionId:     sid,
+		ProjectId:     pid,
+		SectionNumber: sn,
+		ChapterNumber: cn,
 		TaskOrder:     o,
 		TaskTitle:     p.GetString("taskTitle"),
 		TaskIntroduce: p.GetString("taskIntroduce"),

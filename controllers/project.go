@@ -45,9 +45,6 @@ type ProjectResponse struct {
 func (p *ProjectController) GetProjectDetail() {
 	pid := p.GetString(":id")
 	user := p.GetSessionUser()
-
-	fmt.Println(user.Subject)
-
 	var resp ProjectResponse
 	if user == nil {
 		resp = ProjectResponse{
