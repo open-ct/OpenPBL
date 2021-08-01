@@ -18,11 +18,7 @@ type LearnSection struct {
 	StudentId     string    `json:"studentId" xorm:"not null index pk"`
 	SectionId     int64     `json:"sectionId" xorm:"not null index pk"`
 
-	SectionTime   time.Time `json:"sectionTime"`
-	LearnTime     time.Time `json:"learnTime"`
-
-	TaskNum       int       `json:"taskNum"`
-	SubmittedTask int       `json:"submittedTask" xorm:"default 0"`
+	LearnMinute   int       `json:"learnTime" xorm:"default 0"`
 }
 
 func (l *LearnProject) GetEngine() *xorm.Session {

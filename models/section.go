@@ -10,6 +10,8 @@ type Section struct {
 	SectionName        string  `json:"sectionName"`
 	SectionNumber      int     `json:"sectionNumber" xorm:"index"`
 	ChapterNumber      int     `json:"chapterNumber" xorm:"index"`
+
+	SectionMinute      int     `json:"sectionMinute"`
 }
 
 type SectionDetail struct {

@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
-	"time"
 )
 
 // StudentController
@@ -190,16 +189,9 @@ func (u *StudentController) CreateLearnSection() {
 	}
 	uid := user.Username
 	sid, err := u.GetInt64(":sectionId")
-	st, err := time.Parse(TimeFormatStr, u.GetString("sectionTime"))
-	lt, err := time.Parse(TimeFormatStr, u.GetString("learnTime"))
-	taskNum, err := u.GetInt("taskNum")
 	l := models.LearnSection{
 		StudentId:     uid,
 		SectionId:     sid,
-		SectionTime:   st,
-		LearnTime:     lt,
-		TaskNum:       taskNum,
-		SubmittedTask: 0,
 	}
 	err = l.Create()
 	if err != nil {
@@ -246,17 +238,10 @@ func (u *StudentController) UpdateLearnSection() {
 	}
 	uid := user.Username
 	sid, err := u.GetInt64(":sectionId")
-	st, err := time.Parse(TimeFormatStr, u.GetString("sectionTime"))
-	lt, err := time.Parse(TimeFormatStr, u.GetString("learnTime"))
-	taskNum, err := u.GetInt("taskNum")
-	submittedTask, err := u.GetInt("submittedTask")
+
 	l := models.LearnSection{
 		StudentId:     uid,
 		SectionId:     sid,
-		SectionTime:   st,
-		LearnTime:     lt,
-		TaskNum:       taskNum,
-		SubmittedTask: submittedTask,
 	}
 	err = l.Update()
 	if err != nil {

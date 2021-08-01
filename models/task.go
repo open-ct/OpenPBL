@@ -21,11 +21,19 @@ type Task struct {
 	TaskWeight    int       `json:"taskWeight"`
 }
 
+type TaskEvaluate struct {
+	Task            `xorm:"extends"`
+	Score     int   `json:"score"`
+	Scored    bool  `json:"scored"`
+	SubmitId  int64 `json:"submitId"`
+}
+
 type TaskDetail struct {
 	Task         `xorm:"extends"`
 	SurveyDetail `xorm:"extends"`
 	SubmitDetail `xorm:"extends"`
 }
+
 
 func (t *Task) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(t)
@@ -115,12 +123,22 @@ func ExchangeTasks(cid1 string, cid2 string) (err error) {
 	return
 }
 
-func GetProjectTasks(pid string) (t []Task, err error) {
-	err = (&Task{}).GetEngine().
-		Where("project_id = ?", pid).
-		Asc("chapter_number").
-		Asc("section_number").
-		Asc("task_order").
-		Find(&t)
+func GetProjectTasks(pid string, uid string) (t []TaskEvaluate, err error) {
+	if uid == "" {
+		err = (&Task{}).GetEngine().
+			Where("project_id = ?", pid).
+			Asc("chapter_number").
+			Asc("section_number").
+			Asc("task_order").
+			Find(&t)
+	} else {
+		err = (&Task{}).GetEngine().
+			Where("task.project_id = ?", pid).
+			Join("LEFT OUTER", "submit", "task.id = submit.task_id").
+			Asc("chapter_number").
+			Asc("section_number").
+			Asc("task_order").
+			Find(&t)
+	}
 	return
 }

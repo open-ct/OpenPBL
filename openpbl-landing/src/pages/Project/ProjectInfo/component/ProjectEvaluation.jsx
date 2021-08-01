@@ -14,6 +14,7 @@ import ProjectApi from "../../../../api/ProjectApi";
 function ProjectEvaluation(obj) {
   const pid = obj.project.id
   const published = obj.project.published
+  const type = localStorage.getItem("type")
 
   const [data, setData] = useState([])
   const [tasks, setTasks] = useState([])
@@ -30,8 +31,12 @@ function ProjectEvaluation(obj) {
     TaskApi.getProjectTasks(pid)
       .then(res=>{
         if (res.data.code === 200) {
-          setTasks(res.data.data)
-          setEchartsData(res.data.data)
+          if (res.data.data != null) {
+            setTasks(res.data.data)
+            setEchartsData(res.data.data)
+          } else {
+            setEchartsData([])
+          }
         }
       })
       .catch(e=>{console.log(e)})
@@ -101,6 +106,67 @@ function ProjectEvaluation(obj) {
     setData(d)
   }
 
+  const getColumns = () => {
+    let c = [
+      {
+        title: '任务标题',
+        dataIndex: 'taskTitle',
+        key: 'taskTitle'
+      },
+      {
+        title: '任务描述',
+        dataIndex: 'taskIntroduce',
+        key: 'taskIntroduce',
+        ellipsis: true,
+      },
+      {
+        title: '权重',
+        dataIndex: 'taskWeight',
+        key: 'taskWeight',
+        render: (text, item, index) => (
+          <>
+            {editWeight ?
+              <>
+                <InputNumber onChange={v=>changeTaskWeight(v, index)} value={item.taskWeight} min={0} max={100}/>&nbsp;&nbsp;%
+              </>
+              :
+              <span>{text}&nbsp;&nbsp;%</span>
+            }
+          </>
+        )
+      }]
+    if (obj.project.learning) {
+      c.push({
+        title: '得分',
+        dataIndex: 'score',
+        key: 'score',
+        render: (text, item, index) => (
+          <>
+            <span>{getScore(text, item.taskWeight)}&nbsp;/&nbsp;{item.taskWeight}</span>
+          </>
+        )
+      })
+      c.push({
+        title: '状态',
+        dataIndex: 'score',
+        key: 'score',
+        render: (text, item, index) => (
+          <>
+            {item.scored ?
+              <span>已打分</span>
+              :
+              <span>未打分</span>
+            }
+          </>
+        )
+      })
+    }
+    return c
+  }
+  const getScore = (score, weight) => {
+    return (score * weight / 100).toFixed(2)
+  }
+
   const getOptions = () => ({
     title: {
       x: 'center',
@@ -166,35 +232,7 @@ function ProjectEvaluation(obj) {
         </Row>
         <Divider />
         <Table
-          columns={[
-            {
-              title: '任务标题',
-              dataIndex: 'taskTitle',
-              key: 'taskTitle'
-            },
-            {
-              title: '任务描述',
-              dataIndex: 'taskIntroduce',
-              key: 'taskIntroduce',
-              ellipsis: true,
-            },
-            {
-              title: '权重',
-              dataIndex: 'taskWeight',
-              key: 'taskWeight',
-              render: (text, item, index) => (
-                <>
-                  {editWeight ?
-                    <>
-                      <InputNumber onChange={v=>changeTaskWeight(v, index)} value={item.taskWeight} min={0} max={100}/>&nbsp;&nbsp;%
-                    </>
-                    :
-                    <span>{text}&nbsp;&nbsp;%</span>
-                  }
-                </>
-              )
-            }
-          ]}
+          columns={getColumns()}
           dataSource={tasks}
           pagination={false}
         />

@@ -8,6 +8,7 @@ import (
 type Submit struct {
 	Id              int64     `json:"id" xorm:"not null pk autoincr"`
 
+	ProjectId       int64     `json:"projectId" xorm:"not null index"`
 	StudentId       string    `json:"studentId" xorm:"not null index"`
 	TaskId          int64     `json:"taskId" xorm:"not null index"`
 
@@ -19,6 +20,9 @@ type Submit struct {
 
 	FilePath        string    `json:"filePath"`
 	CreateAt        time.Time `json:"createAt"`
+
+	Score           int       `json:"score" xorm:"default 0"`
+	Scored          bool      `json:"scored" xorm:"default false"`
 }
 
 type Choice struct {

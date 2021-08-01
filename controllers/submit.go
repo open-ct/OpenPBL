@@ -37,8 +37,10 @@ func (p *ProjectController) CreateSubmit() {
 	}
 	uid := user.Username
 	tid, err := p.GetInt64(":taskId")
+	pid, err := p.GetInt64(":projectId")
 
 	submit := &models.Submit{
+		ProjectId:       pid,
 		StudentId:       uid,
 		TaskId:          tid,
 		SubmitType:      p.GetString("submitType"),
@@ -47,6 +49,12 @@ func (p *ProjectController) CreateSubmit() {
 		SubmitContent:   p.GetString("submitContent"),
 		FilePath:        p.GetString("filePath"),
 		CreateAt:        time.Now(),
+		Scored:          true,
+		Score:           100,
+	}
+	if submit.SubmitType == "file" {
+		submit.Scored = false
+		submit.Score = 0
 	}
 	var c = make([]models.Choice, 0)
 	if submit.SubmitType == "survey" {
@@ -99,8 +107,10 @@ func (p *ProjectController) UpdateSubmit() {
 	uid := user.Username
 	tid, err := p.GetInt64(":taskId")
 	sid, err := p.GetInt64(":submitId")
+	pid, err := p.GetInt64(":projectId")
 	f := &models.Submit{
 		Id:              sid,
+		ProjectId:       pid,
 		StudentId:       uid,
 		TaskId:          tid,
 		SubmitType:      p.GetString("submitType"),

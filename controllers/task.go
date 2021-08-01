@@ -70,8 +70,25 @@ func (p *ProjectController) GetSectionTasks() {
 // @Failure 400
 // @router /:projectId/tasks [get]
 func (p *ProjectController) GetProjectTasks() {
+	user := p.GetSessionUser()
+	if user == nil {
+		p.Data["json"] = TaskResponse{
+			Response: Response{
+				Code: 401,
+				Msg:  "请先登录",
+			},
+		}
+		p.ServeJSON()
+		return
+	}
+
+	uid := ""
+	if user.Tag == "student" {
+		uid = user.Username
+	}
+
 	pid := p.GetString(":projectId")
-	tasks, err := models.GetProjectTasks(pid)
+	tasks, err := models.GetProjectTasks(pid, uid)
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
