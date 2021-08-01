@@ -9,18 +9,16 @@ import (
 // @Title
 // @Description
 // @Param pid path string true "project id"
-// @Success 200 {object} []models.Chapter
+// @Success 200 {object} []models.Outline
 // @Failure 403 body is empty
 // @router /:id/chapters [get]
 func (p *ProjectController) GetProjectChapters() {
 	pid := p.GetString(":id")
-	if pid != "" {
-		chapters, err := models.GetChaptersByPid(pid)
-		if err != nil {
-			p.Data["json"] = map[string][]models.Chapter{"chapters": nil}
-		} else {
-			p.Data["json"] = map[string][]models.Chapter{"chapters": chapters}
-		}
+	outline, err := models.GetChaptersByPid(pid)
+	if err != nil {
+		p.Data["json"] = map[string][]models.Outline{"chapters": nil}
+	} else {
+		p.Data["json"] = map[string][]models.Outline{"chapters": outline}
 	}
 	p.ServeJSON()
 }

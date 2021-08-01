@@ -9,6 +9,11 @@ type Chapter struct {
 	ChapterNumber      int     `json:"chapterNumber" xorm:"index"`
 }
 
+type Outline struct {
+	Chapter                `xorm:"extends"`
+	Sections    []Section  `json:"sections" xorm:"extends"`
+}
+
 func (p *Chapter) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(p)
 }
@@ -33,10 +38,20 @@ func ExchangeChapters(cid1 string, cid2 string) (err error) {
 	return
 }
 
-func GetChaptersByPid(pid string) (c []Chapter, err error) {
+func GetChaptersByPid(pid string) (outline []Outline, err error) {
+	var c []Chapter
 	err = (&Chapter{}).GetEngine().
 		Where("project_id = ?", pid).
 		Asc("chapter_number").
 		Find(&c)
+	outline = make([]Outline, len(c))
+	var sections []Section
+	for i:=0; i< len(c); i++ {
+		outline[i].Chapter = c[i]
+		err = (&Section{}).GetEngine().
+			Where("chapter_id = ?", c[i].Id).
+			Find(&sections)
+		outline[i].Sections = sections
+	}
 	return
 }

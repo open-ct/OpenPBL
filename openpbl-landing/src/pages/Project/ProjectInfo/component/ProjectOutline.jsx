@@ -20,21 +20,8 @@ function ProjectOutline(obj) {
           setChapters(res.data.chapters)
         }
       })
+      .catch(e=>{console.log(e)})
   }, [])
-
-  const handleClick = (item, key) => {
-    if (item.sections === undefined) {
-      SectionApi.getChapterSections(item)
-        .then((res) => {
-          item.sections = res.data.sections
-          chapters[key] = item
-          setChapters([...chapters])
-        })
-        .catch((e) => {
-          console.log(e)
-        })
-    }
-  }
   const gotoLearning = (item, subItem) => {
     window.open(`/project/${pid}/section/${subItem.id}/preview?back=/project/${pid}/info`)
   }
@@ -48,8 +35,7 @@ function ProjectOutline(obj) {
           defaultOpenKeys={[]}
           mode="inline"
         >{chapters.map((item, index) => (
-          <SubMenu style={{fontSize: '2.7vh'}} key={index.toString()} title={item.chapterName}
-                   onTitleClick={e => handleClick(item, index)}>
+          <SubMenu style={{fontSize: '2.7vh'}} key={index.toString()} title={item.chapterName}>
             {(item.sections === null || item.sections === undefined) ? null :
               item.sections.map((subItem, subIndex) => (
                 <Menu.Item key={index.toString() + subIndex.toString()} onClick={e => gotoLearning(item, subItem)}>

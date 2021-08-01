@@ -14,13 +14,23 @@ type LearnProject struct {
 	JoinTime   time.Time `json:"joinTime" xorm:"created"`
 }
 
+type LearnSection struct {
+	StudentId     string    `json:"studentId" xorm:"not null index pk"`
+	SectionId     int64     `json:"sectionId" xorm:"not null index pk"`
+
+	SectionTime   time.Time `json:"sectionTime"`
+	LearnTime     time.Time `json:"learnTime"`
+
+	TaskNum       int       `json:"taskNum"`
+	SubmittedTask int       `json:"submittedTask" xorm:"default 0"`
+}
+
 func (l *LearnProject) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(l)
 }
-func (sp *ProjectDetail) GetEngine() *xorm.Session {
-	return adapter.Engine.Table(sp)
+func (l *LearnSection) GetEngine() *xorm.Session {
+	return adapter.Engine.Table(l)
 }
-
 func (l *LearnProject) Create() (err error) {
 	_, err = (&LearnProject{}).GetEngine().Insert(l)
 	_, err = adapter.Engine.
@@ -69,5 +79,17 @@ func GetProjectStudents(pid string, from int, size int) (s []LearnProject, rows 
 	rows, err = (&LearnProject{}).GetEngine().
 		Where("project_id = ?", pid).
 		Count()
+	return
+}
+
+func (l *LearnSection) Create() (err error) {
+	_, err = (&LearnSection{}).GetEngine().Insert(l)
+	return
+}
+func (l *LearnSection) Update() (err error) {
+	_, err = (&LearnSection{}).GetEngine().
+		Where("student_id = ?", l.StudentId).
+		Where("section_id = ?", l.SectionId).
+		Update(l)
 	return
 }

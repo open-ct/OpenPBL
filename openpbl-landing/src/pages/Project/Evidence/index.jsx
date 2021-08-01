@@ -4,9 +4,10 @@ import DocumentTitle from 'react-document-title';
 
 function Evidence(obj) {
   const pid = obj.match.params.pid
+  const sid = obj.match.params.sid
 
   useEffect(()=>{
-    console.log(pid)
+    console.log(pid, sid)
   }, [])
 
   const back = e => {

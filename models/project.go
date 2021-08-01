@@ -34,11 +34,6 @@ type ProjectDetail struct {
 	Learning bool      `json:"learning"`
 }
 
-type Outline struct {
-	Chapter                `xorm:"extends"`
-	Section    []Section   `json:"section" xorm:"extends"`
-}
-
 type ProjectSkill struct {
 	Skill          string     `json:"skill" xorm:"not null pk"`
 	ProjectId      int64      `json:"projectId" xorm:"not null pk"`

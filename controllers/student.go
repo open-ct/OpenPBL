@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
+	"time"
 )
 
 // StudentController
@@ -154,5 +155,120 @@ func (u *StudentController) FinishedProject() {
 		u.Data["json"] = map[string]string{"error": err.Error()}
 	}
 	u.Data["json"] = map[string]bool{"result": true}
+	u.ServeJSON()
+}
+
+var TimeFormatStr = "2006-01-02 15:04:05"
+
+// CreateLearnSection
+// @Title
+// @Description
+// @Param body body models.LearnSection true ""
+// @Success 200 {object} Response
+// @Failure 400
+// @router /section/:sectionId [post]
+func (u *StudentController) CreateLearnSection() {
+	var resp Response
+	user := u.GetSessionUser()
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	if user.Tag != "student" {
+		resp = Response{
+			Code: 403,
+			Msg:  "非法的用户",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	uid := user.Username
+	sid, err := u.GetInt64(":sectionId")
+	st, err := time.Parse(TimeFormatStr, u.GetString("sectionTime"))
+	lt, err := time.Parse(TimeFormatStr, u.GetString("learnTime"))
+	taskNum, err := u.GetInt("taskNum")
+	l := models.LearnSection{
+		StudentId:     uid,
+		SectionId:     sid,
+		SectionTime:   st,
+		LearnTime:     lt,
+		TaskNum:       taskNum,
+		SubmittedTask: 0,
+	}
+	err = l.Create()
+	if err != nil {
+		u.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		u.Data["json"] = Response{
+			Code: 200,
+			Msg:  "",
+		}
+	}
+	u.ServeJSON()
+}
+
+// UpdateLearnSection
+// @Title
+// @Description
+// @Param body body models.LearnSection true ""
+// @Success 200 {object} Response
+// @Failure 400
+// @router /section/:sectionId [post]
+func (u *StudentController) UpdateLearnSection() {
+	var resp Response
+	user := u.GetSessionUser()
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	if user.Tag != "student" {
+		resp = Response{
+			Code: 403,
+			Msg:  "非法的用户",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	uid := user.Username
+	sid, err := u.GetInt64(":sectionId")
+	st, err := time.Parse(TimeFormatStr, u.GetString("sectionTime"))
+	lt, err := time.Parse(TimeFormatStr, u.GetString("learnTime"))
+	taskNum, err := u.GetInt("taskNum")
+	submittedTask, err := u.GetInt("submittedTask")
+	l := models.LearnSection{
+		StudentId:     uid,
+		SectionId:     sid,
+		SectionTime:   st,
+		LearnTime:     lt,
+		TaskNum:       taskNum,
+		SubmittedTask: submittedTask,
+	}
+	err = l.Update()
+	if err != nil {
+		u.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		u.Data["json"] = Response{
+			Code: 200,
+			Msg:  "",
+		}
+	}
 	u.ServeJSON()
 }

@@ -39,23 +39,6 @@ function OutlineEditPage(obj) {
       })
   }, [])
 
-  const handleClick = (item, key) => {
-    if (item.sections === undefined) {
-      SectionApi.getChapterSections(item)
-        .then((res) => {
-          if (res.data.sections == null) {
-            item.sections = []
-          } else {
-            item.sections = res.data.sections
-          }
-          chapters[key] = item
-          setChapters([...chapters])
-        })
-        .catch((e) => {
-          console.log(e)
-        })
-    }
-  }
   const addChapter = e => {
     setOpt('add')
     setChapterModalVisible(true)
@@ -290,7 +273,6 @@ function OutlineEditPage(obj) {
               </span>
             </div>
           }
-          onTitleClick={e => handleClick(item, index)}
         >
           {(item.sections === null || item.sections === undefined) ? null :
             item.sections.map((subItem, subIndex) => (
