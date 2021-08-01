@@ -148,7 +148,8 @@ function OutlineEditPage(obj) {
         id: section.id,
         chapterId: section.chapterId,
         sectionName: sectionName,
-        sectionNumber: section.sectionNumber
+        sectionNumber: section.sectionNumber,
+        chapterNumber: section.chapterNumber
       }
       SectionApi.updateChapterSection(s)
         .then((res) => {
@@ -171,7 +172,12 @@ function OutlineEditPage(obj) {
           l = chapters[index].sections[len - 1].sectionNumber + 1
         }
       }
-      let sec = {sectionName: sectionName, sectionNumber: l, chapterId: chapters[index].id}
+      let sec = {
+        sectionName: sectionName,
+        sectionNumber: l,
+        chapterId: chapters[index].id,
+        chapterNumber: chapters[index].chapterNumber
+      }
       SectionApi.createChapterSection(pid, sec)
         .then((res) => {
           setSectionModalVisible(false)

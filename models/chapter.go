@@ -47,8 +47,8 @@ func GetChaptersByPid(pid string) (outline []Outline, err error) {
 		Asc("chapter_number").
 		Find(&c)
 	outline = make([]Outline, len(c))
-	var sections []Section
 	for i:=0; i< len(c); i++ {
+		sections := make([]Section, 0)
 		outline[i].Chapter = c[i]
 		err = (&Section{}).GetEngine().
 			Where("chapter_id = ?", c[i].Id).

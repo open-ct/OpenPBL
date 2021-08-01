@@ -47,6 +47,8 @@ function StudentTask(obj) {
       sectionId: sid,
       taskOrder: o,
       taskType: tp.key,
+      chapterNumber: obj.section.chapterNumber,
+      sectionNumber: obj.section.sectionNumber
     }
     TaskApi.createTask(pid, t)
       .then(res => {
