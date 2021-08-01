@@ -38,7 +38,7 @@ func (p *ProjectController) GetSectionTasks() {
 		learning = false
 	}
 	uid := user.Username
-	pid, err := p.GetInt64(":pid")
+	pid, err := p.GetInt64(":projectId")
 	learning = models.IsLearningProject(pid, uid)
 	tasks, err := models.GetSectionTasks(sid, uid, learning)
 	if err != nil {
@@ -70,7 +70,7 @@ func (p *ProjectController) GetSectionTasks() {
 // @Failure 400
 // @router /:projectId/tasks [get]
 func (p *ProjectController) GetProjectTasks() {
-	pid := p.GetString(":pid")
+	pid := p.GetString(":projectId")
 	tasks, err := models.GetProjectTasks(pid)
 	if err != nil {
 		p.Data["json"] = Response{
@@ -207,6 +207,31 @@ func (p *ProjectController) DeleteTask() {
 // @Failure 401
 // @router /:projectId/tasks/exchange [post]
 func (p *ProjectController) ExchangeTask() {
+	tid1 := p.GetString(":taskId1")
+	tid2 := p.GetString(":taskId2")
+	err := models.ExchangeTasks(tid1, tid2)
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Data: true,
+		}
+	}
+	p.ServeJSON()
+}
+
+
+// SaveTaskWeight
+// @Title
+// @Description
+// @Param cid path string true ""
+// @Success 200 {object} Response
+// @Failure 401
+// @router /:projectId/tasks/exchange [post]
+func (p *ProjectController) SaveTaskWeight() {
 	tid1 := p.GetString(":taskId1")
 	tid2 := p.GetString(":taskId2")
 	err := models.ExchangeTasks(tid1, tid2)

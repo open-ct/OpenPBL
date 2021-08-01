@@ -3,6 +3,7 @@ package controllers
 import (
 	"OpenPBL/models"
 	"OpenPBL/util"
+	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
@@ -179,7 +180,72 @@ func (p *ProjectController) UpdateProject() {
 		Skills:           p.GetString("skills"),
 	}
 	projectSubjects, projectSkills, err := getProjectSubjectsAndSkills(pid, project.Subjects, project.Skills)
-	err = project.Update(projectSubjects, projectSkills)
+	err = project.UpdateInfo(projectSubjects, projectSkills)
+	if err != nil {
+		resp = Response{
+			Code: 400,
+			Msg:  err.Error(),
+			Data: true,
+		}
+	} else {
+		resp = Response{
+			Code: 200,
+			Msg:  "更新成功",
+		}
+	}
+	p.Data["json"] = resp
+	p.ServeJSON()
+}
+
+// UpdateProjectWeight
+// @Title
+// @Description create project
+// @Param body body models.Project true	""
+// @Success 200 {int} models.Project.Id
+// @Failure 403 body is empty
+// @router /:id/weight [post]
+func (p *ProjectController) UpdateProjectWeight() {
+	user := p.GetSessionUser()
+	var resp Response
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		p.Data["json"] = resp
+		p.ServeJSON()
+		return
+	}
+	if user.Tag != "teacher" {
+		resp = Response{
+			Code: 403,
+			Msg:  "非法用户",
+		}
+		p.Data["json"] = resp
+		p.ServeJSON()
+		return
+	}
+	pid, err := p.GetInt64(":id")
+	learnMinuteWeight, err := p.GetInt("learnMinuteWeight")
+	learnMinute, err := p.GetInt("learnMinute")
+
+	if err != nil {
+		resp = Response{
+			Code: 400,
+			Msg: err.Error(),
+		}
+		p.Data["json"] = resp
+		p.ServeJSON()
+		return
+	}
+	project := models.Project{
+		Id:                pid,
+		LearnMinuteWeight: learnMinuteWeight,
+		LearnMinute:       learnMinute,
+	}
+	tasks := make([]models.Task, 0)
+	err = json.Unmarshal([]byte(p.GetString("tasks")), &tasks)
+	err = models.UpdateWeight(project, tasks)
 	if err != nil {
 		resp = Response{
 			Code: 400,

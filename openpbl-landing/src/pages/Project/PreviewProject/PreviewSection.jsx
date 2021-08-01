@@ -154,9 +154,13 @@ function PreviewSection(obj) {
           <Card className="resource-card" key={index.toString()}>
             <p className="card-title">学生任务
               {item.submitted ?
-                <span className="submit-status" style={{color: 'green'}}>已提交&nbsp;&nbsp;{util.FilterTime(item.submit.createAt)}</span>
+                <span className="submit-status" style={{color: 'green'}}>
+                  权重占比&nbsp;{item.taskWeight}&nbsp;%&nbsp;&nbsp;已提交&nbsp;&nbsp;{util.FilterTime(item.submit.createAt)}
+                </span>
                 :
-                <span className="submit-status" style={{color: 'gray'}}>未提交</span>
+                <span className="submit-status" style={{color: 'gray'}}>
+                  权重占比&nbsp;{item.taskWeight}&nbsp;%&nbsp;&nbsp;未提交
+                </span>
               }
             </p>
             <p className="task-title">{item.taskTitle}</p>

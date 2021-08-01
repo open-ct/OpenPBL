@@ -134,6 +134,12 @@ class ProjectInfo extends React.PureComponent {
       .catch(e=>{console.log(e)})
   }
 
+  setProject = project => {
+    this.setState({
+      project: project
+    })
+  }
+
   render() {
     const {project, teacher, menu, type, pid } = this.state;
 
@@ -342,7 +348,14 @@ class ProjectInfo extends React.PureComponent {
                     {menu === 'project-introduce' ? <ProjectIntroduce project={project}/> : null}
                     {menu === 'project-outline' ? <ProjectOutline project={project}/> : null}
                     {menu === 'project-comment' ? <ProjectComment project={project}/> : null}
-                    {menu === 'project-evaluation' ? <ProjectEvaluation project={project}/> : null}
+                    {menu === 'project-evaluation' ?
+                      <ProjectEvaluation
+                        project={project}
+                        setProject={this.setProject}
+                        loadProjectDetail={this.loadProjectDetail}
+                      />
+                      : null
+                    }
 
                     {menu === 'student-admin' ? <StudentAdmin project={project}/> : null}
 

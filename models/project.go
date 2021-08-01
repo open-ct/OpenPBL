@@ -27,6 +27,9 @@ type Project struct {
 	JoinNum            int64     `json:"joinNum" xorm:"default 0"`
 
 	Published          bool      `json:"published" xorm:"default false index"`
+
+	LearnMinute        int       `json:"learnMinute" xorm:"default 10"`
+	LearnMinuteWeight  int       `json:"learnMinuteWeight" xorm:"default 100"`
 }
 
 type ProjectDetail struct {
@@ -95,7 +98,24 @@ func (p *ProjectSubject) Create() (err error) {
 	return
 }
 
-func (p *Project) Update(subjects []*ProjectSubject, skills []*ProjectSkill) (err error) {
+func (p *Project) Update() (err error) {
+	_, err = p.GetEngine().ID(p.Id).Update(p)
+	return
+}
+
+func UpdateWeight(p Project, t[]Task) (err error) {
+	session := adapter.Engine.NewSession()
+	defer session.Close()
+	session.Begin()
+	_, err = session.Table(&Project{}).ID(p.Id).Update(&p)
+	for i:=0; i< len(t); i++ {
+		(&t[i]).Update()
+	}
+	session.Commit()
+	return
+}
+
+func (p *Project) UpdateInfo(subjects []*ProjectSubject, skills []*ProjectSkill) (err error) {
 	_, err = p.GetEngine().ID(p.Id).Update(p)
 	n1 := len(subjects)
 	for i:=0; i<n1; i++ {

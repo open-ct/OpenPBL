@@ -66,8 +66,14 @@ const ProjectApi = {
       url: `/project/${pid}/remove/${sid}`,
       method: 'post'
     })
+  },
+  updateWeight(pid, data) {
+    return request({
+      url: `project/${pid}/weight`,
+      method: 'post',
+      data: qs.stringify(data)
+    })
   }
-
 }
 
 export default ProjectApi
