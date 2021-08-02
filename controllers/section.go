@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"OpenPBL/models"
+	"encoding/json"
 	"strconv"
 )
 
@@ -175,5 +176,29 @@ func (p *ProjectController) ExchangeChapterSection() {
 	p.ServeJSON()
 }
 
-
+// UpdateSectionsMinute
+// @Title
+// @Description
+// @Param body body []models.Section true ""
+// @Success 200 {object}
+// @Failure 401
+// @router /:projectId/sections-minute [post]
+func (p *ProjectController) UpdateSectionsMinute() {
+	sections := make([]models.Section, 0)
+	err := json.Unmarshal([]byte(p.GetString("sections")), &sections)
+	err = models.UpdateSectionsMinute(sections)
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Msg: "更新成功",
+			Data: true,
+		}
+	}
+	p.ServeJSON()
+}
 

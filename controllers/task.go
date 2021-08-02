@@ -239,29 +239,3 @@ func (p *ProjectController) ExchangeTask() {
 	}
 	p.ServeJSON()
 }
-
-
-// SaveTaskWeight
-// @Title
-// @Description
-// @Param cid path string true ""
-// @Success 200 {object} Response
-// @Failure 401
-// @router /:projectId/tasks/exchange [post]
-func (p *ProjectController) SaveTaskWeight() {
-	tid1 := p.GetString(":taskId1")
-	tid2 := p.GetString(":taskId2")
-	err := models.ExchangeTasks(tid1, tid2)
-	if err != nil {
-		p.Data["json"] = Response{
-			Code: 400,
-		}
-	} else {
-		p.Data["json"] = Response{
-			Code: 200,
-			Data: true,
-		}
-	}
-	p.ServeJSON()
-}
-

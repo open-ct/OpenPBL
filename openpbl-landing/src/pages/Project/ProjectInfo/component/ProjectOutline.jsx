@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Menu} from 'antd'
+import {Menu, Progress} from 'antd'
 import QueueAnim from 'rc-queue-anim';
 
 import ChapterApi from "../../../../api/ChapterApi";
@@ -40,6 +40,24 @@ function ProjectOutline(obj) {
               item.sections.map((subItem, subIndex) => (
                 <Menu.Item key={index.toString() + subIndex.toString()} onClick={e => gotoLearning(item, subItem)}>
                   {subItem.sectionName}
+                  {obj.project.learning ?
+                    <>
+                      <span style={{float: 'right'}}>
+                        <Progress
+                          trailColor="lightgray"
+                          width={35}
+                          strokeWidth={10}
+                          type="circle"
+                          percent={((subItem.learnMinute+subItem.learnSecond/60)/subItem.sectionMinute*100).toFixed(1)}
+                        />
+                      </span>
+                      <span style={{float: 'right', marginRight: '20px'}}>
+                        学习进度：
+                        {subItem.learnMinute}&nbsp;:&nbsp;{subItem.learnSecond}&nbsp;/&nbsp;
+                        {subItem.sectionMinute}
+                      </span>
+                    </>
+                    : null }
                 </Menu.Item>
               ))
             }

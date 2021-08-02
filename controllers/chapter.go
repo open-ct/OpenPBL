@@ -5,6 +5,12 @@ import (
 	"strconv"
 )
 
+type ChaptersResponse struct {
+	Code     int              `json:"code"`
+	Msg      string           `json:"msg"`
+	Chapters []models.Outline `json:"chapters"`
+}
+
 // GetProjectChapters
 // @Title
 // @Description
@@ -13,12 +19,32 @@ import (
 // @Failure 403 body is empty
 // @router /:id/chapters [get]
 func (p *ProjectController) GetProjectChapters() {
+	user := p.GetSessionUser()
+	if user == nil {
+		p.Data["json"] = ChaptersResponse{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		p.ServeJSON()
+		return
+	}
+	uid := ""
+	if user.Tag == "student" {
+		uid = user.Username
+	}
 	pid := p.GetString(":id")
-	outline, err := models.GetChaptersByPid(pid)
+	outline, err := models.GetChaptersByPid(pid, uid)
 	if err != nil {
-		p.Data["json"] = map[string][]models.Outline{"chapters": nil}
+		p.Data["json"] = ChaptersResponse{
+			Code:     400,
+			Msg:      err.Error(),
+			Chapters: make([]models.Outline, 0),
+		}
 	} else {
-		p.Data["json"] = map[string][]models.Outline{"chapters": outline}
+		p.Data["json"] = ChaptersResponse{
+			Code:     200,
+			Chapters: outline,
+		}
 	}
 	p.ServeJSON()
 }

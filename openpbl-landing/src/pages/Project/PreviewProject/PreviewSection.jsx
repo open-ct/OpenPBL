@@ -10,11 +10,12 @@ import TaskApi from "../../../api/TaskApi";
 import FillSurvey from "./component/FillSurvey";
 import SubmitApi from "../../../api/SubmitApi";
 import util from "../component/Util"
+import StudentApi from "../../../api/StudentApi";
 
 
 function PreviewSection(obj) {
-  let s = new URLSearchParams(obj.location.search)
-  const backUrl = s.get('back')
+  let url = new URLSearchParams(obj.location.search)
+  const backUrl = url.get('back')
 
   const sid = obj.match.params.sid
   const pid = obj.match.params.pid
@@ -22,10 +23,33 @@ function PreviewSection(obj) {
   const [tasks, setTasks] = useState([])
   const [learning, setLearning] = useState(false)
 
+  const [minute, setMinute] = useState(0)
+  const [second, setSecond] = useState(0)
+  const [timer, setTimer] = useState(null)
+  let s = 0
+  let m = 0
+
   useEffect(()=>{
     getSectionDetail()
     getTasks()
   }, [])
+  useEffect(()=>{
+    window.onbeforeunload = leave
+  }, [])
+  const leave = () => {
+    if (timer != null) {
+      clearTimeout(timer)
+    }
+    let data = {
+      learnMinute: m,
+      learnSecond: s
+    }
+    StudentApi.updateLearnSection(sid, data)
+      .then(res=>{
+      })
+      .catch(e=>{console.log(e)})
+  }
+
   const getSectionDetail = () => {
     SectionApi.getSectionDetail(sid, pid)
       .then(res=>{
@@ -64,9 +88,37 @@ function PreviewSection(obj) {
           }
           setTasks(t)
           setLearning(res.data.learning)
+          if (res.data.learning) {
+            getTimer()
+          }
         }
       })
       .catch(e=>{console.log(e)})
+  }
+  const getTimer = () => {
+    StudentApi.getLearnSection(sid)
+      .then(res=>{
+        if (res.data.code === 200) {
+          setSecond(res.data.data.learnSecond)
+          setMinute(res.data.data.learnMinute)
+          s = res.data.data.learnSecond
+          m = res.data.data.learnMinute
+        }
+      })
+      .catch(e=>{console.log(e)})
+
+    setTimeout(count, 1000)
+  }
+  const count = () => {
+    if (s === 30) {
+      s = 0
+      m ++
+      setMinute(m)
+    } else {
+      s++
+    }
+    setSecond(s)
+    setTimeout(count, 1000)
   }
   const back = e => {
     if (backUrl === undefined || backUrl === null) {
@@ -141,6 +193,9 @@ function PreviewSection(obj) {
       <div style={{ padding: '20px', margin: 'auto'}}>
         <Card>
           <h2 style={{ fontWeight: 'bold' }}>{section.sectionName}</h2>
+          {learning ?
+            <span style={{float: 'right'}}>{minute}&nbsp;:&nbsp;{second}</span>
+            : null}
         </Card>
         <Card className="resource-card">
           <div dangerouslySetInnerHTML={{__html: section.resource.content}}/>

@@ -23,6 +23,13 @@ const SectionApi = {
       data: qs.stringify(section)
     })
   },
+  updateSectionsMinute(pid, sections) {
+    return request({
+      url: `/project/${pid}/sections-minute`,
+      method: 'post',
+      data: qs.stringify(sections)
+    })
+  },
   deleteChapterSection(pid, s) {
     return request({
       url: `/project/${pid}/chapter/${s.chapterId}/section/${s.id}/delete`,

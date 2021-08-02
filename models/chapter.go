@@ -1,6 +1,8 @@
 package models
 
-import "xorm.io/xorm"
+import (
+	"xorm.io/xorm"
+)
 
 type Chapter struct {
 	Id                 int64   `json:"id" xorm:"not null pk autoincr"`
@@ -10,8 +12,8 @@ type Chapter struct {
 }
 
 type Outline struct {
-	Chapter                `xorm:"extends"`
-	Sections    []Section  `json:"sections" xorm:"extends"`
+	Chapter                  `xorm:"extends"`
+	Sections []SectionMinute `json:"sections" xorm:"extends"`
 }
 
 func (p *Chapter) GetEngine() *xorm.Session {
@@ -40,7 +42,7 @@ func ExchangeChapters(cid1 string, cid2 string) (err error) {
 	return
 }
 
-func GetChaptersByPid(pid string) (outline []Outline, err error) {
+func GetChaptersByPid(pid string, uid string) (outline []Outline, err error) {
 	var c []Chapter
 	err = (&Chapter{}).GetEngine().
 		Where("project_id = ?", pid).
@@ -48,11 +50,17 @@ func GetChaptersByPid(pid string) (outline []Outline, err error) {
 		Find(&c)
 	outline = make([]Outline, len(c))
 	for i:=0; i< len(c); i++ {
-		sections := make([]Section, 0)
+		sections := make([]SectionMinute, 0)
 		outline[i].Chapter = c[i]
-		err = (&Section{}).GetEngine().
-			Where("chapter_id = ?", c[i].Id).
-			Find(&sections)
+		if uid == "" {
+			err = (&Section{}).GetEngine().
+				Where("chapter_id = ?", c[i].Id).
+				Find(&sections)
+		} else {
+			err = adapter.Engine.
+				SQL("select * from (select * from section where chapter_id = ?) s LEFT JOIN learn_section ls on s.id = ls.section_id and ls.student_id = ?", c[i].Id, uid).
+				Find(&sections)
+		}
 		outline[i].Sections = sections
 	}
 	return

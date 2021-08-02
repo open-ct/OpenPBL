@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"xorm.io/xorm"
 )
 
@@ -11,7 +12,12 @@ type Section struct {
 	SectionNumber      int     `json:"sectionNumber" xorm:"index"`
 	ChapterNumber      int     `json:"chapterNumber" xorm:"index"`
 
-	SectionMinute      int     `json:"sectionMinute"`
+	SectionMinute      int     `json:"sectionMinute" xorm:"default 10"`
+}
+
+type SectionMinute struct {
+	Section                `xorm:"extends"`
+	LearnSection           `xorm:"extends"`
 }
 
 type SectionDetail struct {
@@ -43,6 +49,15 @@ func (p *Section) Update() (err error) {
 	_, err = p.GetEngine().ID(p.Id).Update(p)
 	return
 }
+
+func UpdateSectionsMinute(sections []Section) (err error) {
+	for i:=0; i< len(sections); i++ {
+		fmt.Println(sections[i])
+		err = (&sections[i]).Update()
+	}
+	return
+}
+
 func (p *Section) Delete() (err error) {
 	_, err = p.GetEngine().
 		Exec("update section set section_number = section_number - 1 where section_number > ", p.SectionNumber)

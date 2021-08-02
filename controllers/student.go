@@ -157,16 +157,14 @@ func (u *StudentController) FinishedProject() {
 	u.ServeJSON()
 }
 
-var TimeFormatStr = "2006-01-02 15:04:05"
-
-// CreateLearnSection
+// GetLearnSection
 // @Title
 // @Description
 // @Param body body models.LearnSection true ""
 // @Success 200 {object} Response
 // @Failure 400
-// @router /section/:sectionId [post]
-func (u *StudentController) CreateLearnSection() {
+// @router /section/:sectionId [get]
+func (u *StudentController) GetLearnSection() {
 	var resp Response
 	user := u.GetSessionUser()
 	if user == nil {
@@ -189,11 +187,7 @@ func (u *StudentController) CreateLearnSection() {
 	}
 	uid := user.Username
 	sid, err := u.GetInt64(":sectionId")
-	l := models.LearnSection{
-		StudentId:     uid,
-		SectionId:     sid,
-	}
-	err = l.Create()
+	l, err := models.GetLearnSection(sid, uid)
 	if err != nil {
 		u.Data["json"] = Response{
 			Code: 400,
@@ -202,7 +196,7 @@ func (u *StudentController) CreateLearnSection() {
 	} else {
 		u.Data["json"] = Response{
 			Code: 200,
-			Msg:  "",
+			Data: l,
 		}
 	}
 	u.ServeJSON()
@@ -238,10 +232,13 @@ func (u *StudentController) UpdateLearnSection() {
 	}
 	uid := user.Username
 	sid, err := u.GetInt64(":sectionId")
-
+	m, err := u.GetInt("learnMinute")
+	s, err := u.GetInt("learnSecond")
 	l := models.LearnSection{
 		StudentId:     uid,
 		SectionId:     sid,
+		LearnMinute:   m,
+		LearnSecond:   s,
 	}
 	err = l.Update()
 	if err != nil {
@@ -252,7 +249,6 @@ func (u *StudentController) UpdateLearnSection() {
 	} else {
 		u.Data["json"] = Response{
 			Code: 200,
-			Msg:  "",
 		}
 	}
 	u.ServeJSON()

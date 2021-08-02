@@ -18,7 +18,8 @@ type LearnSection struct {
 	StudentId     string    `json:"studentId" xorm:"not null index pk"`
 	SectionId     int64     `json:"sectionId" xorm:"not null index pk"`
 
-	LearnMinute   int       `json:"learnTime" xorm:"default 0"`
+	LearnMinute   int       `json:"learnMinute" xorm:"default 0"`
+	LearnSecond   int       `json:"learnSecond" xorm:"default 0"`
 }
 
 func (l *LearnProject) GetEngine() *xorm.Session {
@@ -27,6 +28,7 @@ func (l *LearnProject) GetEngine() *xorm.Session {
 func (l *LearnSection) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(l)
 }
+
 func (l *LearnProject) Create() (err error) {
 	_, err = (&LearnProject{}).GetEngine().Insert(l)
 	_, err = adapter.Engine.
@@ -78,6 +80,19 @@ func GetProjectStudents(pid string, from int, size int) (s []LearnProject, rows 
 	return
 }
 
+func GetLearnSection(sectionId int64, studentId string) (l LearnSection, err error) {
+	var b bool
+	b, err = (&LearnSection{}).GetEngine().
+		Where("section_id = ?", sectionId).
+		Where("student_id = ?", studentId).
+		Get(&l)
+	if !b {
+		l.SectionId = sectionId
+		l.StudentId = studentId
+		(&l).Create()
+	}
+	return
+}
 func (l *LearnSection) Create() (err error) {
 	_, err = (&LearnSection{}).GetEngine().Insert(l)
 	return

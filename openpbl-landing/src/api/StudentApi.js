@@ -24,6 +24,19 @@ const StudentApi = {
         learning: false
       })
     })
+  },
+  getLearnSection(sid) {
+    return request({
+      url: `/student/section/${sid}`,
+      method: 'get'
+    })
+  },
+  updateLearnSection(sid, data) {
+    return request({
+      url: `/student/section/${sid}`,
+      method: 'post',
+      data: qs.stringify(data)
+    })
   }
 }
 
