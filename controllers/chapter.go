@@ -64,13 +64,24 @@ func (p *ProjectController) CreateProjectChapter() {
 		ChapterNumber:    num,
 	}
 	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
 	}
 	err = chapter.Create()
 	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Msg:  "添加成功",
+			Data: strconv.FormatInt(chapter.Id, 10),
+		}
 	}
-	p.Data["json"] = map[string]string{"id": strconv.FormatInt(chapter.Id, 10)}
 	p.ServeJSON()
 }
 

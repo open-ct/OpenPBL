@@ -79,13 +79,24 @@ func (p *ProjectController) CreateChapterSection() {
 		ChapterNumber:    chapterNumber,
 	}
 	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
 	}
 	err = section.Create()
 	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Msg:  "创建成功",
+			Data: strconv.FormatInt(section.Id, 10),
+		}
 	}
-	p.Data["json"] = map[string]string{"id": strconv.FormatInt(section.Id, 10)}
 	p.ServeJSON()
 }
 

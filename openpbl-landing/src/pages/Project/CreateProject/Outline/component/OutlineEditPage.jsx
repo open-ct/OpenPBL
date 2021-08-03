@@ -26,6 +26,9 @@ function OutlineEditPage(obj) {
   const [sectionName, setSectionName] = useState('')
 
   useEffect(() => {
+    getChapters()
+  }, [])
+  const getChapters = () => {
     ChapterApi.getProjectChapters(pid)
       .then((res) => {
         if (res.data.chapters === null) {
@@ -37,7 +40,7 @@ function OutlineEditPage(obj) {
       .catch((e) => {
         console.log(e)
       })
-  }, [])
+  }
 
   const addChapter = e => {
     setOpt('add')
@@ -104,12 +107,11 @@ function OutlineEditPage(obj) {
       ChapterApi.updateProjectChapter(c)
         .then((res) => {
           if (res.data.code === 200) {
-            let s = chapters[index].sections
-            c.sections = s
-            chapters[index] = c
-            setChapters([...chapters])
-            message.success(res.data.msg)
             setChapterModalVisible(false)
+            message.success(res.data.msg)
+
+            chapters[index].chapterName = chapterName
+            setChapters([...chapters])
             setChapterName('')
           }
         })
@@ -127,8 +129,8 @@ function OutlineEditPage(obj) {
         .then((res) => {
           setChapterModalVisible(false)
           setChapterName('')
-          if (res.data.id) {
-            cp.id = res.data.id
+          if (res.data.code === 200) {
+            cp.id = res.data.data
             chapters.push(cp)
             setChapters([...chapters])
           }
@@ -154,10 +156,10 @@ function OutlineEditPage(obj) {
       SectionApi.updateChapterSection(pid, s)
         .then((res) => {
           if (res.data.code === 200) {
-            chapters[index].sections[subIndex] = s
-            setChapters([...chapters])
-            message.success(res.data.msg)
             setSectionModalVisible(false)
+
+            chapters[index].sections[subIndex].sectionName = sectionName
+            setChapters([...chapters])
             setSectionName('')
           }
         })
@@ -182,9 +184,9 @@ function OutlineEditPage(obj) {
         .then((res) => {
           setSectionModalVisible(false)
           setSectionName('')
-          if (res.data.id) {
-            sec.id = res.data.id;
-            if (chapters[index].sections === null) {
+          if (res.data.code === 200) {
+            sec.id = res.data.data;
+            if (chapters[index].sections === undefined || chapters[index].sections === null) {
               chapters[index].sections = [sec]
             } else {
               chapters[index].sections.push(sec)
@@ -268,13 +270,13 @@ function OutlineEditPage(obj) {
             <div>
               {item.chapterName}
               <span style={{float: 'right', marginRight: '20px'}}>
+                <Button shape="circle" type="text" onClick={e => modifyChapter(item, index)} icon={<EditOutlined/>}/>
                 <Button shape="circle" type="text" icon={<ArrowUpOutlined/>}
                         onClick={e => exchangeChapter(index - 1, index)}/>
                 <Button shape="circle" type="text" icon={<ArrowDownOutlined/>}
                         onClick={e => exchangeChapter(index, index + 1)}/>
-                <Button shape="circle" type="text" onClick={e => modifyChapter(item, index)} icon={<EditOutlined/>}/>
-                <Popconfirm title="确定删除章节？" onConfirm={e => deleteChapter(item, index)}>
-                  <Button shape="circle" type="text" icon={<DeleteOutlined/>}/>
+                <Popconfirm title="确定删除章节？" onConfirm={e => deleteChapter(item, index)} placement="topLeft">
+                  <Button shape="circle" type="text" icon={<DeleteOutlined/>} style={{color: 'red', marginLeft: '20px'}}/>
                 </Popconfirm>
               </span>
             </div>
@@ -289,16 +291,12 @@ function OutlineEditPage(obj) {
                     <Button type="text">编辑资源</Button>
                   </Link>
 
-                  <Button shape="circle" type="text" icon={<ArrowUpOutlined/>}
-                          onClick={e => exchangeSection(index, subIndex - 1, subIndex)}/>
-                  <Button shape="circle" type="text" icon={<ArrowDownOutlined/>}
-                          onClick={e => exchangeSection(index, subIndex, subIndex + 1)}/>
+                  <Button shape="circle" type="text" onClick={e => modifySection(subItem, index, subIndex)} icon={<EditOutlined/>}/>
+                  <Button shape="circle" type="text" icon={<ArrowUpOutlined/>} onClick={e => exchangeSection(index, subIndex - 1, subIndex)}/>
+                  <Button shape="circle" type="text" icon={<ArrowDownOutlined/>} onClick={e => exchangeSection(index, subIndex, subIndex + 1)}/>
 
-                  <Button shape="circle" type="text" onClick={e => modifySection(subItem, index, subIndex)}
-                          icon={<EditOutlined/>}/>
-
-                  <Popconfirm title="确定删除小节？" onConfirm={e => deleteSection(subItem, index, subIndex)}>
-                    <Button shape="circle" type="text" icon={<DeleteOutlined/>}/>
+                  <Popconfirm title="确定删除小节？" onConfirm={e => deleteSection(subItem, index, subIndex)} placement="topLeft">
+                    <Button shape="circle" type="text" icon={<DeleteOutlined/>} style={{color: 'red', marginLeft: '20px'}}/>
                   </Popconfirm>
 
                 </span>
@@ -329,7 +327,7 @@ function OutlineEditPage(obj) {
             <p>章名：</p>
           </Col>
           <Col span={20}>
-            <Input value={chapterName} onChange={changeChapterName}/>
+            <Input value={chapterName} onChange={changeChapterName} onPressEnter={doChapter}/>
           </Col>
         </Row>
       </Modal>
@@ -341,7 +339,7 @@ function OutlineEditPage(obj) {
             <p>小节名：</p>
           </Col>
           <Col span={20}>
-            <Input value={sectionName} onChange={changeSectionName}/>
+            <Input value={sectionName} onChange={changeSectionName} onPressEnter={doSection}/>
           </Col>
         </Row>
       </Modal>
