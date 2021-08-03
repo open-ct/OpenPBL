@@ -13,7 +13,7 @@ function InfoEditPage(obj) {
   const subjects = ['语文', '数学', '英语', '科学']
   const skills = ['学习与创新技能', '信息、媒体与技术技能', '生活与职业技能']
 
-  const [p, setP] = useState({})
+  const [change, setChange] = useState(false)
 
   const [selectedSubjects, setSelectedSubjects] = useState([])
   const [selectedSkills, setSelectedSkills] = useState([])
@@ -33,8 +33,6 @@ function InfoEditPage(obj) {
     ProjectApi.getProjectDetail(pid)
       .then((res) => {
         if (res.data.code === 200) {
-          console.log(res.data.project)
-          setP(res.data.project)
           setImageUrl(res.data.project.image)
           setProjectTitle(res.data.project.projectTitle)
           setProjectIntroduce(res.data.project.projectIntroduce)
@@ -49,16 +47,21 @@ function InfoEditPage(obj) {
   }, [])
 
   const changeTitle = value => {
+    setChange(true)
     setProjectTitle(value.target.value)
   }
   const changeIntroduce = value => {
+    setChange(true)
     setProjectIntroduce(value.target.value)
   }
   const changeGoal = value => {
+    setChange(true)
     setProjectGoal(value.target.value)
   }
 
   const onUploadImage = (file) => {
+    setChange(true)
+
     setLoading(true)
     file = file.file;
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -109,17 +112,47 @@ function InfoEditPage(obj) {
     ProjectApi.updateProject(data, pid)
       .then((res) => {
         if (res.data.code === 200) {
-          window.location.href = `/project/${pid}/outline/edit`
+          message.success(res.data.msg)
+          setTimeout(()=>{
+            window.location.href = `/project/${pid}/outline/edit`
+          }, 200)
         }
       })
       .catch((e) => {
         console.log(e)
       })
   }
+  const nextPage = () => {
+    if (checkInput()) {
+      if (change) {
+        onFinish();
+      } else {
+        window.location.href = `/project/${pid}/outline/edit`
+      }
+    }
+  }
+  const checkInput = () => {
+    if (imageUrl === "") {
+      message.error("请上传图片")
+      return false
+    }
+    if (projectTitle === "") {
+      message.error("请输入标题")
+      return false
+    }
+    if (projectIntroduce === "") {
+      message.error("请输入简介")
+      return false
+    }
+    return true
+  }
+
   const handleSubjectsChange = selected => {
+    setChange(true)
     setSelectedSubjects(selected)
   }
   const handleSkillsChange = selected => {
+    setChange(true)
     setSelectedSkills(selected)
   }
 
@@ -206,17 +239,12 @@ function InfoEditPage(obj) {
       </Row>
       <Row style={{marginTop: '20px'}}>
         <Col span={4} offset={20}>
-          <Link to={`/project/${pid}/outline/edit`}>
-            <Button
-              size="middle"
-              style={{marginRight: '20px'}}
-            >下一页</Button>
-          </Link>
           <Button
-            type="primary"
             size="middle"
-            onClick={onFinish}
-          >提交</Button>
+            style={{marginRight: '20px'}}
+            onClick={nextPage}
+          >下一页
+          </Button>
         </Col>
       </Row>
     </div>
