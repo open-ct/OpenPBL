@@ -11,6 +11,7 @@ function StudentEvidence(obj) {
   const studentId = obj.studentId
   const [tasks, setTasks] = useState([])
   const [learning, setLearning] = useState(false)
+  const [editable, setEditable] = useState(false)
   const [chapters, setChapters] = useState([])
 
   useEffect(() => {
@@ -62,6 +63,7 @@ function StudentEvidence(obj) {
             }
             setTasks(t)
             setLearning(res.data.learning)
+            setEditable(res.data.editable)
           }
         }
       })
@@ -210,7 +212,7 @@ function StudentEvidence(obj) {
               item={item}
               index={index}
               learning={learning}
-
+              editable={editable}
               setTaskItem={setTaskItem}
               getTasks={getTasks}
             />

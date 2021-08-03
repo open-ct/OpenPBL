@@ -125,9 +125,12 @@ func (p *ProjectController) GetProjectTasksDetail() {
 
 	showSubmit := false
 	uid := user.Username
+	editable := true
+
 	if user.Tag == "teacher" {
 		uid = p.GetString("studentId")
 		showSubmit = true
+		editable = false
 	}
 
 	pid := p.GetString(":projectId")
@@ -157,7 +160,7 @@ func (p *ProjectController) GetProjectTasksDetail() {
 			},
 			Tasks:    tasks,
 			Learning: learning,
-			Editable: false,
+			Editable: editable,
 		}
 	}
 	p.ServeJSON()
