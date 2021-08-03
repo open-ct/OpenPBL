@@ -11,14 +11,14 @@ type TaskResponse struct {
 	Learning    bool                `json:"learning"`
 }
 
-// GetSectionTasks
+// GetSectionTasksDetail
 // @Title
-// @Description get all the tasks of a section
+// @Description get section tasks with submit and survey
 // @Param sid path string true ""
-// @Success 200 {object}
+// @Success 200 {object} TaskResponse
 // @Failure 400
 // @router /:projectId/section/:sectionId/tasks [get]
-func (p *ProjectController) GetSectionTasks() {
+func (p *ProjectController) GetSectionTasksDetail() {
 	var resp TaskResponse
 	sid := p.GetString(":sectionId")
 	var learning bool

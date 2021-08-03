@@ -28,7 +28,6 @@ type Project struct {
 
 	Published          bool      `json:"published" xorm:"default false index"`
 
-	LearnMinute        int       `json:"learnMinute" xorm:"default 10"`
 	LearnMinuteWeight  int       `json:"learnMinuteWeight" xorm:"default 100"`
 }
 

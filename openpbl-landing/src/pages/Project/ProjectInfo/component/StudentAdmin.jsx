@@ -68,21 +68,23 @@ function StudentAdmin(obj) {
                   <span>{util.FilterTime(joinTime)}</span>
                 )
               },
+            {
+              title: '',
+              dataIndex: 'showEvidence',
+              render: (text, item, index) => (
+                <Link to={`/project/${pid}/student/${item.studentId}/evidence`}>
+                  <Button type="text" >查看学习证据</Button>
+                </Link>
+              )
+            },
               {
                 title: '操作',
                 dataIndex: 'action',
                 key: 'action',
-                render: (action, record) => (
-                  <>
-                    <Tooltip placement="topLeft" title="点击查看学习证据">
-                      <Link to={`/project/${pid}/student/${record.studentId}/evidence`}>
-                        <Button type="text" icon={<ArrowRightOutlined />} style={{marginRight: '30px', width: '50px'}}/>
-                      </Link>
-                    </Tooltip>
-                    <Popconfirm title="确定移除学生？" onConfirm={e=>removeStudent(action, record)}>
+                render: (action, item) => (
+                    <Popconfirm title="确定移除学生？" onConfirm={e=>removeStudent(action, item)}>
                       <Button shape="circle" type="text" style={{color: 'red'}} icon={<DeleteOutlined/>}/>
                     </Popconfirm>
-                  </>
                 )
               },
             ]}

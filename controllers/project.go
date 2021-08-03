@@ -227,7 +227,6 @@ func (p *ProjectController) UpdateProjectWeight() {
 	}
 	pid, err := p.GetInt64(":id")
 	learnMinuteWeight, err := p.GetInt("learnMinuteWeight")
-	learnMinute, err := p.GetInt("learnMinute")
 
 	if err != nil {
 		resp = Response{
@@ -241,7 +240,6 @@ func (p *ProjectController) UpdateProjectWeight() {
 	project := models.Project{
 		Id:                pid,
 		LearnMinuteWeight: learnMinuteWeight,
-		LearnMinute:       learnMinute,
 	}
 	tasks := make([]models.Task, 0)
 	err = json.Unmarshal([]byte(p.GetString("tasks")), &tasks)
