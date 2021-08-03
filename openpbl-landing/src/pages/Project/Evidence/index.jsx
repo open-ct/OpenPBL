@@ -1,13 +1,13 @@
 import React, {useEffect} from "react";
 import {Card, PageHeader} from "antd";
 import DocumentTitle from 'react-document-title';
+import StudentEvidence from "../ProjectInfo/component/StudentEvidence";
 
 function Evidence(obj) {
   const pid = obj.match.params.pid
   const sid = obj.match.params.sid
 
   useEffect(()=>{
-    console.log(pid, sid)
   }, [])
 
   const back = e => {
@@ -42,7 +42,10 @@ function Evidence(obj) {
             }}
           >
             <Card>
-              evidence
+              <StudentEvidence
+                pid={pid}
+                studentId={sid}
+              />
             </Card>
           </div>
         </div>

@@ -127,9 +127,9 @@ function FillSurvey(obj) {
       </div>
       <div style={{textAlign: 'right', marginTop: '10px'}}>
         {obj.item.submitted ?
-          <Button type="primary" onClick={updateSurvey}>更新</Button>
+          <Button disabled={!obj.editable} type="primary" onClick={updateSurvey}>更新</Button>
           :
-          <Button disabled={!obj.learning} type="primary" onClick={submitSurvey}>提交</Button>
+          <Button disabled={!obj.editable} type="primary" onClick={submitSurvey}>提交</Button>
         }
       </div>
     </div>

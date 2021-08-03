@@ -123,7 +123,7 @@ func ExchangeTasks(cid1 string, cid2 string) (err error) {
 }
 
 
-func GetProjectTasksDetail(sid string, uid string, learning bool) (t []TaskDetail, err error) {
+func GetProjectTasksDetail(sid string, uid string, showSubmit bool) (t []TaskDetail, err error) {
 	err = (&Task{}).GetEngine().
 		Where("project_id = ?", sid).
 		Asc("chapter_number").
@@ -150,7 +150,7 @@ func GetProjectTasksDetail(sid string, uid string, learning bool) (t []TaskDetai
 			}
 			t[i].Survey = s
 
-			if learning {
+			if showSubmit {
 				b, err = (&Submit{}).GetEngine().
 					Where("task_id = ?", t[i].Id).
 					Where("student_id = ?", uid).
@@ -167,7 +167,7 @@ func GetProjectTasksDetail(sid string, uid string, learning bool) (t []TaskDetai
 			}
 		} else {
 			var m Submit
-			if learning {
+			if showSubmit {
 				b, err = (&Submit{}).GetEngine().
 					Where("task_id = ?", t[i].Id).
 					Where("student_id = ?", uid).

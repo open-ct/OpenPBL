@@ -7,14 +7,14 @@ import TaskCard from "../../PreviewProject/component/TaskCard";
 
 
 function StudentEvidence(obj) {
-  const pid = obj.project.id
+  const pid = obj.project === undefined ? obj.pid : obj.project.id
+  const studentId = obj.studentId
   const [tasks, setTasks] = useState([])
   const [learning, setLearning] = useState(false)
   const [chapters, setChapters] = useState([])
 
   useEffect(() => {
     getChapters()
-
     getTasks()
   }, []);
   const getChapters = () => {
@@ -31,7 +31,7 @@ function StudentEvidence(obj) {
       })
   }
   const getTasks = () => {
-    TaskApi.getProjectTasksDetail(pid)
+    TaskApi.getProjectTasksDetail(pid, studentId)
       .then(res => {
         if (res.data.code === 200) {
           if (res.data.tasks === null) {
@@ -90,7 +90,7 @@ function StudentEvidence(obj) {
           <span>{text}&nbsp;&nbsp;%</span>
         )
       }]
-    if (obj.project.learning) {
+    if (learning) {
       c.push({
         title: '得分',
         dataIndex: 'score',
@@ -144,7 +144,7 @@ function StudentEvidence(obj) {
                   item => (
                     <List.Item>
                       {item.sectionName}
-                      {obj.project.learning ?
+                      {learning ?
                         <>
                       <span style={{float: 'right'}}>
                         <Progress

@@ -7,8 +7,6 @@ import SectionApi from "../../../api/SectionApi";
 import "../CreateProject/Section/component/section-edit.less"
 import "./preview.less"
 import TaskApi from "../../../api/TaskApi";
-import FillSurvey from "./component/FillSurvey";
-import SubmitApi from "../../../api/SubmitApi";
 import util from "../component/Util"
 import StudentApi from "../../../api/StudentApi";
 import TaskCard from "./component/TaskCard";
@@ -22,6 +20,7 @@ function PreviewSection(obj) {
   const [section, setSection] = useState({resource:{}})
   const [tasks, setTasks] = useState([])
   const [learning, setLearning] = useState(false)
+  const [editable, setEditable] = useState(false)
 
   const [minute, setMinute] = useState(0)
   const [second, setSecond] = useState(0)
@@ -88,6 +87,7 @@ function PreviewSection(obj) {
           }
           setTasks(t)
           setLearning(res.data.learning)
+          setEditable(res.data.editable)
           if (res.data.learning) {
             getTimer()
           }
@@ -204,6 +204,7 @@ function PreviewSection(obj) {
               item={item}
               index={index}
               learning={learning}
+              editable={editable}
 
               setTaskItem={setTaskItem}
               getTasks={getTasks}

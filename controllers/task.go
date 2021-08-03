@@ -9,6 +9,7 @@ type TaskResponse struct {
 	Response
 	Tasks       []models.TaskDetail `json:"tasks"`
 	Learning    bool                `json:"learning"`
+	Editable    bool                `json:"editable"`
 }
 
 // GetSectionTasksDetail
@@ -57,6 +58,7 @@ func (p *ProjectController) GetSectionTasksDetail() {
 			},
 			Tasks:    tasks,
 			Learning: learning,
+			Editable: learning,
 		}
 	}
 	p.ServeJSON()
@@ -120,13 +122,25 @@ func (p *ProjectController) GetProjectTasksDetail() {
 		p.ServeJSON()
 		return
 	}
+
+	showSubmit := false
+	uid := user.Username
+	if user.Tag == "teacher" {
+		uid = p.GetString("studentId")
+		showSubmit = true
+	}
+
+	pid := p.GetString(":projectId")
 	if user.Tag != "student" {
 		learning = false
+	} else {
+		learning = models.IsLearningProject(pid, uid)
 	}
-	uid := user.Username
-	pid := p.GetString(":projectId")
-	learning = models.IsLearningProject(pid, uid)
-	tasks, err := models.GetProjectTasksDetail(pid, uid, learning)
+	if learning {
+		showSubmit = true
+	}
+
+	tasks, err := models.GetProjectTasksDetail(pid, uid, showSubmit)
 	if err != nil {
 		p.Data["json"] = TaskResponse{
 			Response: Response{
@@ -143,6 +157,7 @@ func (p *ProjectController) GetProjectTasksDetail() {
 			},
 			Tasks:    tasks,
 			Learning: learning,
+			Editable: false,
 		}
 	}
 	p.ServeJSON()

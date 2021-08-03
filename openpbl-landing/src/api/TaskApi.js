@@ -14,10 +14,13 @@ const TaskApi = {
       method: 'get',
     })
   },
-  getProjectTasksDetail(pid) {
+  getProjectTasksDetail(pid, sid) {
     return request({
       url: `/project/${pid}/tasks-detail`,
       method: 'get',
+      params: {
+        studentId: sid
+      }
     })
   },
   createTask(pid, q) {

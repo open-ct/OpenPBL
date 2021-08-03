@@ -63,7 +63,7 @@ function TaskCard(obj) {
       <p>{obj.item.taskIntroduce}</p>
       {obj.item.taskType === 'file' ?
         <div>
-          <Upload.Dragger {...props} disabled={!obj.learning}>
+          <Upload.Dragger {...props} disabled={!obj.editable}>
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
             </p>
@@ -79,9 +79,9 @@ function TaskCard(obj) {
           <Input.TextArea value={obj.item.submit.submitContent} onChange={v=>changeComment(v, obj.index)} />
           <div style={{textAlign: 'right', marginTop: '10px'}}>
             {obj.item.submitted ?
-              <Button type="primary" onClick={e=>updateComment(obj.item, obj.index)}>更新</Button>
+              <Button disabled={!obj.editable} type="primary" onClick={e=>updateComment(obj.item, obj.index)}>更新</Button>
               :
-              <Button disabled={!obj.learning} type="primary" onClick={e => submitComment(obj.item, obj.index)}>提交</Button>
+              <Button disabled={!obj.editable} type="primary" onClick={e => submitComment(obj.item, obj.index)}>提交</Button>
             }
           </div>
         </div>
@@ -94,6 +94,7 @@ function TaskCard(obj) {
           index={obj.index}
           getTasks={obj.getTasks}
           learning={obj.learning}
+          editable={obj.editable}
           setTaskItem={obj.setTaskItem}
         />
         : null
