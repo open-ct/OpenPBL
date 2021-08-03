@@ -151,7 +151,7 @@ function OutlineEditPage(obj) {
         sectionNumber: section.sectionNumber,
         chapterNumber: section.chapterNumber
       }
-      SectionApi.updateChapterSection(s)
+      SectionApi.updateChapterSection(pid, s)
         .then((res) => {
           if (res.data.code === 200) {
             chapters[index].sections[subIndex] = s

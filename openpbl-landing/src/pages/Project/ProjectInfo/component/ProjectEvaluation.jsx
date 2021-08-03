@@ -6,13 +6,14 @@ import 'echarts/lib/component/legend';
 import 'echarts/lib/component/markPoint';
 import ReactEcharts from 'echarts-for-react';
 import QueueAnim from 'rc-queue-anim';
-import {Button, Card, Col, Divider, InputNumber, Row, Table, message, Menu, Input} from "antd";
+import {Button, Card, Col, Divider, InputNumber, Row, Table, message, Menu, Input, List, Progress} from "antd";
 
 import TaskApi from "../../../../api/TaskApi";
 import ProjectApi from "../../../../api/ProjectApi";
 import ChapterApi from "../../../../api/ChapterApi";
 import SectionApi from "../../../../api/SectionApi";
 
+import "./index.less"
 
 const {SubMenu} = Menu
 
@@ -129,6 +130,8 @@ function ProjectEvaluation(obj) {
     setEditWeight(false)
   }
   const changeLearnMinute = (v, index, subIndex) => {
+    console.log(index, subIndex)
+
     chapters[index].sections[subIndex].sectionMinute = v
     setChapters([...chapters])
   }
@@ -210,8 +213,9 @@ function ProjectEvaluation(obj) {
       <div style={{textAlign: 'left', marginBottom: '30px'}} key="1">
         <ReactEcharts option={getOptions()}/>
         <div>
-        <p style={{textAlign: 'center', fontWeight: 'bold', fontSize: '20px', marginTop: '20px'}}>
-          章节学习时长</p>
+          <Divider orientation="left">
+            <p className="evidence-title">章节学习时长</p>
+          </Divider>
           {!published ?
             <div style={{float: 'right'}}>
               {editMinute ?
@@ -226,7 +230,44 @@ function ProjectEvaluation(obj) {
             : null
           }
         </div>
-        <Menu
+
+
+        {chapters.map((item, index) => (
+          <div key={index.toString()} style={{textAlign: 'left'}}>
+            <p style={{fontWeight: 'bold', fontSize: '16px'}}>{item.chapterName}</p>
+            {(item.sections === null || item.sections === undefined) ?
+              null
+              :
+              <>
+                <List
+                  size="large"
+                  dataSource={item.sections}
+                  renderItem={
+                    (item, subIndex) => (
+                      <List.Item>
+                        {item.sectionName}
+                        {editMinute ?
+                          <div style={{float: 'right'}}>
+                            学习时长不少于&nbsp;&nbsp;
+                            <InputNumber value={item.sectionMinute} onChange={v=>changeLearnMinute(v, index, subIndex)} min={0}/>
+                            &nbsp;&nbsp;分钟
+                          </div>
+                          :
+                          <div style={{float: 'right'}}>
+                            学习时长不少于&nbsp;&nbsp;{item.sectionMinute}&nbsp;&nbsp;分钟
+                          </div>
+                        }
+
+                      </List.Item>
+                    )
+                  }
+                /><br/>
+              </>
+            }
+          </div>
+        ))}
+
+{/*        <Menu
           style={{width: '100%'}}
           defaultSelectedKeys={['0']}
           mode="inline"
@@ -252,11 +293,14 @@ function ProjectEvaluation(obj) {
             }
           </SubMenu>
         ))}
-        </Menu>
+        </Menu>*/}
         <div>
-        <p style={{textAlign: 'center', fontWeight: 'bold', fontSize: '20px', marginTop: '20px'}}>
-          权重占比
-        </p>
+
+
+
+          <Divider orientation="left">
+            <p className="evidence-title">权重占比</p>
+          </Divider>
           {!published ?
             <div style={{float: 'right'}}>
               {editWeight ?

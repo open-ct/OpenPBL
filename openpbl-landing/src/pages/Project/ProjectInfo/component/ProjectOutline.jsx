@@ -12,6 +12,9 @@ function ProjectOutline(obj) {
   const [chapters, setChapters] = useState([])
 
   useEffect(() => {
+    getChapters()
+  }, [])
+  const getChapters = () => {
     ChapterApi.getProjectChapters(pid)
       .then((res) => {
         if (res.data.chapters === null) {
@@ -21,7 +24,7 @@ function ProjectOutline(obj) {
         }
       })
       .catch(e=>{console.log(e)})
-  }, [])
+  }
   const gotoLearning = (item, subItem) => {
     window.open(`/project/${pid}/section/${subItem.id}/preview?back=/project/${pid}/info`)
   }

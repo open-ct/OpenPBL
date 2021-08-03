@@ -82,9 +82,47 @@ func (p *ProjectController) GetProjectTasks() {
 		return
 	}
 
+	pid := p.GetString(":projectId")
+	tasks, err := models.GetProjectTasks(pid, "")
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Data: tasks,
+		}
+	}
+	p.ServeJSON()
+}
+
+// GetProjectTasksAndSubmits
+// @Title
+// @Description get all the tasks of a section
+// @Param sid path string true ""
+// @Success 200 {object}
+// @Failure 400
+// @router /:projectId/tasks-submits [get]
+func (p *ProjectController) GetProjectTasksAndSubmits() {
+	user := p.GetSessionUser()
+	if user == nil {
+		p.Data["json"] = TaskResponse{
+			Response: Response{
+				Code: 401,
+				Msg:  "请先登录",
+			},
+		}
+		p.ServeJSON()
+		return
+	}
+
 	uid := ""
 	if user.Tag == "student" {
 		uid = user.Username
+	} else if user.Tag == "teacher" {
+		uid = p.GetString("StudentId")
 	}
 
 	pid := p.GetString(":projectId")
