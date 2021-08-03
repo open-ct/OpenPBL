@@ -22,10 +22,10 @@ function ProjectEvaluation(obj) {
   const type = localStorage.getItem("type")
   const [chapters, setChapters] = useState([])
   const [defaultOpenedKeys, setDefaultOpenedKeys] = useState([])
+  const [openedKeys, setOpenedKeys] = useState([])
   const [data, setData] = useState([])
   const [tasks, setTasks] = useState([])
 
-  const [learnMinute, setLearnMinute] = useState(obj.project.learnMinute)
   const [learnMinuteWeight, setLearnMinuteWeight] = useState(obj.project.learnMinuteWeight)
 
   const [editWeight, setEditWeight] = useState(false)
@@ -108,7 +108,6 @@ function ProjectEvaluation(obj) {
   const saveWeight = () => {
     if (checkWeight()) {
       let data = {
-        learnMinute: learnMinute,
         learnMinuteWeight: learnMinuteWeight,
         tasks: JSON.stringify(tasks)
       }
@@ -155,7 +154,7 @@ function ProjectEvaluation(obj) {
   }
 
   const getColumns = () => {
-    let c = [
+    return [
       {
         title: '任务标题',
         dataIndex: 'taskTitle',
@@ -183,36 +182,6 @@ function ProjectEvaluation(obj) {
           </>
         )
       }]
-    if (obj.project.learning) {
-      c.push({
-        title: '得分',
-        dataIndex: 'score',
-        key: 'score',
-        render: (text, item, index) => (
-          <>
-            <span>{getScore(text, item.taskWeight)}&nbsp;/&nbsp;{item.taskWeight}</span>
-          </>
-        )
-      })
-      c.push({
-        title: '状态',
-        dataIndex: 'score',
-        key: 'score',
-        render: (text, item, index) => (
-          <>
-            {item.scored ?
-              <span>已打分</span>
-              :
-              <span>未打分</span>
-            }
-          </>
-        )
-      })
-    }
-    return c
-  }
-  const getScore = (score, weight) => {
-    return (score * weight / 100).toFixed(2)
   }
 
   const getOptions = () => ({
@@ -240,7 +209,6 @@ function ProjectEvaluation(obj) {
     <QueueAnim>
       <div style={{textAlign: 'left', marginBottom: '30px'}} key="1">
         <ReactEcharts option={getOptions()}/>
-
         <div>
         <p style={{textAlign: 'center', fontWeight: 'bold', fontSize: '20px', marginTop: '20px'}}>
           章节学习时长</p>
@@ -260,8 +228,7 @@ function ProjectEvaluation(obj) {
         </div>
         <Menu
           style={{width: '100%'}}
-          defaultSelectedKeys={[]}
-          openKeys={defaultOpenedKeys}
+          defaultSelectedKeys={['0']}
           mode="inline"
         >{chapters.map((item, index) => (
           <SubMenu style={{fontSize: '2.7vh'}} key={index.toString()} title={item.chapterName}>

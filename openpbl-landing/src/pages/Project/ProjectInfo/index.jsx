@@ -16,6 +16,7 @@ import SubmitFiles from "./component/SubmitFiles";
 import {getUser} from "../../User/Auth/Auth";
 import {DeleteOutlined} from "@ant-design/icons";
 import util from "../component/Util"
+import StudentEvidence from "./component/StudentEvidence";
 
 class ProjectInfo extends React.PureComponent {
   constructor(props) {
@@ -337,7 +338,7 @@ class ProjectInfo extends React.PureComponent {
 
                     {type === 'teacher' ? <Menu.Item key="student-admin">学生管理</Menu.Item>
                       : null}
-                    {type === 'student' ? <Menu.Item key="submit-files">证据收集</Menu.Item>
+                    {type === 'student' ? <Menu.Item key="student-evidence">证据收集</Menu.Item>
                       : null}
                   </Menu>
                   <div style={{
@@ -359,7 +360,7 @@ class ProjectInfo extends React.PureComponent {
 
                     {menu === 'student-admin' ? <StudentAdmin project={project}/> : null}
 
-                    {menu === 'submit-files' ? <SubmitFiles project={project}/> : null}
+                    {menu === 'student-evidence' ? <StudentEvidence project={project}/> : null}
 
                   </div>
                 </div>
