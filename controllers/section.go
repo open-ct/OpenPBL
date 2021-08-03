@@ -177,6 +177,7 @@ func (p *ProjectController) ExchangeChapterSection() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
+			Msg: err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{

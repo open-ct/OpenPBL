@@ -55,10 +55,11 @@ func GetChaptersByPid(pid string, uid string) (outline []Outline, err error) {
 		if uid == "" {
 			err = (&Section{}).GetEngine().
 				Where("chapter_id = ?", c[i].Id).
+				Asc("section_number").
 				Find(&sections)
 		} else {
 			err = adapter.Engine.
-				SQL("select * from (select * from section where chapter_id = ?) s LEFT JOIN learn_section ls on s.id = ls.section_id and ls.student_id = ?", c[i].Id, uid).
+				SQL("select * from (select * from section where chapter_id = ?) s LEFT JOIN learn_section ls on s.id = ls.section_id and ls.student_id = ?  order by s.section_number", c[i].Id, uid).
 				Find(&sections)
 		}
 		outline[i].Sections = sections
