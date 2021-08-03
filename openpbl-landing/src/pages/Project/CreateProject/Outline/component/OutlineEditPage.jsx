@@ -166,7 +166,7 @@ function OutlineEditPage(obj) {
         })
     } else if (opt === 'add') {
       let l = 0
-      if (chapters[index].sections !== null) {
+      if (chapters[index].sections !== undefined && chapters[index].sections !== null) {
         let len = chapters[index].sections.length
         if (len > 0) {
           l = chapters[index].sections[len - 1].sectionNumber + 1
