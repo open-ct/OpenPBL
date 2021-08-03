@@ -11,7 +11,7 @@ import FillSurvey from "./component/FillSurvey";
 import SubmitApi from "../../../api/SubmitApi";
 import util from "../component/Util"
 import StudentApi from "../../../api/StudentApi";
-
+import TaskCard from "./component/TaskCard";
 
 function PreviewSection(obj) {
   let url = new URLSearchParams(obj.location.search)
@@ -127,11 +127,11 @@ function PreviewSection(obj) {
       window.location.href = backUrl
     }
   }
-  const changeComment = (v, index) => {
+/*  const changeComment = (v, index) => {
     tasks[index].submit.submitContent = v.target.value
     setTasks([...tasks])
-  }
-  const submitComment = (item, index) => {
+  }*/
+/*  const submitComment = (item, index) => {
     item.submit.submitType = item.taskType
     SubmitApi.createSubmit(pid, item.id, item.submit)
       .then(res=>{
@@ -143,8 +143,8 @@ function PreviewSection(obj) {
         }
       })
       .catch(e=>{console.log(e)})
-  }
-  const updateComment = (item, index) => {
+  }*/
+/*  const updateComment = (item, index) => {
     SubmitApi.updateSubmit(pid, item.id, item.submit.id, item.submit)
       .then(res=>{
         if (res.data.code === 200) {
@@ -155,31 +155,11 @@ function PreviewSection(obj) {
         }
       })
       .catch(e=>{console.log(e)})
-  }
+  }*/
   const setTaskItem = (item, index) => {
     tasks[index] = item
     setTasks([...tasks])
   }
-
-  const props = {
-    name: 'file',
-    multiple: true,
-    action: '',
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (status === 'done') {
-        message.success(`${info.file.name} 上传成功`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} 上传失败`);
-      }
-    },
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
-    },
-  };
 
   return (
   <DocumentTitle title="Project">
@@ -218,45 +198,16 @@ function PreviewSection(obj) {
                 </span>
               }
             </p>
-            <p className="task-title">{item.taskTitle}</p>
-            <p>{item.taskIntroduce}</p>
-            {item.taskType === 'file' ?
-              <div>
-                <Upload.Dragger {...props} disabled={!learning}>
-                  <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
-                  </p>
-                  <p className="ant-upload-text">点击或拖动文件上传</p>
-                  <p className="ant-upload-hint">hint
-                  </p>
-                </Upload.Dragger>
-              </div>
-              : null
-            }
-            {item.taskType === 'comment' ?
-              <div>
-                <Input.TextArea value={item.submit.submitContent} onChange={v=>changeComment(v, index)} />
-                {item.submitted ?
-                  <Button type="primary" onClick={e=>updateComment(item, index)}
-                          style={{float: 'right', marginTop: '10px'}}>更新</Button>
-                  :
-                  <Button disabled={!learning} type="primary" onClick={e => submitComment(item, index)}
-                          style={{float: 'right', marginTop: '10px'}}>提交</Button>
-                }
-              </div>
-              : null
-            }
-            {item.taskType === 'survey' ?
-              <FillSurvey
-                pid={pid}
-                item={item}
-                index={index}
-                getTasks={getTasks}
-                learning={learning}
-                setTaskItem={setTaskItem}
-              />
-              : null
-            }
+
+            <TaskCard
+              pid={pid}
+              item={item}
+              index={index}
+              learning={learning}
+
+              setTaskItem={setTaskItem}
+              getTasks={getTasks}
+            />
           </Card>
         ))
         }

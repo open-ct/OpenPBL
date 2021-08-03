@@ -38,7 +38,7 @@ func (p *ProjectController) GetSectionTasksDetail() {
 		learning = false
 	}
 	uid := user.Username
-	pid, err := p.GetInt64(":projectId")
+	pid := p.GetString(":projectId")
 	learning = models.IsLearningProject(pid, uid)
 	tasks, err := models.GetSectionTasks(sid, uid, learning)
 	if err != nil {
@@ -83,7 +83,7 @@ func (p *ProjectController) GetProjectTasks() {
 	}
 
 	pid := p.GetString(":projectId")
-	tasks, err := models.GetProjectTasks(pid, "")
+	tasks, err := models.GetProjectTasks(pid)
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -98,44 +98,51 @@ func (p *ProjectController) GetProjectTasks() {
 	p.ServeJSON()
 }
 
-// GetProjectTasksAndSubmits
+// GetProjectTasksDetail
 // @Title
 // @Description get all the tasks of a section
 // @Param sid path string true ""
 // @Success 200 {object}
 // @Failure 400
-// @router /:projectId/tasks-submits [get]
-func (p *ProjectController) GetProjectTasksAndSubmits() {
+// @router /:projectId/tasks-detail [get]
+func (p *ProjectController) GetProjectTasksDetail() {
+	var resp TaskResponse
+	var learning bool
 	user := p.GetSessionUser()
 	if user == nil {
-		p.Data["json"] = TaskResponse{
+		resp = TaskResponse{
 			Response: Response{
 				Code: 401,
 				Msg:  "请先登录",
 			},
 		}
+		p.Data["json"] = resp
 		p.ServeJSON()
 		return
 	}
-
-	uid := ""
-	if user.Tag == "student" {
-		uid = user.Username
-	} else if user.Tag == "teacher" {
-		uid = p.GetString("StudentId")
+	if user.Tag != "student" {
+		learning = false
 	}
-
+	uid := user.Username
 	pid := p.GetString(":projectId")
-	tasks, err := models.GetProjectTasks(pid, uid)
+	learning = models.IsLearningProject(pid, uid)
+	tasks, err := models.GetProjectTasksDetail(pid, uid, learning)
 	if err != nil {
-		p.Data["json"] = Response{
-			Code: 400,
-			Msg:  err.Error(),
+		p.Data["json"] = TaskResponse{
+			Response: Response{
+				Code: 400,
+				Msg:  err.Error(),
+			},
+			Tasks:    nil,
+			Learning: false,
 		}
 	} else {
-		p.Data["json"] = Response{
-			Code: 200,
-			Data: tasks,
+		p.Data["json"] = TaskResponse{
+			Response: Response{
+				Code: 200,
+			},
+			Tasks:    tasks,
+			Learning: learning,
 		}
 	}
 	p.ServeJSON()

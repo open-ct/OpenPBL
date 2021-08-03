@@ -22,10 +22,9 @@ type Task struct {
 }
 
 type TaskEvaluate struct {
-	Task            `xorm:"extends"`
-	Score     int   `json:"score"`
-	Scored    bool  `json:"scored"`
-	SubmitId  int64 `json:"submitId"`
+	Task             `xorm:"extends"`
+	Submitted bool   `json:"submitted"`
+	Submit    Submit `json:"submit"`
 }
 
 type TaskDetail struct {
@@ -66,11 +65,11 @@ func GetSectionTasks(sid string, uid string, learning bool) (t []TaskDetail, err
 		Where("section_id = ?", sid).
 		Asc("task_order").
 		Find(&t)
-	var s Survey
-	var qs []Question
-	var c []Choice
 	var b bool
 	for i := 0; i < len(t); i ++ {
+		var s Survey
+		var qs []Question
+		var c []Choice
 		if t[i].TaskType == "survey" {
 			var m Submit
 			_, err = (&Survey{}).GetEngine().
@@ -123,22 +122,72 @@ func ExchangeTasks(cid1 string, cid2 string) (err error) {
 	return
 }
 
-func GetProjectTasks(pid string, uid string) (t []TaskEvaluate, err error) {
-	if uid == "" {
-		err = (&Task{}).GetEngine().
-			Where("project_id = ?", pid).
-			Asc("chapter_number").
-			Asc("section_number").
-			Asc("task_order").
-			Find(&t)
-	} else {
-		err = (&Task{}).GetEngine().
-			Where("task.project_id = ?", pid).
-			Join("LEFT OUTER", "submit", "task.id = submit.task_id").
-			Asc("chapter_number").
-			Asc("section_number").
-			Asc("task_order").
-			Find(&t)
+
+func GetProjectTasksDetail(sid string, uid string, learning bool) (t []TaskDetail, err error) {
+	err = (&Task{}).GetEngine().
+		Where("project_id = ?", sid).
+		Asc("chapter_number").
+		Asc("section_number").
+		Asc("task_order").
+		Find(&t)
+	var b bool
+	for i := 0; i < len(t); i ++ {
+		var s Survey
+		var qs []Question
+		var c []Choice
+
+		if t[i].TaskType == "survey" {
+			var m Submit
+			b, err = (&Survey{}).GetEngine().
+				Where("task_id = ?", t[i].Id).
+				Get(&s)
+			if b {
+				err = (&Question{}).GetEngine().
+					Where("survey_id = ?", s.Id).
+					Asc("question_order").
+					Find(&qs)
+				t[i].Questions = qs
+			}
+			t[i].Survey = s
+
+			if learning {
+				b, err = (&Submit{}).GetEngine().
+					Where("task_id = ?", t[i].Id).
+					Where("student_id = ?", uid).
+					Get(&m)
+				if b {
+					t[i].Submitted = true
+					err = (&Choice{}).GetEngine().
+						Where("submit_id = ?", m.Id).
+						Asc("choice_order").
+						Find(&c)
+					t[i].Choices = c
+				}
+				t[i].Submit = m
+			}
+		} else {
+			var m Submit
+			if learning {
+				b, err = (&Submit{}).GetEngine().
+					Where("task_id = ?", t[i].Id).
+					Where("student_id = ?", uid).
+					Get(&m)
+				t[i].Submit = m
+				if b {
+					t[i].Submitted = true
+				}
+			}
+		}
 	}
+	return
+}
+
+func GetProjectTasks(pid string) (t []TaskEvaluate, err error) {
+	err = (&Task{}).GetEngine().
+		Where("project_id = ?", pid).
+		Asc("chapter_number").
+		Asc("section_number").
+		Asc("task_order").
+		Find(&t)
 	return
 }

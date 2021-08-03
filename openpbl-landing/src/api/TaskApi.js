@@ -14,9 +14,9 @@ const TaskApi = {
       method: 'get',
     })
   },
-  getProjectTasksAndSubmits(pid) {
+  getProjectTasksDetail(pid) {
     return request({
-      url: `/project/${pid}/tasks-submits`,
+      url: `/project/${pid}/tasks-detail`,
       method: 'get',
     })
   },

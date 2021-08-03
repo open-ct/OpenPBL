@@ -1,6 +1,7 @@
 package models
 
 import (
+	"strconv"
 	"time"
 	"xorm.io/xorm"
 )
@@ -55,11 +56,12 @@ func (l *LearnProject) Delete() (err error) {
 	return
 }
 
-func IsLearningProject(pid int64, uid string) (e bool) {
+func IsLearningProject(pid string, uid string) (e bool) {
 	var err error
+	id, err := strconv.ParseInt(pid, 10, 64)
 	e, err = (&LearnProject{}).GetEngine().Exist(&LearnProject{
 		StudentId: uid,
-		ProjectId: pid,
+		ProjectId: id,
 		Learning:  true,
 	})
 	if err != nil {

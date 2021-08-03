@@ -125,13 +125,13 @@ function FillSurvey(obj) {
           </div>
         ))}
       </div>
-      {obj.item.submitted ?
-        <Button type="primary" onClick={updateSurvey}
-                style={{float: 'right', marginTop: '10px'}}>更新</Button>
-        :
-        <Button disabled={!obj.learning} type="primary" onClick={submitSurvey}
-                style={{float: 'right', marginTop: '10px'}}>提交</Button>
-      }
+      <div style={{textAlign: 'right', marginTop: '10px'}}>
+        {obj.item.submitted ?
+          <Button type="primary" onClick={updateSurvey}>更新</Button>
+          :
+          <Button disabled={!obj.learning} type="primary" onClick={submitSurvey}>提交</Button>
+        }
+      </div>
     </div>
   )
 }

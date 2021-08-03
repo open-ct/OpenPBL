@@ -3,11 +3,13 @@ import {Col, Collapse, Divider, List, Progress, Row, Table} from "antd";
 
 import TaskApi from "../../../../api/TaskApi";
 import ChapterApi from "../../../../api/ChapterApi";
+import TaskCard from "../../PreviewProject/component/TaskCard";
 
 
 function StudentEvidence(obj) {
   const pid = obj.project.id
   const [tasks, setTasks] = useState([])
+  const [learning, setLearning] = useState(false)
   const [chapters, setChapters] = useState([])
 
   useEffect(() => {
@@ -29,11 +31,37 @@ function StudentEvidence(obj) {
       })
   }
   const getTasks = () => {
-    TaskApi.getProjectTasksAndSubmits(pid)
+    TaskApi.getProjectTasksDetail(pid)
       .then(res => {
         if (res.data.code === 200) {
-          if (res.data.data != null) {
-            setTasks(res.data.data)
+          if (res.data.tasks === null) {
+            setTasks([])
+          } else {
+            let t = res.data.tasks
+            for (let i = 0; i < t.length; i++) {
+              if (t[i].questions !== undefined && t[i].questions != null) {
+                for (let j = 0; j < t[i].questions.length; j++) {
+                  t[i].questions[j].questionOptions = t[i].questions[j].questionOptions.split(",")
+                }
+              } else {
+                t[i].questions = []
+              }
+              if (t[i].choices !== undefined && t[i].choices != null) {
+                for (let j = 0; j < t[i].choices.length; j++) {
+                  t[i].choices[j].choiceOptions = t[i].choices[j].choiceOptions.split(",")
+                }
+              } else {
+                t[i].choices = []
+                for (let j=0; j<t[i].questions.length; j++) {
+                  t[i].choices.push({
+                    choiceOptions: [],
+                    choiceOrder: j
+                  })
+                }
+              }
+            }
+            setTasks(t)
+            setLearning(res.data.learning)
           }
         }
       })
@@ -93,6 +121,10 @@ function StudentEvidence(obj) {
   const getScore = (score, weight) => {
     return (score * weight / 100).toFixed(2)
   }
+  const setTaskItem = (item, index) => {
+    tasks[index] = item
+    setTasks([...tasks])
+  }
   return (
     <div>
       <Divider orientation="left">
@@ -151,31 +183,46 @@ function StudentEvidence(obj) {
               <>
                 {item.taskTitle}
                 <span style={{float: 'right', marginRight: '20px'}}>
-                  {item.scored ?
+                  {item.submit.scored ?
                     <span style={{color: 'green'}}>已打分</span>
                     :
                     <span>未打分</span>
                   }
                 </span>
                 <span style={{float: 'right', marginRight: '20px'}}>
+                  {item.submitted ?
+                    <span style={{color: 'green'}}>已提交</span>
+                    :
+                    <span>未提交</span>
+                  }
+                </span>
+                <span style={{float: 'right', marginRight: '20px'}}>
                   权重：{item.taskWeight}
                 </span>
                 <span style={{float: 'right', marginRight: '20px'}}>
-                  得分：{getScore(item.score, item.taskWeight)}&nbsp;/&nbsp;{item.taskWeight}
+                  得分：{getScore(item.submit.score, item.taskWeight)}&nbsp;/&nbsp;{item.taskWeight}
                 </span>
               </>
             }
           >
-            neironog
+            <TaskCard
+              pid={pid}
+              item={item}
+              index={index}
+              learning={learning}
+
+              setTaskItem={setTaskItem}
+              getTasks={getTasks}
+            />
           </Collapse.Panel>
         ))}
       </Collapse>
 
-      <Table
+{/*      <Table
         columns={getColumns()}
         dataSource={tasks}
         pagination={false}
-      />
+      />*/}
     </div>
   )
 }
