@@ -154,13 +154,14 @@ func (p *ProjectController) DeleteProjectChapter() {
 // @Failure 401
 // @router /:projectId/chapters/exchange [post]
 func (p *ProjectController) ExchangeProjectChapter() {
-	cid1 := p.GetString(":chapterId1")
-	cid2 := p.GetString(":chapterId2")
+	cid1 := p.GetString("chapterId1")
+	cid2 := p.GetString("chapterId2")
 
 	err := models.ExchangeChapters(cid1, cid2)
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
