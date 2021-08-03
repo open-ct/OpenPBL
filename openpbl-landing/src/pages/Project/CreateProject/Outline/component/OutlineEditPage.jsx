@@ -46,7 +46,9 @@ function OutlineEditPage(obj) {
     setOpt('add')
     setChapterModalVisible(true)
   }
-  const modifyChapter = (c, index) => {
+  const modifyChapter = (e, c, index) => {
+    e.stopPropagation()
+
     setChapter(c)
     setChapterName(c.chapterName)
     setIndex(index)
@@ -67,7 +69,14 @@ function OutlineEditPage(obj) {
     setOpt('modify')
     setSectionModalVisible(true)
   }
-  const deleteChapter = (c, index) => {
+  const del = e => {
+    e.stopPropagation()
+  }
+  const cancel = e => {
+    e.stopPropagation()
+  }
+  const deleteChapter = (e, c, index) => {
+    e.stopPropagation()
     ChapterApi.deleteProjectChapter(c)
       .then((res) => {
         if (res.data.code === 200) {
@@ -215,9 +224,10 @@ function OutlineEditPage(obj) {
   const changeSectionName = value => {
     setSectionName(value.target.value)
   }
-  const exchangeChapter = (index, index2) => {
-    if (index < 0 || index2 >= chapters.length) {
+  const exchangeChapter = (e, index, index2) => {
+    e.stopPropagation()
 
+    if (index < 0 || index2 >= chapters.length) {
     } else {
       let id1 = chapters[index].id
       let id2 = chapters[index2].id
@@ -270,13 +280,11 @@ function OutlineEditPage(obj) {
             <div>
               {item.chapterName}
               <span style={{float: 'right', marginRight: '20px'}}>
-                <Button shape="circle" type="text" onClick={e => modifyChapter(item, index)} icon={<EditOutlined/>}/>
-                <Button shape="circle" type="text" icon={<ArrowUpOutlined/>}
-                        onClick={e => exchangeChapter(index - 1, index)}/>
-                <Button shape="circle" type="text" icon={<ArrowDownOutlined/>}
-                        onClick={e => exchangeChapter(index, index + 1)}/>
-                <Popconfirm title="确定删除章节？" onConfirm={e => deleteChapter(item, index)} placement="topLeft">
-                  <Button shape="circle" type="text" icon={<DeleteOutlined/>} style={{color: 'red', marginLeft: '20px'}}/>
+                <Button shape="circle" type="text" onClick={e => modifyChapter(e, item, index)} icon={<EditOutlined/>}/>
+                <Button shape="circle" type="text" icon={<ArrowUpOutlined/>} onClick={e => exchangeChapter(e, index - 1, index)}/>
+                <Button shape="circle" type="text" icon={<ArrowDownOutlined/>} onClick={e => exchangeChapter(e, index, index + 1)}/>
+                <Popconfirm title="确定删除章节？" onConfirm={e => deleteChapter(e, item, index)} onCancel={cancel} placement="topLeft">
+                  <Button onClick={del} shape="circle" type="text" icon={<DeleteOutlined/>} style={{color: 'red', marginLeft: '20px'}}/>
                 </Popconfirm>
               </span>
             </div>
