@@ -12,7 +12,6 @@ import ProjectComment from './component/ProjectComment';
 import ProjectApi from "../../../api/ProjectApi";
 import StudentApi from "../../../api/StudentApi";
 import StudentAdmin from "./component/StudentAdmin";
-import SubmitFiles from "./component/SubmitFiles";
 import {getUser} from "../../User/Auth/Auth";
 import {DeleteOutlined} from "@ant-design/icons";
 import util from "../component/Util"
@@ -28,11 +27,13 @@ class ProjectInfo extends React.PureComponent {
       teacher: {},
       menu: 'project-introduce',
       type: localStorage.getItem('type'),
+      lastLearn: {}
     };
   }
 
   componentDidMount() {
     this.loadProjectDetail()
+    this.loadLastLearn()
   }
   loadProjectDetail = () => {
     ProjectApi.getProjectDetail(this.state.pid)
@@ -45,6 +46,17 @@ class ProjectInfo extends React.PureComponent {
       .catch((e) => {
         console.log(e)
       })
+  }
+  loadLastLearn = () => {
+    StudentApi.getLastLearnSection()
+      .then(res=>{
+        if (res.data.code === 200) {
+          this.setState({
+            lastLearn: res.data.data
+          })
+        }
+      })
+      .catch(e=>{console.log(e)})
   }
   loadTeacherInfo = (teacherId) => {
     getUser(teacherId)
@@ -59,6 +71,10 @@ class ProjectInfo extends React.PureComponent {
   }
 
   handleClick = (e) => {
+    if (e.key === "student-evidence" && !this.state.project.learning) {
+      message.warn("请先加入学习")
+      return
+    }
     this.setState({
       menu: e.key,
     });
@@ -142,7 +158,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   render() {
-    const {project, teacher, menu, type, pid } = this.state;
+    const {project, teacher, menu, type, pid, lastLearn} = this.state;
 
     const teacherBt = (
       <div style={{float: 'right'}}>
@@ -228,7 +244,17 @@ class ProjectInfo extends React.PureComponent {
       <div style={{float: 'right'}}>
         {project.learning ?
           <>
-            <Link to={`/project/learning/${project.id}`}>
+            <Link to={`/project/${project.id}/section/${lastLearn.id}/preview?back=/project/${project.id}/info`}>
+
+              {lastLearn.last ?
+                <span>
+                  上次学到：{util.FormatSectionName(lastLearn.sectionName, lastLearn.chapterNumber, lastLearn.sectionNumber)}&nbsp;&nbsp;
+                  <span style={{color: 'gray'}}>
+                    {util.FilterMoment(lastLearn.exitAt)}&nbsp;&nbsp;
+                  </span>
+                </span>
+                : null
+              }
               <Button
                 shape="round"
                 size="middle"
@@ -236,7 +262,7 @@ class ProjectInfo extends React.PureComponent {
               >继续学习
               </Button>
             </Link>
-            <Popconfirm title="确认退出项目？" onConfirm={this.exitProject} >
+            <Popconfirm title="确认退出项目？" onConfirm={this.exitProject} placement="topRight" >
               <Button
                 type="danger"
                 shape="round"

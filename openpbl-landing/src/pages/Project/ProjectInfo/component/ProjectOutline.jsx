@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Menu, Progress} from 'antd'
+import {Menu, Progress, message} from 'antd'
 import QueueAnim from 'rc-queue-anim';
 
 import ChapterApi from "../../../../api/ChapterApi";
-import SectionApi from "../../../../api/SectionApi";
+import util from "../../component/Util"
 
 const {SubMenu} = Menu;
 
@@ -26,6 +26,10 @@ function ProjectOutline(obj) {
       .catch(e=>{console.log(e)})
   }
   const gotoLearning = (item, subItem) => {
+    if (!obj.project.learning) {
+      message.warn("请先加入学习")
+      return
+    }
     window.open(`/project/${pid}/section/${subItem.id}/preview?back=/project/${pid}/info`)
   }
 
@@ -38,11 +42,11 @@ function ProjectOutline(obj) {
           defaultOpenKeys={[]}
           mode="inline"
         >{chapters.map((item, index) => (
-          <SubMenu style={{fontSize: '2.7vh'}} key={index.toString()} title={item.chapterName}>
+          <SubMenu style={{fontSize: '2.7vh'}} key={index.toString()} title={util.FormatChapterName(item.chapterName, item.chapterNumber)}>
             {(item.sections === null || item.sections === undefined) ? null :
               item.sections.map((subItem, subIndex) => (
                 <Menu.Item key={index.toString() + subIndex.toString()} onClick={e => gotoLearning(item, subItem)}>
-                  {subItem.sectionName}
+                  {util.FormatSectionName(subItem.sectionName, subItem.chapterNumber, subItem.sectionNumber)}
                   {obj.project.learning ?
                     <>
                       <span style={{float: 'right'}}>

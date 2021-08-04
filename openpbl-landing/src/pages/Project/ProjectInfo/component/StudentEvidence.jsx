@@ -4,7 +4,7 @@ import {Col, Collapse, Divider, List, Progress, Row, Table} from "antd";
 import TaskApi from "../../../../api/TaskApi";
 import ChapterApi from "../../../../api/ChapterApi";
 import TaskCard from "../../PreviewProject/component/TaskCard";
-
+import util from "../../component/Util"
 
 function StudentEvidence(obj) {
   const pid = obj.project === undefined ? obj.pid : obj.project.id
@@ -134,7 +134,9 @@ function StudentEvidence(obj) {
       </Divider>
       {chapters.map((item, index) => (
         <div key={index.toString()} style={{textAlign: 'left'}}>
-          <p style={{fontWeight: 'bold', fontSize: '16px'}}>{item.chapterName}</p>
+          <p style={{fontWeight: 'bold', fontSize: '16px'}}>
+            {util.FormatChapterName(item.chapterName, item.chapterNumber)}
+          </p>
           {(item.sections === null || item.sections === undefined) ?
             null
             :
@@ -145,7 +147,7 @@ function StudentEvidence(obj) {
                 renderItem={
                   item => (
                     <List.Item>
-                      {item.sectionName}
+                      {util.FormatSectionName(item.sectionName, item.chapterNumber, item.sectionNumber)}
                       {learning ?
                         <>
                       <span style={{float: 'right'}}>
@@ -183,7 +185,7 @@ function StudentEvidence(obj) {
             key={index.toString()}
             header={
               <>
-                {item.taskTitle}
+                {util.FormatSectionName(item.taskTitle, item.chapterNumber, item.sectionNumber)}
                 <span style={{float: 'right', marginRight: '20px'}}>
                   {item.submit.scored ?
                     <span style={{color: 'green'}}>已打分</span>

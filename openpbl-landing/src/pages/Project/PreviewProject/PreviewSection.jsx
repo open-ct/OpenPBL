@@ -47,6 +47,7 @@ function PreviewSection(obj) {
       .then(res=>{
       })
       .catch(e=>{console.log(e)})
+    window.removeEventListener("onbeforeunload", leave)
   }
 
   const getSectionDetail = () => {
@@ -86,11 +87,12 @@ function PreviewSection(obj) {
             }
           }
           setTasks(t)
-          setLearning(res.data.learning)
-          setEditable(res.data.editable)
-          if (res.data.learning) {
-            getTimer()
-          }
+        }
+        setLearning(res.data.learning)
+        setEditable(res.data.editable)
+
+        if (res.data.learning) {
+          getTimer()
         }
       })
       .catch(e=>{console.log(e)})

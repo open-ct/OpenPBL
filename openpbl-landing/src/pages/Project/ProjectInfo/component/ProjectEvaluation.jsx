@@ -12,7 +12,7 @@ import TaskApi from "../../../../api/TaskApi";
 import ProjectApi from "../../../../api/ProjectApi";
 import ChapterApi from "../../../../api/ChapterApi";
 import SectionApi from "../../../../api/SectionApi";
-
+import util from "../../component/Util"
 import "./index.less"
 
 const {SubMenu} = Menu
@@ -161,7 +161,12 @@ function ProjectEvaluation(obj) {
       {
         title: '任务标题',
         dataIndex: 'taskTitle',
-        key: 'taskTitle'
+        key: 'taskTitle',
+        render: (text, item, index) => (
+          <>
+            {util.FormatSectionName(item.taskTitle, item.chapterNumber, item.sectionNumber)}
+          </>
+        )
       },
       {
         title: '任务描述',
@@ -234,7 +239,9 @@ function ProjectEvaluation(obj) {
 
         {chapters.map((item, index) => (
           <div key={index.toString()} style={{textAlign: 'left'}}>
-            <p style={{fontWeight: 'bold', fontSize: '16px'}}>{item.chapterName}</p>
+            <p style={{fontWeight: 'bold', fontSize: '16px'}}>
+              {util.FormatChapterName(item.chapterName, item.chapterNumber)}
+            </p>
             {(item.sections === null || item.sections === undefined) ?
               null
               :
@@ -245,7 +252,7 @@ function ProjectEvaluation(obj) {
                   renderItem={
                     (item, subIndex) => (
                       <List.Item>
-                        {item.sectionName}
+                        {util.FormatSectionName(item.sectionName, item.chapterNumber, item.sectionNumber)}
                         {editMinute ?
                           <div style={{float: 'right'}}>
                             学习时长不少于&nbsp;&nbsp;
