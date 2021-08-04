@@ -85,6 +85,7 @@ func (a *Adapter) createTable() {
 
 		new(LearnProject),
 		new(LearnSection),
+		new(LastLearn),
 
 		new(Chapter),
 		new(Section),

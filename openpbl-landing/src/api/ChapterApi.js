@@ -27,6 +27,7 @@ const ChapterApi = {
     return request({
       url: `/project/${c.projectId}/chapter/${c.id}/delete`,
       method: 'post',
+      data: qs.stringify(c)
     })
   },
   exchangeProjectChapter(pid, id1, id2) {

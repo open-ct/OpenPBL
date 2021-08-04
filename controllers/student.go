@@ -253,3 +253,46 @@ func (u *StudentController) UpdateLearnSection() {
 	}
 	u.ServeJSON()
 }
+
+// GetLastLearnSection
+// @Title
+// @Description
+// @Success 200 {object} Response
+// @Failure 400
+// @router /last-learn [get]
+func (u *StudentController) GetLastLearnSection() {
+	var resp Response
+	user := u.GetSessionUser()
+	if user == nil {
+		resp = Response{
+			Code: 401,
+			Msg:  "请先登录",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	if user.Tag != "student" {
+		resp = Response{
+			Code: 200,
+			Msg:  "",
+		}
+		u.Data["json"] = resp
+		u.ServeJSON()
+		return
+	}
+	uid := user.Username
+	l, err := models.GetLastLearnSection(uid)
+	if err != nil {
+		u.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		u.Data["json"] = Response{
+			Code: 200,
+			Data: l,
+		}
+	}
+	u.ServeJSON()
+}

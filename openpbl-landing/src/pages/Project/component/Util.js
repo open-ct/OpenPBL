@@ -8,7 +8,17 @@ function FilterMoment(time) {
   return moment(time).fromNow()
 }
 
+function FormatSectionName(sectionName, chapterNumber, sectionNumber) {
+  return `${chapterNumber + 1}.${sectionNumber + 1} ${sectionName}`
+}
+
+function FormatChapterName(chapterName, chapterNumber) {
+  return `${chapterNumber + 1}. ${chapterName}`
+}
+
 export default {
   FilterTime,
-  FilterMoment
+  FilterMoment,
+  FormatSectionName,
+  FormatChapterName
 }

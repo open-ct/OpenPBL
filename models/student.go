@@ -23,10 +23,28 @@ type LearnSection struct {
 	LearnSecond   int       `json:"learnSecond" xorm:"default 0"`
 }
 
+type LastLearn struct {
+	StudentId     string    `json:"studentId" xorm:"not null pk"`
+	SectionId     int64     `json:"sectionId" xorm:"not null index"`
+	ExitAt        time.Time `json:"exitAt" xorm:"updated"`
+}
+
+type LastLearnSection struct {
+	LastLearn             `xorm:"extends"`
+	Id            int64   `json:"id"`
+	SectionName   string  `json:"sectionName"`
+	ChapterNumber int     `json:"chapterNumber"`
+	SectionNumber int     `json:"sectionNumber"`
+	Last          bool    `json:"last"`
+}
+
 func (l *LearnProject) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(l)
 }
 func (l *LearnSection) GetEngine() *xorm.Session {
+	return adapter.Engine.Table(l)
+}
+func (l *LastLearn) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(l)
 }
 
@@ -91,12 +109,28 @@ func GetLearnSection(sectionId int64, studentId string) (l LearnSection, err err
 	if !b {
 		l.SectionId = sectionId
 		l.StudentId = studentId
-		(&l).Create()
+		err = (&l).Create()
 	}
 	return
 }
+
+func GetLastLearnSection(studentId string) (l LastLearnSection, err error) {
+	var b bool
+	b, err = (&LastLearn{}).GetEngine().
+		Where("student_id = ?", studentId).
+		Join("LEFT OUTER", Section{}, "last_learn.section_id = section.id").
+		Get(&l)
+	l.Last = b
+	return
+}
+
 func (l *LearnSection) Create() (err error) {
 	_, err = (&LearnSection{}).GetEngine().Insert(l)
+	_, err = (&LastLearn{}).GetEngine().Insert(&LastLearn{
+		StudentId: l.StudentId,
+		SectionId: l.SectionId,
+		ExitAt:    time.Now(),
+	})
 	return
 }
 func (l *LearnSection) Update() (err error) {
@@ -104,5 +138,13 @@ func (l *LearnSection) Update() (err error) {
 		Where("student_id = ?", l.StudentId).
 		Where("section_id = ?", l.SectionId).
 		Update(l)
+	_, err = (&LastLearn{}).GetEngine().
+		Where("student_id = ?", l.StudentId).
+		Where("section_id = ?", l.SectionId).
+		Update(&LastLearn{
+			StudentId: l.StudentId,
+			SectionId: l.SectionId,
+			ExitAt:    time.Now(),
+		})
 	return
 }

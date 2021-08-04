@@ -121,20 +121,25 @@ func (p *ProjectController) UpdateProjectChapter() {
 // DeleteProjectChapter
 // @Title
 // @Description
-// @Param cid path string true ""
+// @Param body body models.Chapter true ""
 // @Success 200 {object} Response
 // @Failure 401
 // @router /:projectId/chapter/:chapterId/delete [post]
 func (p *ProjectController) DeleteProjectChapter() {
 	cid, err := p.GetInt64(":chapterId")
+	pid, err := p.GetInt64(":projectId")
+	num, err := p.GetInt("chapterNumber")
 	chapter := &models.Chapter{
 		Id:               cid,
+		ProjectId:        pid,
+		ChapterName:      p.GetString("chapterName"),
+		ChapterNumber:    num,
 	}
 	err = chapter.Delete()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "删除失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{

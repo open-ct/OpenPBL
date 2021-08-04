@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"xorm.io/xorm"
 )
 
@@ -29,10 +30,19 @@ func (p *Chapter) Update() (err error) {
 	return
 }
 func (p *Chapter) Delete() (err error) {
-	_, err = p.GetEngine().
-		Exec("update chapter set chapter_number = chapter_number - 1 where chapter_number > ", p.ChapterNumber)
-	_, err = (&Section{}).GetEngine().Delete(Section{ChapterId: p.Id})
-	_, err = p.GetEngine().ID(p.Id).Delete(p)
+	session := adapter.Engine.NewSession()
+	defer session.Close()
+	session.Begin()
+
+	fmt.Println(p.ProjectId, p.ChapterNumber)
+
+	_, err = session.
+		Exec("update chapter set chapter_number = chapter_number - 1 " +
+			"where project_id = ? and chapter_number > ?", p.ProjectId, p.ChapterNumber)
+	fmt.Println(err)
+	_, err = session.Table(&Section{}).Delete(Section{ChapterId: p.Id})
+	_, err = session.Table(&Chapter{}).ID(p.Id).Delete(p)
+	session.Commit()
 	return
 }
 func ExchangeChapters(cid1 string, cid2 string) (err error) {

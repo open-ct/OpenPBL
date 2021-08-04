@@ -34,6 +34,7 @@ const SectionApi = {
     return request({
       url: `/project/${pid}/chapter/${s.chapterId}/section/${s.id}/delete`,
       method: 'post',
+      data: qs.stringify(s)
     })
   },
   exchangeChapterSection(chapter, id1, id2) {

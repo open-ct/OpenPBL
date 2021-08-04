@@ -6,6 +6,8 @@ import {Link} from 'react-router-dom'
 import ChapterApi from "../../../../../api/ChapterApi"
 import SectionApi from "../../../../../api/SectionApi"
 
+import util from "../../../component/Util"
+
 const {SubMenu} = Menu;
 
 function OutlineEditPage(obj) {
@@ -80,9 +82,8 @@ function OutlineEditPage(obj) {
     ChapterApi.deleteProjectChapter(c)
       .then((res) => {
         if (res.data.code === 200) {
-          chapters.splice(index, 1)
-          setChapters([...chapters])
           message.success(res.data.msg)
+          getChapters()
         }
       })
       .catch((e) => {
@@ -93,11 +94,8 @@ function OutlineEditPage(obj) {
     SectionApi.deleteChapterSection(pid, s)
       .then((res) => {
         if (res.data.code === 200) {
-          let sections = chapters[index].sections
-          sections.splice(subIndex, 1)
-          chapters[index].sections = sections
-          setChapters([...chapters])
           message.success(res.data.msg)
+          getChapters()
         }
       })
   }
@@ -234,10 +232,7 @@ function OutlineEditPage(obj) {
       ChapterApi.exchangeProjectChapter(pid, id1, id2)
         .then((res) => {
           if (res.data.code === 200) {
-            let c1 = chapters[index]
-            chapters[index] = chapters[index2]
-            chapters[index2] = c1
-            setChapters([...chapters])
+            getChapters()
           }
         })
         .catch(e => {
@@ -253,10 +248,7 @@ function OutlineEditPage(obj) {
       SectionApi.exchangeChapterSection(chapters[index], id1, id2)
         .then(res => {
           if (res.data.code === 200) {
-            let s1 = chapters[index].sections[subIndex]
-            chapters[index].sections[subIndex] = chapters[index].sections[subIndex2]
-            chapters[index].sections[subIndex2] = s1
-            setChapters([...chapters])
+            getChapters()
           }
         })
         .catch(e => {
@@ -278,7 +270,7 @@ function OutlineEditPage(obj) {
           key={index.toString()}
           title={
             <div>
-              {item.chapterName}
+              {util.FormatChapterName(item.chapterName, item.chapterNumber)}
               <span style={{float: 'right', marginRight: '20px'}}>
                 <Button shape="circle" type="text" onClick={e => modifyChapter(e, item, index)} icon={<EditOutlined/>}/>
                 <Button shape="circle" type="text" icon={<ArrowUpOutlined/>} onClick={e => exchangeChapter(e, index - 1, index)}/>
@@ -293,7 +285,7 @@ function OutlineEditPage(obj) {
           {(item.sections === null || item.sections === undefined) ? null :
             item.sections.map((subItem, subIndex) => (
               <Menu.Item key={index.toString() + subIndex.toString()}>
-                {subItem.sectionName}
+                {util.FormatSectionName(subItem.sectionName, subItem.chapterNumber, subItem.sectionNumber)}
                 <span style={{float: 'right', marginRight: '20px'}}>
                   <Link to={`/project/${pid}/section/${subItem.id}/edit`}>
                     <Button type="text">编辑资源</Button>

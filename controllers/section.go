@@ -144,8 +144,15 @@ func (p *ProjectController) UpdateChapterSection() {
 // @router /:projectId/chapter/:chapterId/section/:sectionId/delete [post]
 func (p *ProjectController) DeleteChapterSection() {
 	sid, err := p.GetInt64(":sectionId")
+	cid, err := p.GetInt64(":chapterId")
+	sectionNumber, err := p.GetInt("sectionNumber")
+	chapterNumber, err := p.GetInt("chapterNumber")
 	section := &models.Section{
 		Id:               sid,
+		ChapterId:        cid,
+		SectionName:      p.GetString("sectionName"),
+		SectionNumber:    sectionNumber,
+		ChapterNumber:    chapterNumber,
 	}
 	err = section.Delete()
 	if err != nil {

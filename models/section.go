@@ -59,9 +59,14 @@ func UpdateSectionsMinute(sections []Section) (err error) {
 }
 
 func (p *Section) Delete() (err error) {
-	_, err = p.GetEngine().
-		Exec("update section set section_number = section_number - 1 where section_number > ", p.SectionNumber)
-	_, err = p.GetEngine().ID(p.Id).Delete(p)
+	session := adapter.Engine.NewSession()
+	defer session.Close()
+	session.Begin()
+	_, err = session.Engine().
+		Exec("update section set section_number = section_number - 1 " +
+			"where chapter_id = ? and section_number > ?", p.ChapterId, p.SectionNumber)
+	_, err = session.Table(&Section{}).ID(p.Id).Delete(p)
+	session.Commit()
 	return
 }
 func ExchangeSections(id1 string, id2 string) (err error) {

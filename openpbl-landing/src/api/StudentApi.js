@@ -37,6 +37,12 @@ const StudentApi = {
       method: 'post',
       data: qs.stringify(data)
     })
+  },
+  getLastLearnSection() {
+    return request({
+      url: '/student/last-learn',
+      method: 'get'
+    })
   }
 }
 
