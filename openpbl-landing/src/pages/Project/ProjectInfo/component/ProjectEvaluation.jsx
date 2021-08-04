@@ -6,7 +6,7 @@ import 'echarts/lib/component/legend';
 import 'echarts/lib/component/markPoint';
 import ReactEcharts from 'echarts-for-react';
 import QueueAnim from 'rc-queue-anim';
-import {Button, Card, Col, Divider, InputNumber, Row, Table, message, Menu, Input, List, Progress} from "antd";
+import {Button, Card, Col, Divider, InputNumber, Row, Table, message, Menu, Input, List, Progress, BackTop} from "antd";
 
 import TaskApi from "../../../../api/TaskApi";
 import ProjectApi from "../../../../api/ProjectApi";
@@ -214,7 +214,6 @@ function ProjectEvaluation(obj) {
     ],
   });
   return (
-    <QueueAnim>
       <div style={{textAlign: 'left', marginBottom: '30px'}} key="1">
         <ReactEcharts option={getOptions()}/>
         <div>
@@ -273,38 +272,7 @@ function ProjectEvaluation(obj) {
             }
           </div>
         ))}
-
-{/*        <Menu
-          style={{width: '100%'}}
-          defaultSelectedKeys={['0']}
-          mode="inline"
-        >{chapters.map((item, index) => (
-          <SubMenu style={{fontSize: '2.7vh'}} key={index.toString()} title={item.chapterName}>
-            {(item.sections === null || item.sections === undefined) ? null :
-              item.sections.map((subItem, subIndex) => (
-                <Menu.Item key={index.toString() + subIndex.toString()} >
-                  {subItem.sectionName}
-                  {editMinute ?
-                    <div style={{float: 'right'}}>
-                      学习时长不少于&nbsp;&nbsp;
-                      <InputNumber value={subItem.sectionMinute} onChange={v=>changeLearnMinute(v, index, subIndex)} min={0}/>
-                      &nbsp;&nbsp;分钟
-                    </div>
-                    :
-                    <div style={{float: 'right'}}>
-                      学习时长不少于&nbsp;&nbsp;{subItem.sectionMinute}&nbsp;&nbsp;分钟
-                    </div>
-                  }
-                </Menu.Item>
-              ))
-            }
-          </SubMenu>
-        ))}
-        </Menu>*/}
         <div>
-
-
-
           <Divider orientation="left">
             <p className="evidence-title">权重占比</p>
           </Divider>
@@ -345,7 +313,6 @@ function ProjectEvaluation(obj) {
           pagination={false}
         />
       </div>
-    </QueueAnim>
   );
 }
 
