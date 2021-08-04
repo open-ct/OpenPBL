@@ -15,7 +15,7 @@ import StudentAdmin from "./component/StudentAdmin";
 import {getUser} from "../../User/Auth/Auth";
 import {DeleteOutlined} from "@ant-design/icons";
 import util from "../component/Util"
-import StudentEvidence from "./component/StudentEvidence";
+import StudentEvidence from "../Evidence/component/StudentEvidence";
 
 class ProjectInfo extends React.PureComponent {
   constructor(props) {
@@ -86,7 +86,6 @@ class ProjectInfo extends React.PureComponent {
     });
   }
   back = e => {
-    console.log('back')
     window.location.href = '/my-project'
   }
   learnProject = e => {

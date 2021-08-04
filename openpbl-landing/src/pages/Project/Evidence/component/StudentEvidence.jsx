@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Col, Collapse, Divider, List, Progress, Row, Table} from "antd";
+import {Collapse, Divider, List, Progress} from "antd";
 
 import TaskApi from "../../../../api/TaskApi";
 import ChapterApi from "../../../../api/ChapterApi";
@@ -8,23 +8,25 @@ import util from "../../component/Util"
 
 function StudentEvidence(obj) {
   const pid = obj.project === undefined ? obj.pid : obj.project.id
-  const studentId = obj.studentId
+  const studentId = obj.studentId === undefined ? "" : obj.studentId
   const [tasks, setTasks] = useState([])
   const [learning, setLearning] = useState(false)
   const [editable, setEditable] = useState(false)
   const [chapters, setChapters] = useState([])
+  const [showMinute, setShowMinute] = useState(false)
 
   useEffect(() => {
     getChapters()
     getTasks()
   }, []);
   const getChapters = () => {
-    ChapterApi.getProjectChapters(pid)
+    ChapterApi.getProjectChapters(pid, studentId)
       .then((res) => {
         if (res.data.chapters === null) {
           setChapters([])
         } else {
           setChapters(res.data.chapters)
+          setShowMinute(res.data.showMinute)
         }
       })
       .catch(e => {
@@ -53,7 +55,7 @@ function StudentEvidence(obj) {
                 }
               } else {
                 t[i].choices = []
-                for (let j=0; j<t[i].questions.length; j++) {
+                for (let j = 0; j < t[i].questions.length; j++) {
                   t[i].choices.push({
                     choiceOptions: [],
                     choiceOrder: j
@@ -70,55 +72,6 @@ function StudentEvidence(obj) {
       .catch(e => {
         console.log(e)
       })
-  }
-  const getColumns = () => {
-    let c = [
-      {
-        title: '任务标题',
-        dataIndex: 'taskTitle',
-        key: 'taskTitle'
-      },
-      {
-        title: '任务描述',
-        dataIndex: 'taskIntroduce',
-        key: 'taskIntroduce',
-        ellipsis: true,
-      },
-      {
-        title: '权重',
-        dataIndex: 'taskWeight',
-        key: 'taskWeight',
-        render: (text, item, index) => (
-          <span>{text}&nbsp;&nbsp;%</span>
-        )
-      }]
-    if (learning) {
-      c.push({
-        title: '得分',
-        dataIndex: 'score',
-        key: 'score',
-        render: (text, item, index) => (
-          <>
-            <span>{getScore(text, item.taskWeight)}&nbsp;/&nbsp;{item.taskWeight}</span>
-          </>
-        )
-      })
-      c.push({
-        title: '状态',
-        dataIndex: 'score',
-        key: 'score',
-        render: (text, item, index) => (
-          <>
-            {item.scored ?
-              <span style={{color: 'green'}}>已打分</span>
-              :
-              <span>未打分</span>
-            }
-          </>
-        )
-      })
-    }
-    return c
   }
   const getScore = (score, weight) => {
     return (score * weight / 100).toFixed(2)
@@ -148,7 +101,7 @@ function StudentEvidence(obj) {
                   item => (
                     <List.Item>
                       {util.FormatSectionName(item.sectionName, item.chapterNumber, item.sectionNumber)}
-                      {learning ?
+                      {showMinute ?
                         <>
                       <span style={{float: 'right'}}>
                         <Progress
@@ -221,12 +174,6 @@ function StudentEvidence(obj) {
           </Collapse.Panel>
         ))}
       </Collapse>
-
-{/*      <Table
-        columns={getColumns()}
-        dataSource={tasks}
-        pagination={false}
-      />*/}
     </div>
   )
 }

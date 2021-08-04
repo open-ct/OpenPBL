@@ -2,10 +2,11 @@ import request from "./request";
 import qs from "qs";
 
 const ChapterApi = {
-  getProjectChapters(id) {
+  getProjectChapters(id, studentId) {
     return request({
       url: `/project/${id}/chapters`,
       method: 'get',
+      params: {studentId: studentId}
     })
   },
   createProjectChapter(chapter) {

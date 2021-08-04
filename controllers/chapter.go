@@ -6,9 +6,10 @@ import (
 )
 
 type ChaptersResponse struct {
-	Code     int              `json:"code"`
-	Msg      string           `json:"msg"`
-	Chapters []models.Outline `json:"chapters"`
+	Code       int              `json:"code"`
+	Msg        string           `json:"msg"`
+	Chapters   []models.Outline `json:"chapters"`
+	ShowMinute bool             `json:"showMinute"`
 }
 
 // GetProjectChapters
@@ -29,8 +30,16 @@ func (p *ProjectController) GetProjectChapters() {
 		return
 	}
 	uid := ""
+	show := false
 	if user.Tag == "student" {
 		uid = user.Username
+		show = true
+	}
+	if user.Tag == "teacher" {
+		uid = p.GetString("studentId")
+		if uid != "" {
+			show = true
+		}
 	}
 	pid := p.GetString(":id")
 	outline, err := models.GetChaptersByPid(pid, uid)
@@ -44,6 +53,7 @@ func (p *ProjectController) GetProjectChapters() {
 		p.Data["json"] = ChaptersResponse{
 			Code:     200,
 			Chapters: outline,
+			ShowMinute: show,
 		}
 	}
 	p.ServeJSON()

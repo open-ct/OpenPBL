@@ -15,8 +15,10 @@ function StudentAdmin(obj) {
   const [page, setPage] = useState(1)
 
   useEffect(() => {
-    updateStudentList()
-  }, []);
+    if (pid !== undefined) {
+      updateStudentList()
+    }
+  }, [pid]);
 
   const updateStudentList = () => {
     ProjectApi.getProjectStudents(pid)

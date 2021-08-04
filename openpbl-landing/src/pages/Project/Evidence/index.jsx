@@ -1,17 +1,17 @@
 import React, {useEffect} from "react";
 import {Card, PageHeader} from "antd";
 import DocumentTitle from 'react-document-title';
-import StudentEvidence from "../ProjectInfo/component/StudentEvidence";
+import StudentEvidence from "./component/StudentEvidence";
 
 function Evidence(obj) {
   const pid = obj.match.params.pid
   const sid = obj.match.params.sid
 
-  useEffect(()=>{
+  useEffect(() => {
   }, [])
 
   const back = e => {
-    window.location.href = `/project/${pid}/info`
+    window.location.href = `/project/${pid}/info?menu=student-admin`
   }
 
   return (
