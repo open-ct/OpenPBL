@@ -140,7 +140,6 @@ func (l *LearnSection) Update() (err error) {
 		Update(l)
 	_, err = (&LastLearn{}).GetEngine().
 		Where("student_id = ?", l.StudentId).
-		Where("section_id = ?", l.SectionId).
 		Update(&LastLearn{
 			StudentId: l.StudentId,
 			SectionId: l.SectionId,
