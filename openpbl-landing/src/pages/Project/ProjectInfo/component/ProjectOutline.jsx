@@ -9,11 +9,14 @@ const {SubMenu} = Menu;
 
 function ProjectOutline(obj) {
   const pid = obj.project.id
+  const type = localStorage.getItem("type")
   const [chapters, setChapters] = useState([])
 
   useEffect(() => {
-    getChapters()
-  }, [])
+    if (pid !== undefined) {
+      getChapters()
+    }
+  }, [pid])
   const getChapters = () => {
     ChapterApi.getProjectChapters(pid)
       .then((res) => {
@@ -26,11 +29,11 @@ function ProjectOutline(obj) {
       .catch(e=>{console.log(e)})
   }
   const gotoLearning = (item, subItem) => {
-    if (!obj.project.learning) {
+    if (!obj.project.learning && type === 'student') {
       message.warn("请先加入学习")
       return
     }
-    window.open(`/project/${pid}/section/${subItem.id}/preview?back=/project/${pid}/info`)
+    window.open(`/project/${pid}/section/${subItem.id}/preview?back=/project/${pid}/info?menu=project-outline`)
   }
 
   return (

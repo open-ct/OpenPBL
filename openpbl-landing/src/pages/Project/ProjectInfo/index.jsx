@@ -1,6 +1,6 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
-import {Avatar, Button, Card, Col, Divider, Image, Menu, PageHeader, Popconfirm, Row, message} from 'antd';
+import {Avatar, Button, Card, Col, Divider, Image, Menu, PageHeader, Popconfirm, Row, message, BackTop} from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import localStorage from 'localStorage';
 import {Link} from 'react-router-dom';
@@ -21,11 +21,17 @@ class ProjectInfo extends React.PureComponent {
   constructor(props) {
     super(props);
     const pid = this.props.match.params.id;
+    let url = new URLSearchParams(this.props.location.search)
+    let menu = url.get("menu")
+    console.log(menu)
+    if (menu === undefined || menu === null) {
+      menu = 'project-introduce'
+    }
     this.state = {
       pid: pid,
       project: {},
       teacher: {},
-      menu: 'project-introduce',
+      menu: menu,
       type: localStorage.getItem('type'),
       lastLearn: {}
     };
@@ -71,7 +77,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   handleClick = (e) => {
-    if (e.key === "student-evidence" && !this.state.project.learning) {
+    if (this.state.type==='student' && e.key === "student-evidence" && !this.state.project.learning) {
       message.warn("请先加入学习")
       return
     }
@@ -288,6 +294,8 @@ class ProjectInfo extends React.PureComponent {
     return (
       <DocumentTitle title="Project">
         <div style={{backgroundColor: '#f2f4f5'}}>
+          <BackTop />
+
           <PageHeader
             className="site-page-header"
             onBack={() => this.back()}

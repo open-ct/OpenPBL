@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Card, PageHeader, Input, Upload, message, Button} from "antd";
+import {Card, PageHeader, Input, Upload, message, Button, BackTop} from "antd";
 import DocumentTitle from 'react-document-title';
 import {InboxOutlined} from '@ant-design/icons'
 
@@ -129,35 +129,6 @@ function PreviewSection(obj) {
       window.location.href = backUrl
     }
   }
-/*  const changeComment = (v, index) => {
-    tasks[index].submit.submitContent = v.target.value
-    setTasks([...tasks])
-  }*/
-/*  const submitComment = (item, index) => {
-    item.submit.submitType = item.taskType
-    SubmitApi.createSubmit(pid, item.id, item.submit)
-      .then(res=>{
-        if (res.data.code === 200) {
-          message.success(res.data.msg)
-          getTasks()
-        } else {
-          message.error(res.data.msg)
-        }
-      })
-      .catch(e=>{console.log(e)})
-  }*/
-/*  const updateComment = (item, index) => {
-    SubmitApi.updateSubmit(pid, item.id, item.submit.id, item.submit)
-      .then(res=>{
-        if (res.data.code === 200) {
-          message.success(res.data.msg)
-          getTasks()
-        } else {
-          message.error(res.data.msg)
-        }
-      })
-      .catch(e=>{console.log(e)})
-  }*/
   const setTaskItem = (item, index) => {
     tasks[index] = item
     setTasks([...tasks])
@@ -166,6 +137,7 @@ function PreviewSection(obj) {
   return (
   <DocumentTitle title="Project">
     <div style={{backgroundColor: '#f2f4f5', minHeight: '100vh'}}>
+      <BackTop />
       <PageHeader
         className="site-page-header"
         onBack={back}
