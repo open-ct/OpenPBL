@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Collapse, Divider, List, Progress} from "antd";
+import {Collapse, Divider, Input, List, Progress, message, InputNumber, Tooltip, Button} from "antd";
 
 import TaskApi from "../../../../api/TaskApi";
 import ChapterApi from "../../../../api/ChapterApi";
 import TaskCard from "../../PreviewProject/component/TaskCard";
 import util from "../../component/Util"
+import SubmitApi from "../../../../api/SubmitApi";
 
 function StudentEvidence(obj) {
   const pid = obj.project === undefined ? obj.pid : obj.project.id
@@ -12,6 +13,7 @@ function StudentEvidence(obj) {
   const [tasks, setTasks] = useState([])
   const [learning, setLearning] = useState(false)
   const [editable, setEditable] = useState(false)
+  const [teacherScore, setTeacherScore] = useState(false)
   const [chapters, setChapters] = useState([])
   const [showMinute, setShowMinute] = useState(false)
 
@@ -66,12 +68,30 @@ function StudentEvidence(obj) {
             setTasks(t)
             setLearning(res.data.learning)
             setEditable(res.data.editable)
+            setTeacherScore(res.data.teacherScore)
           }
         }
       })
       .catch(e => {
         console.log(e)
       })
+  }
+  const changeScore = (v, index) => {
+    tasks[index].submit.score = v
+    setTasks([...tasks])
+  }
+  const saveScore = (index) => {
+    tasks[index].submit.scored = true
+    SubmitApi.updateSubmit(pid, tasks[index].id, tasks[index].submit.id, tasks[index].submit)
+      .then(res=>{
+        if (res.data.code === 200) {
+          message.success(res.data.msg)
+          getTasks()
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
   }
   const getScore = (score, weight) => {
     return (score * weight / 100).toFixed(2)
@@ -162,6 +182,23 @@ function StudentEvidence(obj) {
               </>
             }
           >
+            {teacherScore ?
+              <div>
+                <span style={{float: 'right'}}>
+                  <Button type="primary" disabled={!item.submitted} onClick={e=>saveScore(index)}>保存</Button>
+                </span>
+                <span style={{float: 'right', marginRight: '10px'}}>
+                  <InputNumber value={item.submit.score} disabled={!item.submitted} onChange={v=>changeScore(v, index)} min={0} max={100} /> / 100
+                </span>
+                <Tooltip title="满分为100分，系统自动根据权重计算本题实际分数">
+                  <span style={{float: 'right', marginRight: '10px'}}><p>教师评分:</p></span>
+                </Tooltip>
+                <br/>
+                <Divider />
+              </div>
+              : null
+            }
+
             <TaskCard
               pid={pid}
               item={item}

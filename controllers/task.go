@@ -7,9 +7,10 @@ import (
 
 type TaskResponse struct {
 	Response
-	Tasks       []models.TaskDetail `json:"tasks"`
-	Learning    bool                `json:"learning"`
-	Editable    bool                `json:"editable"`
+	Tasks        []models.TaskDetail `json:"tasks"`
+	Learning     bool                `json:"learning"`
+	Editable     bool                `json:"editable"`
+	TeacherScore bool                `json:"teacherScore"`
 }
 
 // GetSectionTasksDetail
@@ -124,16 +125,18 @@ func (p *ProjectController) GetProjectTasksDetail() {
 	}
 
 	showSubmit := false
+	teacherScore := false
 	uid := user.Username
 	editable := true
+	pid := p.GetString(":projectId")
+
 
 	if user.Tag == "teacher" {
 		uid = p.GetString("studentId")
 		showSubmit = true
 		editable = false
+		teacherScore = true
 	}
-
-	pid := p.GetString(":projectId")
 	if user.Tag != "student" {
 		learning = false
 	} else {
@@ -161,6 +164,7 @@ func (p *ProjectController) GetProjectTasksDetail() {
 			Tasks:    tasks,
 			Learning: learning,
 			Editable: editable,
+			TeacherScore: teacherScore,
 		}
 	}
 	p.ServeJSON()

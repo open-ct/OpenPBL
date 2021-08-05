@@ -70,7 +70,7 @@ func (p *Submit) Create(c []Choice) (err error) {
 }
 func (p *Submit) Update(c []Choice) (err error) {
 	_, err = p.GetEngine().ID(p.Id).Update(p)
-	if p.SubmitType == "survey" {
+	if len(c) > 0 && p.SubmitType == "survey" {
 		var cs []Choice
 		err = (&Choice{}).GetEngine().
 			Where("submit_id = ?", p.Id).
@@ -82,7 +82,6 @@ func (p *Submit) Update(c []Choice) (err error) {
 	}
 	return
 }
-
 
 func CountSubmit(c []Choice, cl []Choice, taskId int64) {
 	

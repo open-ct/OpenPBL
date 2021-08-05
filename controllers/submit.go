@@ -95,19 +95,15 @@ func (p *ProjectController) UpdateSubmit() {
 		p.ServeJSON()
 		return
 	}
-	if user.Tag != "student" {
-		resp = Response{
-			Code: 403,
-			Msg:  "非法用户",
-		}
-		p.Data["json"] = resp
-		p.ServeJSON()
-		return
+	var uid string
+	if user.Tag == "student" {
+		uid = user.Username
 	}
-	uid := user.Username
 	tid, err := p.GetInt64(":taskId")
 	sid, err := p.GetInt64(":submitId")
 	pid, err := p.GetInt64(":projectId")
+	score, err := p.GetInt("score")
+	scored, err := p.GetBool("scored")
 	f := &models.Submit{
 		Id:              sid,
 		ProjectId:       pid,
@@ -119,16 +115,18 @@ func (p *ProjectController) UpdateSubmit() {
 		SubmitContent:   p.GetString("submitContent"),
 		FilePath:        p.GetString("filePath"),
 		CreateAt:        time.Now(),
+		Score:           score,
+		Scored:          scored,
 	}
-	var c =make([]models.Choice, 0)
-	if f.SubmitType == "survey" {
+	var c = make([]models.Choice, 0)
+	if user.Tag == "student" && f.SubmitType == "survey" {
 		err = json.Unmarshal([]byte(p.GetString("choices")), &c)
 	}
 	err = f.Update(c)
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "提交失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
@@ -138,4 +136,3 @@ func (p *ProjectController) UpdateSubmit() {
 	}
 	p.ServeJSON()
 }
-
