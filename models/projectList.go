@@ -14,6 +14,7 @@ func GetMyProjectListBySid(sid string, from int, size int,
         		inner join learn_project on (
             		learn_project.student_id = '%s' and
             		learn_project.learning = %v and
+					project.closed = false and
             		project.id = learn_project.project_id
         		)
 		) as project where true
@@ -40,7 +41,7 @@ func GetPublicProjectListForStudent(sid string, from int, size int,
 	subject string, skill string, text string, orderBy string, orderType string) (p []ProjectDetail, rows int64, err error) {
 	const baseSql = `
 		select %s from (
-    		select * from project where project.published = true
+    		select * from project where project.published = true and project.closed = false 
         	%s %s %s 
 		) as p1 left join learn_project on (
     		p1.id = learn_project.project_id and learn_project.student_id = '%s'
