@@ -163,7 +163,7 @@ func (u *StudentController) FinishedProject() {
 // @Param body body models.LearnSection true ""
 // @Success 200 {object} Response
 // @Failure 400
-// @router /section/:sectionId [get]
+// @router /project/:projectId/section/:sectionId [get]
 func (u *StudentController) GetLearnSection() {
 	var resp Response
 	user := u.GetSessionUser()
@@ -187,7 +187,8 @@ func (u *StudentController) GetLearnSection() {
 	}
 	uid := user.Username
 	sid, err := u.GetInt64(":sectionId")
-	l, err := models.GetLearnSection(sid, uid)
+	projectId, err := u.GetInt64(":projectId")
+	l, err := models.GetLearnSection(sid, uid, projectId)
 	if err != nil {
 		u.Data["json"] = Response{
 			Code: 400,
@@ -208,7 +209,7 @@ func (u *StudentController) GetLearnSection() {
 // @Param body body models.LearnSection true ""
 // @Success 200 {object} Response
 // @Failure 400
-// @router /section/:sectionId [post]
+// @router /project/:projectId/section/:sectionId [post]
 func (u *StudentController) UpdateLearnSection() {
 	var resp Response
 	user := u.GetSessionUser()
@@ -240,7 +241,8 @@ func (u *StudentController) UpdateLearnSection() {
 		LearnMinute:   m,
 		LearnSecond:   s,
 	}
-	err = l.Update()
+	pid, err := u.GetInt64(":projectId")
+	err = l.Update(pid)
 	if err != nil {
 		u.Data["json"] = Response{
 			Code: 400,
@@ -259,7 +261,7 @@ func (u *StudentController) UpdateLearnSection() {
 // @Description
 // @Success 200 {object} Response
 // @Failure 400
-// @router /last-learn [get]
+// @router /last-learn/project/:projectId [get]
 func (u *StudentController) GetLastLearnSection() {
 	var resp Response
 	user := u.GetSessionUser()
@@ -282,7 +284,8 @@ func (u *StudentController) GetLastLearnSection() {
 		return
 	}
 	uid := user.Username
-	l, err := models.GetLastLearnSection(uid)
+	projectId := u.GetString(":projectId")
+	l, err := models.GetLastLearnSection(uid, projectId)
 	if err != nil {
 		u.Data["json"] = Response{
 			Code: 400,

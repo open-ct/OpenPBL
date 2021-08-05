@@ -16,8 +16,8 @@ type LearnProject struct {
 }
 
 type LearnSection struct {
-	StudentId     string    `json:"studentId" xorm:"not null index pk"`
-	SectionId     int64     `json:"sectionId" xorm:"not null index pk"`
+	StudentId     string    `json:"studentId" xorm:"not null pk"`
+	SectionId     int64     `json:"sectionId" xorm:"not null pk"`
 
 	LearnMinute   int       `json:"learnMinute" xorm:"default 0"`
 	LearnSecond   int       `json:"learnSecond" xorm:"default 0"`
@@ -25,6 +25,7 @@ type LearnSection struct {
 
 type LastLearn struct {
 	StudentId     string    `json:"studentId" xorm:"not null pk"`
+	ProjectId     int64     `json:"projectId" xorm:"not null pk"`
 	SectionId     int64     `json:"sectionId" xorm:"not null index"`
 	ExitAt        time.Time `json:"exitAt" xorm:"updated"`
 }
@@ -100,7 +101,7 @@ func GetProjectStudents(pid string, from int, size int) (s []LearnProject, rows 
 	return
 }
 
-func GetLearnSection(sectionId int64, studentId string) (l LearnSection, err error) {
+func GetLearnSection(sectionId int64, studentId string, projectId int64) (l LearnSection, err error) {
 	var b bool
 	b, err = (&LearnSection{}).GetEngine().
 		Where("section_id = ?", sectionId).
@@ -109,39 +110,43 @@ func GetLearnSection(sectionId int64, studentId string) (l LearnSection, err err
 	if !b {
 		l.SectionId = sectionId
 		l.StudentId = studentId
-		err = (&l).Create()
+		err = (&l).Create(projectId)
 	}
 	return
 }
 
-func GetLastLearnSection(studentId string) (l LastLearnSection, err error) {
+func GetLastLearnSection(studentId string, projectId string) (l LastLearnSection, err error) {
 	var b bool
 	b, err = (&LastLearn{}).GetEngine().
 		Where("student_id = ?", studentId).
+		Where("project_id = ?", projectId).
 		Join("LEFT OUTER", Section{}, "last_learn.section_id = section.id").
 		Get(&l)
 	l.Last = b
 	return
 }
 
-func (l *LearnSection) Create() (err error) {
+func (l *LearnSection) Create(projectId int64) (err error) {
 	_, err = (&LearnSection{}).GetEngine().Insert(l)
 	_, err = (&LastLearn{}).GetEngine().Insert(&LastLearn{
 		StudentId: l.StudentId,
+		ProjectId: projectId,
 		SectionId: l.SectionId,
 		ExitAt:    time.Now(),
 	})
 	return
 }
-func (l *LearnSection) Update() (err error) {
+func (l *LearnSection) Update(projectId int64) (err error) {
 	_, err = (&LearnSection{}).GetEngine().
 		Where("student_id = ?", l.StudentId).
 		Where("section_id = ?", l.SectionId).
 		Update(l)
 	_, err = (&LastLearn{}).GetEngine().
 		Where("student_id = ?", l.StudentId).
+		Where("project_id = ?", projectId).
 		Update(&LastLearn{
 			StudentId: l.StudentId,
+			ProjectId: projectId,
 			SectionId: l.SectionId,
 			ExitAt:    time.Now(),
 		})

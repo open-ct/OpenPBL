@@ -43,7 +43,7 @@ function PreviewSection(obj) {
       learnMinute: m,
       learnSecond: s
     }
-    StudentApi.updateLearnSection(sid, data)
+    StudentApi.updateLearnSection(pid, sid, data)
       .then(res=>{
       })
       .catch(e=>{console.log(e)})
@@ -98,7 +98,7 @@ function PreviewSection(obj) {
       .catch(e=>{console.log(e)})
   }
   const getTimer = () => {
-    StudentApi.getLearnSection(sid)
+    StudentApi.getLearnSection(pid, sid)
       .then(res=>{
         if (res.data.code === 200) {
           setSecond(res.data.data.learnSecond)
@@ -146,7 +146,9 @@ function PreviewSection(obj) {
       />
       <div style={{ padding: '20px', margin: 'auto'}}>
         <Card>
-          <h2 style={{ fontWeight: 'bold' }}>{section.sectionName}</h2>
+          <h2 style={{ fontWeight: 'bold' }}>
+            {util.FormatSectionName(section.sectionName, section.chapterNumber, section.sectionNumber)}
+          </h2>
           {learning ?
             <span style={{float: 'right'}}>{minute}&nbsp;:&nbsp;{second}</span>
             : null}

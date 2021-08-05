@@ -54,7 +54,7 @@ class ProjectInfo extends React.PureComponent {
       })
   }
   loadLastLearn = () => {
-    StudentApi.getLastLearnSection()
+    StudentApi.getLastLearnSection(this.state.pid)
       .then(res=>{
         if (res.data.code === 200) {
           this.setState({

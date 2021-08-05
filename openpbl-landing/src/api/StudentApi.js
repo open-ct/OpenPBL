@@ -25,22 +25,22 @@ const StudentApi = {
       })
     })
   },
-  getLearnSection(sid) {
+  getLearnSection(pid, sid) {
     return request({
-      url: `/student/section/${sid}`,
+      url: `/student/project/${pid}/section/${sid}`,
       method: 'get'
     })
   },
-  updateLearnSection(sid, data) {
+  updateLearnSection(pid, sid, data) {
     return request({
-      url: `/student/section/${sid}`,
+      url: `/student/project/${pid}/section/${sid}`,
       method: 'post',
       data: qs.stringify(data)
     })
   },
-  getLastLearnSection() {
+  getLastLearnSection(pid) {
     return request({
-      url: '/student/last-learn',
+      url: `/student/last-learn/project/${pid}`,
       method: 'get'
     })
   }
