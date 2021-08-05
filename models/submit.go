@@ -1,6 +1,8 @@
 package models
 
 import (
+	"strconv"
+	"strings"
 	"time"
 	"xorm.io/xorm"
 )
@@ -28,6 +30,7 @@ type Submit struct {
 type Choice struct {
 	Id            int64     `json:"id" xorm:"not null pk autoincr"`
 	SubmitId      int64     `json:"submitId" xorm:"not null index"`
+	QuestionId    int64     `json:"questionId" xorm:"not null index"`
 	ChoiceOrder   int       `json:"choiceOrder"`
 	ChoiceOptions string    `json:"choiceOptions" xorm:"text"`
 }
@@ -59,12 +62,13 @@ func (p *Submit) Create(c []Choice) (err error) {
 		for i := 0; i < len(c); i ++ {
 			ci := &Choice{
 				SubmitId:      p.Id,
+				QuestionId:    c[i].QuestionId,
 				ChoiceOrder:   c[i].ChoiceOrder,
 				ChoiceOptions: c[i].ChoiceOptions,
 			}
 			err = ci.Create()
 		}
-		CountSubmit(c, nil, p.TaskId)
+		CountSubmit(c, nil)
 	}
 	return
 }
@@ -78,12 +82,63 @@ func (p *Submit) Update(c []Choice) (err error) {
 		for i:=0; i< len(c); i++ {
 			err = (&c[i]).Update()
 		}
-		CountSubmit(c, cs, p.TaskId)
+		CountSubmit(c, cs)
 	}
 	return
 }
 
-func CountSubmit(c []Choice, cl []Choice, taskId int64) {
-	
+func CountSubmit(c []Choice, cl []Choice) {
+	if len(c) != len(cl) && cl != nil {
+		return
+	}
+	var (
+		err error
+		index int
+	)
+	for i:=0; i< len(c); i++ {
+		var question Question
+		_, err = (&Question{}).GetEngine().ID(c[i].QuestionId).Get(&question)
+		if err != nil {
+			return
+		}
+		if question.QuestionType == "singleChoice" || question.QuestionType == "multipleChoice" ||
+			question.QuestionType == "scale5" || question.QuestionType == "scale7" {
 
+			l := len(strings.Split(question.QuestionOptions, ","))
+			count := make([]int, l)
+
+			if question.QuestionCount != "" {
+				le := strings.Split(question.QuestionCount, ",")
+				for j:=0; j< len(le); j++ {
+					count[i], err = strconv.Atoi(le[i])
+				}
+			}
+			ci := strings.Split(c[i].ChoiceOptions, ",")
+			var cli []string
+			if cl != nil {
+				cli = strings.Split(cl[i].ChoiceOptions, ",")
+			}
+
+			for j:=0; j<len(ci); j++ {
+				index, err = strconv.Atoi(ci[j])
+				count[index] = count[index] + 1
+			}
+			if cl != nil {
+				for j:=0; j<len(cli); j++ {
+					index, err = strconv.Atoi(cli[j])
+					count[index] = count[index] - 1
+				}
+			}
+
+			var qc strings.Builder
+			for j:=0; j< len(count); j++ {
+				qc.WriteString(strconv.Itoa(count[j]))
+				if j != len(count) - 1 {
+					qc.WriteString(",")
+				}
+			}
+			question.QuestionCount = qc.String()
+			err = question.Update()
+		}
+	}
 }

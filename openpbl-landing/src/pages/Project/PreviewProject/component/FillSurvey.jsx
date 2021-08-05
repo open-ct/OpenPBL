@@ -15,6 +15,7 @@ function FillSurvey(obj) {
     let data = Object.assign({}, obj.item.submit)
     let c = [...obj.item.choices]
     for (let i=0; i<c.length; i++) {
+      c[i].questionId = obj.item.questions[i].id
       c[i].choiceOptions = c[i].choiceOptions.toString()
     }
     data['choices'] = JSON.stringify(c)
