@@ -1,4 +1,8 @@
 import moment from 'moment'
+import 'moment/locale/zh-cn'
+
+moment.locale('zh-cn')
+
 
 function FilterTime(time) {
   return moment(time).format('YYYY-MM-DD HH:mm:ss')
