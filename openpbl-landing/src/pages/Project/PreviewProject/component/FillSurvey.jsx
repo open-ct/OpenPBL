@@ -75,9 +75,8 @@ function FillSurvey(obj) {
   }
 
 
-  const showCount = e => {
+  const openCount = e => {
     if (e.length > 0) {
-      console.log('draw')
     }
   }
   const getOption = subIndex => {
@@ -175,7 +174,7 @@ function FillSurvey(obj) {
       </div>
       {obj.showCount || obj.item.submitted ?
         <div style={{textAlign: 'left', marginTop: '20px'}}>
-          <Collapse onChange={showCount}>
+          <Collapse onChange={openCount}>
             <Collapse.Panel key={1} header="查看统计结果">
               {obj.item.questions.map((subItem, subIndex)=>(
                 <div key={subIndex.toString()}>

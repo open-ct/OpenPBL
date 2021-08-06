@@ -132,6 +132,7 @@ func (p *ProjectController) GetProjectTasksDetail() {
 	teacherScore := false
 	uid := user.Username
 	editable := true
+	showCount := false
 	pid := p.GetString(":projectId")
 
 
@@ -140,6 +141,7 @@ func (p *ProjectController) GetProjectTasksDetail() {
 		showSubmit = true
 		editable = false
 		teacherScore = true
+		showCount = true
 	}
 	if user.Tag != "student" {
 		learning = false
@@ -169,6 +171,7 @@ func (p *ProjectController) GetProjectTasksDetail() {
 			Learning: learning,
 			Editable: editable,
 			TeacherScore: teacherScore,
+			ShowCount: showCount,
 		}
 	}
 	p.ServeJSON()
