@@ -96,7 +96,7 @@ func GetMyProjectListByTid(tid string, from int, size int,
 
 func GetPublicProjectListForTeacher(sid string, from int, size int,
 	subject string, skill string, text string, orderBy string, orderType string) (p []ProjectDetail, rows int64, err error) {
-	baseSql := "select %s from project where published = true %s %s %s "
+	baseSql := "select %s from project where published = true and closed = false %s %s %s "
 	pageSql := " order by %s %s limit %d, %d "
 	e1 := getSubjectExistSql(subject)
 	e2 := getSkillExistSql(skill)

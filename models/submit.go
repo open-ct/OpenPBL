@@ -93,7 +93,6 @@ func CountSubmit(c []Choice, cl []Choice) {
 	}
 	var (
 		err error
-		index int
 	)
 	for i:=0; i< len(c); i++ {
 		var question Question
@@ -108,37 +107,45 @@ func CountSubmit(c []Choice, cl []Choice) {
 			count := make([]int, l)
 
 			if question.QuestionCount != "" {
-				le := strings.Split(question.QuestionCount, ",")
-				for j:=0; j< len(le); j++ {
-					count[i], err = strconv.Atoi(le[i])
-				}
+				count = string2List(question.QuestionCount)
 			}
-			ci := strings.Split(c[i].ChoiceOptions, ",")
-			var cli []string
-			if cl != nil {
-				cli = strings.Split(cl[i].ChoiceOptions, ",")
+			opt := string2List(c[i].ChoiceOptions)
+			for j:=0; j<len(opt); j++ {
+				count[opt[j]] = count[opt[j]] + 1
 			}
 
-			for j:=0; j<len(ci); j++ {
-				index, err = strconv.Atoi(ci[j])
-				count[index] = count[index] + 1
-			}
 			if cl != nil {
-				for j:=0; j<len(cli); j++ {
-					index, err = strconv.Atoi(cli[j])
-					count[index] = count[index] - 1
+				opt2 := string2List(cl[i].ChoiceOptions)
+				for j:=0; j<len(opt2); j++ {
+					count[opt2[j]] = count[opt2[j]] - 1
 				}
 			}
 
-			var qc strings.Builder
-			for j:=0; j< len(count); j++ {
-				qc.WriteString(strconv.Itoa(count[j]))
-				if j != len(count) - 1 {
-					qc.WriteString(",")
-				}
-			}
-			question.QuestionCount = qc.String()
+			question.QuestionCount = list2String(count)
 			err = question.Update()
 		}
 	}
+}
+
+func string2List(str string) []int {
+	var err error
+	l := strings.Split(str, ",")
+	res := make([]int, len(l))
+	for i:=0; i< len(l); i++ {
+		res[i], err = strconv.Atoi(l[i])
+		if err != nil {
+			res[i] = 0
+		}
+	}
+	return res
+}
+func list2String(l []int) string {
+	var s strings.Builder
+	for i:=0; i< len(l); i++ {
+		s.WriteString(strconv.Itoa(l[i]))
+		if i != len(l)-1 {
+			s.WriteString(",")
+		}
+	}
+	return s.String()
 }
