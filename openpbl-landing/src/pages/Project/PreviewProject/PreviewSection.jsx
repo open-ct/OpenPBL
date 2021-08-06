@@ -68,6 +68,7 @@ function PreviewSection(obj) {
             if (t[i].questions !== undefined && t[i].questions != null) {
               for (let j = 0; j < t[i].questions.length; j++) {
                 t[i].questions[j].questionOptions = t[i].questions[j].questionOptions.split(",")
+                t[i].questions[j].questionCount = t[i].questions[j].questionCount.split(",")
               }
             } else {
               t[i].questions = []
