@@ -14,6 +14,7 @@ function StudentEvidence(obj) {
   const [learning, setLearning] = useState(false)
   const [editable, setEditable] = useState(false)
   const [teacherScore, setTeacherScore] = useState(false)
+  const [showCount, setShowCount] = useState(false)
   const [chapters, setChapters] = useState([])
   const [showMinute, setShowMinute] = useState(false)
 
@@ -69,6 +70,7 @@ function StudentEvidence(obj) {
             setLearning(res.data.learning)
             setEditable(res.data.editable)
             setTeacherScore(res.data.teacherScore)
+            setShowCount(res.data.showCount)
           }
         }
       })
@@ -205,6 +207,7 @@ function StudentEvidence(obj) {
               index={index}
               learning={learning}
               editable={editable}
+              showCount={showCount}
               setTaskItem={setTaskItem}
               getTasks={getTasks}
             />

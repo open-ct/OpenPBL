@@ -168,35 +168,34 @@ function FillSurvey(obj) {
       </div>
       <div style={{textAlign: 'right', marginTop: '10px'}}>
         {obj.item.submitted ?
-          <>
-            <Button disabled={!obj.editable} type="primary" onClick={updateSurvey} loading={submitLoading}>
-              更新
-            </Button>
-            <div style={{textAlign: 'left', marginTop: '20px'}}>
-              <Collapse onChange={showCount}>
-                <Collapse.Panel key={1} header="查看统计结果">
-                  {obj.item.questions.map((subItem, subIndex)=>(
-                    <div key={subIndex.toString()}>
-                      {subItem.questionType==='singleChoice' || subItem.questionType==='multipleChoice'
-                        || subItem.questionType==='scale5' || subItem.questionType==='scale7' ?
-                        <div style={{textAlign: "left", marginTop: '10px'}}>
-                          <p>{subItem.questionTitle}</p>
-                          <ReactEcharts option={getOption(subIndex)}/>
-                          <Divider />
-                        </div>
-                        :
-                        null
-                      }
-                    </div>
-                  ))}
-                </Collapse.Panel>
-              </Collapse>
-            </div>
-          </>
+          <Button disabled={!obj.editable} type="primary" onClick={updateSurvey} loading={submitLoading}>更新</Button>
           :
           <Button disabled={!obj.editable} type="primary" onClick={submitSurvey} loading={submitLoading}>提交</Button>
         }
       </div>
+      {obj.showCount || obj.item.submitted ?
+        <div style={{textAlign: 'left', marginTop: '20px'}}>
+          <Collapse onChange={showCount}>
+            <Collapse.Panel key={1} header="查看统计结果">
+              {obj.item.questions.map((subItem, subIndex)=>(
+                <div key={subIndex.toString()}>
+                  {subItem.questionType==='singleChoice' || subItem.questionType==='multipleChoice'
+                  || subItem.questionType==='scale5' || subItem.questionType==='scale7' ?
+                    <div style={{textAlign: "left", marginTop: '10px'}}>
+                      <p>{subItem.questionTitle}</p>
+                      <ReactEcharts option={getOption(subIndex)}/>
+                      <Divider />
+                    </div>
+                    :
+                    null
+                  }
+                </div>
+              ))}
+            </Collapse.Panel>
+          </Collapse>
+        </div>
+        : null
+      }
     </div>
   )
 }

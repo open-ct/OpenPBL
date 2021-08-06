@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Card, PageHeader, Input, Upload, message, Button, BackTop} from "antd";
 import DocumentTitle from 'react-document-title';
-import {InboxOutlined} from '@ant-design/icons'
 
 import SectionApi from "../../../api/SectionApi";
 import "../CreateProject/Section/component/section-edit.less"
@@ -21,6 +20,7 @@ function PreviewSection(obj) {
   const [tasks, setTasks] = useState([])
   const [learning, setLearning] = useState(false)
   const [editable, setEditable] = useState(false)
+  const [showCount, setShowCount] = useState(false)
 
   const [minute, setMinute] = useState(0)
   const [second, setSecond] = useState(0)
@@ -33,8 +33,10 @@ function PreviewSection(obj) {
     getTasks()
   }, [])
   useEffect(()=>{
-    window.onbeforeunload = leave
-  }, [])
+    if (learning) {
+      window.onbeforeunload = leave
+    }
+  }, [learning])
   const leave = () => {
     if (timer != null) {
       clearTimeout(timer)
@@ -91,6 +93,7 @@ function PreviewSection(obj) {
         }
         setLearning(res.data.learning)
         setEditable(res.data.editable)
+        setShowCount(res.data.showCount)
 
         if (res.data.learning) {
           getTimer()
@@ -182,7 +185,7 @@ function PreviewSection(obj) {
               index={index}
               learning={learning}
               editable={editable}
-
+              showCount={showCount}
               setTaskItem={setTaskItem}
               getTasks={getTasks}
             />

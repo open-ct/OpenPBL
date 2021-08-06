@@ -95,6 +95,7 @@ function TaskCard(obj) {
           getTasks={obj.getTasks}
           learning={obj.learning}
           editable={obj.editable}
+          showCount={obj.showCount}
           setTaskItem={obj.setTaskItem}
         />
         : null

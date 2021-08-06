@@ -11,6 +11,7 @@ type TaskResponse struct {
 	Learning     bool                `json:"learning"`
 	Editable     bool                `json:"editable"`
 	TeacherScore bool                `json:"teacherScore"`
+	ShowCount    bool                `json:"showCount"`
 }
 
 // GetSectionTasksDetail
@@ -36,8 +37,12 @@ func (p *ProjectController) GetSectionTasksDetail() {
 		p.ServeJSON()
 		return
 	}
+	showCount := false
 	if user.Tag != "student" {
 		learning = false
+	}
+	if user.Tag == "teacher" {
+		showCount = true
 	}
 	uid := user.Username
 	pid := p.GetString(":projectId")
@@ -60,6 +65,7 @@ func (p *ProjectController) GetSectionTasksDetail() {
 			Tasks:    tasks,
 			Learning: learning,
 			Editable: learning,
+			ShowCount: showCount,
 		}
 	}
 	p.ServeJSON()
@@ -75,11 +81,9 @@ func (p *ProjectController) GetSectionTasksDetail() {
 func (p *ProjectController) GetProjectTasks() {
 	user := p.GetSessionUser()
 	if user == nil {
-		p.Data["json"] = TaskResponse{
-			Response: Response{
-				Code: 401,
-				Msg:  "请先登录",
-			},
+		p.Data["json"] = Response{
+			Code: 401,
+			Msg:  "请先登录",
 		}
 		p.ServeJSON()
 		return
