@@ -36,20 +36,20 @@ class EditOutline extends React.PureComponent {
           }}
         >
 
-            <PageHeader
-              className="site-page-header"
-              onBack={() => this.back()}
-              title="返回"
-              subTitle="我的项目"
-            />
-            <Card className="edit-card">
-              <Steps current={1} style={{marginLeft: '20px'}}>
-                <Step title="填写信息"/>
-                <Step title="添加章节" style={{marginRight: '20px'}}/>
-              </Steps>
-              <Divider/>
-              <OutlineEditPage pid={pid}/>
-            </Card>
+          <PageHeader
+            className="site-page-header"
+            onBack={() => this.back()}
+            title="返回"
+            subTitle="我的项目"
+          />
+          <Card className="edit-card">
+            <Steps current={1} style={{marginLeft: '20px'}}>
+              <Step title="填写信息"/>
+              <Step title="添加章节" style={{marginRight: '20px'}}/>
+            </Steps>
+            <Divider/>
+            <OutlineEditPage pid={pid}/>
+          </Card>
         </div>
       </DocumentTitle>
     )

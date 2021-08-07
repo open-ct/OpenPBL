@@ -1,13 +1,6 @@
 import React, {useState} from "react";
 import {Button, Input, message, Popconfirm, Radio} from "antd";
-import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  MinusOutlined, PlusOutlined,
-  SaveOutlined
-} from "@ant-design/icons";
+import {ArrowDownOutlined, ArrowUpOutlined, DeleteOutlined, EditOutlined, SaveOutlined} from "@ant-design/icons";
 
 function Scale(obj) {
   const [opt, setOpt] = useState(obj.item.questionOptions)
@@ -69,7 +62,7 @@ function Scale(obj) {
           </Popconfirm>
         </p>
       </div>
-    <br/><br/>
+      <br/><br/>
 
       {obj.editing ?
         <div style={{textAlign: "left", marginTop: '10px'}}>

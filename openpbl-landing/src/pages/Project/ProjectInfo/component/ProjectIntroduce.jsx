@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {RiseOutlined, UnorderedListOutlined} from '@ant-design/icons';
 import QueueAnim from 'rc-queue-anim';
-import { connect } from "react-redux";
 
 
 function ProjectIntroduce(obj) {

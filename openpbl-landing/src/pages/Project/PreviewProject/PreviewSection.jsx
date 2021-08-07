@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Card, PageHeader, Input, Upload, message, Button, BackTop} from "antd";
+import {BackTop, Card, PageHeader} from "antd";
 import DocumentTitle from 'react-document-title';
 
 import SectionApi from "../../../api/SectionApi";
@@ -16,7 +16,7 @@ function PreviewSection(obj) {
 
   const sid = obj.match.params.sid
   const pid = obj.match.params.pid
-  const [section, setSection] = useState({resource:{}})
+  const [section, setSection] = useState({resource: {}})
   const [tasks, setTasks] = useState([])
   const [learning, setLearning] = useState(false)
   const [editable, setEditable] = useState(false)
@@ -28,11 +28,11 @@ function PreviewSection(obj) {
   let s = 0
   let m = 0
 
-  useEffect(()=>{
+  useEffect(() => {
     getSectionDetail()
     getTasks()
   }, [])
-  useEffect(()=>{
+  useEffect(() => {
     if (learning) {
       window.onbeforeunload = leave
     }
@@ -46,22 +46,26 @@ function PreviewSection(obj) {
       learnSecond: s
     }
     StudentApi.updateLearnSection(pid, sid, data)
-      .then(res=>{
+      .then(res => {
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
     window.removeEventListener("onbeforeunload", leave)
   }
 
   const getSectionDetail = () => {
     SectionApi.getSectionDetail(sid, pid)
-      .then(res=>{
+      .then(res => {
         setSection(res.data.section)
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const getTasks = () => {
     TaskApi.getSectionTasks(sid, pid)
-      .then(res=>{
+      .then(res => {
         if (res.data.tasks === null) {
           setTasks([])
         } else {
@@ -81,7 +85,7 @@ function PreviewSection(obj) {
               }
             } else {
               t[i].choices = []
-              for (let j=0; j<t[i].questions.length; j++) {
+              for (let j = 0; j < t[i].questions.length; j++) {
                 t[i].choices.push({
                   choiceOptions: [],
                   choiceOrder: j
@@ -99,11 +103,13 @@ function PreviewSection(obj) {
           getTimer()
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const getTimer = () => {
     StudentApi.getLearnSection(pid, sid)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           setSecond(res.data.data.learnSecond)
           setMinute(res.data.data.learnMinute)
@@ -111,14 +117,16 @@ function PreviewSection(obj) {
           m = res.data.data.learnMinute
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
 
     setTimeout(count, 1000)
   }
   const count = () => {
     if (s === 30) {
       s = 0
-      m ++
+      m++
       setMinute(m)
     } else {
       s++
@@ -139,63 +147,64 @@ function PreviewSection(obj) {
   }
 
   return (
-  <DocumentTitle title="Project">
-    <div style={{backgroundColor: '#f2f4f5', minHeight: '100vh'}}>
-      <BackTop />
-      <PageHeader
-        className="site-page-header"
-        onBack={back}
-        title="返回"
-        subTitle="我的项目"
-      />
-      <div style={{ padding: '20px', margin: 'auto'}}>
-        <Card>
-          <h2 style={{ fontWeight: 'bold' }}>
-            {util.FormatSectionName(section.sectionName, section.chapterNumber, section.sectionNumber)}
-          </h2>
-          {learning ?
-            <span style={{float: 'right'}}>{minute}&nbsp;:&nbsp;{second}</span>
-            : null}
-        </Card>
-        <Card className="resource-card">
-          <div dangerouslySetInnerHTML={{__html: section.resource.content}}/>
-        </Card>
-        <Card className="resource-card">
-          <p className="card-title">文件资源</p>
-          <p>{section.resource.fileTitle}</p>
-          <p>{section.resource.fileIntroduce}</p>
-        </Card>
-        {tasks.map((item, index)=>(
-          <Card className="resource-card" key={index.toString()}>
-            <p className="card-title">学生任务
-              {item.submitted ?
-                <span className="submit-status" style={{color: 'green'}}>
+    <DocumentTitle title="Project">
+      <div style={{backgroundColor: '#f2f4f5', minHeight: '100vh'}}>
+        <BackTop/>
+        <PageHeader
+          className="site-page-header"
+          onBack={back}
+          title="返回"
+          subTitle="我的项目"
+        />
+        <div style={{padding: '20px', margin: 'auto'}}>
+          <Card>
+            <h2 style={{fontWeight: 'bold'}}>
+              {util.FormatSectionName(section.sectionName, section.chapterNumber, section.sectionNumber)}
+            </h2>
+            {learning ?
+              <span style={{float: 'right'}}>{minute}&nbsp;:&nbsp;{second}</span>
+              : null}
+          </Card>
+          <Card className="resource-card">
+            <div dangerouslySetInnerHTML={{__html: section.resource.content}}/>
+          </Card>
+          <Card className="resource-card">
+            <p className="card-title">文件资源</p>
+            <p>{section.resource.fileTitle}</p>
+            <p>{section.resource.fileIntroduce}</p>
+          </Card>
+          {tasks.map((item, index) => (
+            <Card className="resource-card" key={index.toString()}>
+              <p className="card-title">学生任务
+                {item.submitted ?
+                  <span className="submit-status" style={{color: 'green'}}>
                   权重占比&nbsp;{item.taskWeight}&nbsp;%&nbsp;&nbsp;已提交&nbsp;&nbsp;{util.FilterTime(item.submit.createAt)}
                 </span>
-                :
-                <span className="submit-status" style={{color: 'gray'}}>
+                  :
+                  <span className="submit-status" style={{color: 'gray'}}>
                   权重占比&nbsp;{item.taskWeight}&nbsp;%&nbsp;&nbsp;未提交
                 </span>
-              }
-            </p>
+                }
+              </p>
 
-            <TaskCard
-              pid={pid}
-              item={item}
-              index={index}
-              learning={learning}
-              editable={editable}
-              showCount={showCount}
-              setTaskItem={setTaskItem}
-              getTasks={getTasks}
-            />
-          </Card>
-        ))
-        }
-      </div><br/>
-    </div>
-  </DocumentTitle>
-)
+              <TaskCard
+                pid={pid}
+                item={item}
+                index={index}
+                learning={learning}
+                editable={editable}
+                showCount={showCount}
+                setTaskItem={setTaskItem}
+                getTasks={getTasks}
+              />
+            </Card>
+          ))
+          }
+        </div>
+        <br/>
+      </div>
+    </DocumentTitle>
+  )
 }
 
 export default PreviewSection

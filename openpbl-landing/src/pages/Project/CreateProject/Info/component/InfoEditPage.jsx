@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {Button, Col, Input, message, Row, Select, Upload} from "antd";
-import {Link} from 'react-router-dom'
 import ImgCrop from 'antd-img-crop';
 import '../../Outline/index.less'
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
@@ -113,7 +112,7 @@ function InfoEditPage(obj) {
       .then((res) => {
         if (res.data.code === 200) {
           message.success(res.data.msg)
-          setTimeout(()=>{
+          setTimeout(() => {
             window.location.href = `/project/${pid}/outline/edit`
           }, 200)
         }

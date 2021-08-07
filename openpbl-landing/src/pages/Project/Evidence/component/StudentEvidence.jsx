@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Collapse, Divider, Input, List, Progress, message, InputNumber, Tooltip, Button} from "antd";
+import {Button, Collapse, Divider, InputNumber, List, message, Progress, Tooltip} from "antd";
 
 import TaskApi from "../../../../api/TaskApi";
 import ChapterApi from "../../../../api/ChapterApi";
@@ -85,7 +85,7 @@ function StudentEvidence(obj) {
   const saveScore = (index) => {
     tasks[index].submit.scored = true
     SubmitApi.updateSubmit(pid, tasks[index].id, tasks[index].submit.id, tasks[index].submit)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           message.success(res.data.msg)
           getTasks()
@@ -93,7 +93,9 @@ function StudentEvidence(obj) {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const getScore = (score, weight) => {
     return (score * weight / 100).toFixed(2)
@@ -187,16 +189,17 @@ function StudentEvidence(obj) {
             {teacherScore ?
               <div>
                 <span style={{float: 'right'}}>
-                  <Button type="primary" disabled={!item.submitted} onClick={e=>saveScore(index)}>保存</Button>
+                  <Button type="primary" disabled={!item.submitted} onClick={e => saveScore(index)}>保存</Button>
                 </span>
                 <span style={{float: 'right', marginRight: '10px'}}>
-                  <InputNumber value={item.submit.score} disabled={!item.submitted} onChange={v=>changeScore(v, index)} min={0} max={100} /> / 100
+                  <InputNumber value={item.submit.score} disabled={!item.submitted}
+                               onChange={v => changeScore(v, index)} min={0} max={100}/> / 100
                 </span>
                 <Tooltip title="满分为100分，系统自动根据权重计算本题实际分数">
                   <span style={{float: 'right', marginRight: '10px'}}><p>教师评分:</p></span>
                 </Tooltip>
                 <br/>
-                <Divider />
+                <Divider/>
               </div>
               : null
             }

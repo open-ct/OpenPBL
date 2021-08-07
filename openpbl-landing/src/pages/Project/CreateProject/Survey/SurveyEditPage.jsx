@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Affix, Card, Divider, Layout, Menu, message, PageHeader, Radio} from "antd";
+import {Affix, Card, Divider, Layout, Menu, message, PageHeader} from "antd";
 import DocumentTitle from 'react-document-title';
 
 import SurveyApi from "../../../../api/SurveyApi";

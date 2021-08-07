@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Menu, Progress, message} from 'antd'
+import {Menu, message, Progress} from 'antd'
 import QueueAnim from 'rc-queue-anim';
 
 import ChapterApi from "../../../../api/ChapterApi";
@@ -26,7 +26,9 @@ function ProjectOutline(obj) {
           setChapters(res.data.chapters)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const gotoLearning = (item, subItem) => {
     if (!obj.project.learning && type === 'student') {
@@ -45,7 +47,8 @@ function ProjectOutline(obj) {
           defaultOpenKeys={[]}
           mode="inline"
         >{chapters.map((item, index) => (
-          <SubMenu style={{fontSize: '2.7vh'}} key={index.toString()} title={util.FormatChapterName(item.chapterName, item.chapterNumber)}>
+          <SubMenu style={{fontSize: '2.7vh'}} key={index.toString()}
+                   title={util.FormatChapterName(item.chapterName, item.chapterNumber)}>
             {(item.sections === null || item.sections === undefined) ? null :
               item.sections.map((subItem, subIndex) => (
                 <Menu.Item key={index.toString() + subIndex.toString()} onClick={e => gotoLearning(item, subItem)}>
@@ -58,7 +61,7 @@ function ProjectOutline(obj) {
                           width={35}
                           strokeWidth={10}
                           type="circle"
-                          percent={((subItem.learnMinute+subItem.learnSecond/60)/subItem.sectionMinute*100).toFixed(1)}
+                          percent={((subItem.learnMinute + subItem.learnSecond / 60) / subItem.sectionMinute * 100).toFixed(1)}
                         />
                       </span>
                       <span style={{float: 'right', marginRight: '20px'}}>
@@ -67,7 +70,7 @@ function ProjectOutline(obj) {
                         {subItem.sectionMinute}
                       </span>
                     </>
-                    : null }
+                    : null}
                 </Menu.Item>
               ))
             }

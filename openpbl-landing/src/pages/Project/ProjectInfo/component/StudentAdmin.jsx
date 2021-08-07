@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import QueueAnim from 'rc-queue-anim';
-import {Avatar, Button, Popconfirm, Table, message, Pagination, Tooltip} from "antd";
-import {DeleteOutlined,ArrowRightOutlined} from "@ant-design/icons"
+import {Avatar, Button, message, Pagination, Popconfirm, Table} from "antd";
+import {DeleteOutlined} from "@ant-design/icons"
 
 import ProjectApi from "../../../../api/ProjectApi";
 import util from "../../component/Util"
@@ -28,11 +28,13 @@ function StudentAdmin(obj) {
           setTotal(res.data.count)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const removeStudent = (action, record) => {
     ProjectApi.removeStudent(record.projectId, record.studentId)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           message.success(res.data.msg)
           updateStudentList()
@@ -40,7 +42,9 @@ function StudentAdmin(obj) {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
 
   return (
@@ -49,47 +53,47 @@ function StudentAdmin(obj) {
         <Table
           dataSource={students}
           columns={[
-              {
-                title: '头像',
-                dataIndex: 'avatar',
-                key: 'avatar',
-                render: avatar => (
-                  <Avatar src={avatar} />
-                )
-              },
-              {
-                title: '学生',
-                dataIndex: 'name',
-                key: 'name'
-              },
-              {
-                title: '加入时间',
-                dataIndex: 'joinTime',
-                key: 'joinTime',
-                render: joinTime => (
-                  <span>{util.FilterTime(joinTime)}</span>
-                )
-              },
+            {
+              title: '头像',
+              dataIndex: 'avatar',
+              key: 'avatar',
+              render: avatar => (
+                <Avatar src={avatar}/>
+              )
+            },
+            {
+              title: '学生',
+              dataIndex: 'name',
+              key: 'name'
+            },
+            {
+              title: '加入时间',
+              dataIndex: 'joinTime',
+              key: 'joinTime',
+              render: joinTime => (
+                <span>{util.FilterTime(joinTime)}</span>
+              )
+            },
             {
               title: '',
               dataIndex: 'showEvidence',
               render: (text, item, index) => (
                 <Link to={`/project/${pid}/student/${item.studentId}/evidence`}>
-                  <Button type="text" >查看学习证据</Button>
+                  <Button type="text">查看学习证据</Button>
                 </Link>
               )
             },
-              {
-                title: '操作',
-                dataIndex: 'action',
-                key: 'action',
-                render: (action, item) => (
-                    <Popconfirm title="确定移除学生？" onConfirm={e=>removeStudent(action, item)}>
-                      <Button shape="circle" type="text" style={{color: 'red'}} icon={<DeleteOutlined/>}/>
-                    </Popconfirm>
-                )
-              },
-            ]}
+            {
+              title: '操作',
+              dataIndex: 'action',
+              key: 'action',
+              render: (action, item) => (
+                <Popconfirm title="确定移除学生？" onConfirm={e => removeStudent(action, item)}>
+                  <Button shape="circle" type="text" style={{color: 'red'}} icon={<DeleteOutlined/>}/>
+                </Popconfirm>
+              )
+            },
+          ]}
           pagination={false}
         />
         <Pagination

@@ -5,8 +5,7 @@ import 'echarts/lib/component/title';
 import 'echarts/lib/component/legend';
 import 'echarts/lib/component/markPoint';
 import ReactEcharts from 'echarts-for-react';
-import QueueAnim from 'rc-queue-anim';
-import {Button, Card, Col, Divider, InputNumber, Row, Table, message, Menu, Input, List, Progress, BackTop} from "antd";
+import {Button, Col, Divider, InputNumber, List, Menu, message, Row, Table} from "antd";
 
 import TaskApi from "../../../../api/TaskApi";
 import ProjectApi from "../../../../api/ProjectApi";
@@ -38,7 +37,7 @@ function ProjectEvaluation(obj) {
   }, []);
   const getTasks = () => {
     TaskApi.getProjectTasks(pid)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           if (res.data.data != null) {
             setTasks(res.data.data)
@@ -48,7 +47,9 @@ function ProjectEvaluation(obj) {
           }
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const getChapters = () => {
     ChapterApi.getProjectChapters(pid)
@@ -61,18 +62,20 @@ function ProjectEvaluation(obj) {
           setOpenAllKeys(res.data.chapters.length)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const setOpenAllKeys = n => {
     let keys = []
-    for (let i=0; i<n; i++) {
+    for (let i = 0; i < n; i++) {
       keys.push(i.toString())
     }
     setDefaultOpenedKeys(keys)
   }
   const checkWeight = () => {
     let total = learnMinuteWeight
-    for (let i=0; i<tasks.length; i++) {
+    for (let i = 0; i < tasks.length; i++) {
       total = total + tasks[i].taskWeight
     }
     if (total === 100) {
@@ -93,18 +96,20 @@ function ProjectEvaluation(obj) {
   }
   const saveMinute = () => {
     let sections = []
-    for (let i=0; i<chapters.length; i++) {
+    for (let i = 0; i < chapters.length; i++) {
       sections = sections.concat(chapters[i].sections)
     }
     let data = JSON.stringify(sections)
     SectionApi.updateSectionsMinute(pid, {sections: data})
-      .then(res=>{
+      .then(res => {
         setEditMinute(false)
         if (res.data.code === 200) {
           getChapters()
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const saveWeight = () => {
     if (checkWeight()) {
@@ -113,14 +118,16 @@ function ProjectEvaluation(obj) {
         tasks: JSON.stringify(tasks)
       }
       ProjectApi.updateWeight(pid, data)
-        .then(res=>{
+        .then(res => {
           setEditWeight(false)
           if (res.data.code === 200) {
             getTasks()
             obj.loadProjectDetail()
           }
         })
-        .catch(e=>{console.log(e)})
+        .catch(e => {
+          console.log(e)
+        })
     }
   }
   const cancel1 = () => {
@@ -147,7 +154,7 @@ function ProjectEvaluation(obj) {
     let d = [
       {value: learnMinuteWeight, name: '学习时长'}
     ]
-    for (let i=0; i<tasks.length; i++) {
+    for (let i = 0; i < tasks.length; i++) {
       d.push({
         value: tasks[i].taskWeight,
         name: tasks[i].taskTitle,
@@ -182,7 +189,8 @@ function ProjectEvaluation(obj) {
           <>
             {editWeight ?
               <>
-                <InputNumber onChange={v=>changeTaskWeight(v, index)} value={item.taskWeight} min={0} max={100}/>&nbsp;&nbsp;%
+                <InputNumber onChange={v => changeTaskWeight(v, index)} value={item.taskWeight} min={0}
+                             max={100}/>&nbsp;&nbsp;%
               </>
               :
               <span>{text}&nbsp;&nbsp;%</span>
@@ -214,105 +222,106 @@ function ProjectEvaluation(obj) {
     ],
   });
   return (
-      <div style={{textAlign: 'left', marginBottom: '30px'}} key="1">
-        <ReactEcharts option={getOptions()}/>
-        <div>
-          <Divider orientation="left">
-            <p className="evidence-title">章节学习时长</p>
-          </Divider>
-          {!published ?
-            <div style={{float: 'right'}}>
-              {editMinute ?
-                <>
-                  <Button onClick={cancel1} style={{marginRight: '20px'}}>取消</Button>
-                  <Button onClick={saveMinute} type="primary">保存</Button>
-                </>
-                :
-                <Button onClick={edit1}>编辑时长</Button>
-              }
-            </div>
-            : null
-          }
-        </div>
-
-
-        {chapters.map((item, index) => (
-          <div key={index.toString()} style={{textAlign: 'left'}}>
-            <p style={{fontWeight: 'bold', fontSize: '16px'}}>
-              {util.FormatChapterName(item.chapterName, item.chapterNumber)}
-            </p>
-            {(item.sections === null || item.sections === undefined) ?
-              null
-              :
+    <div style={{textAlign: 'left', marginBottom: '30px'}} key="1">
+      <ReactEcharts option={getOptions()}/>
+      <div>
+        <Divider orientation="left">
+          <p className="evidence-title">章节学习时长</p>
+        </Divider>
+        {!published ?
+          <div style={{float: 'right'}}>
+            {editMinute ?
               <>
-                <List
-                  size="large"
-                  dataSource={item.sections}
-                  renderItem={
-                    (item, subIndex) => (
-                      <List.Item>
-                        {util.FormatSectionName(item.sectionName, item.chapterNumber, item.sectionNumber)}
-                        {editMinute ?
-                          <div style={{float: 'right'}}>
-                            学习时长不少于&nbsp;&nbsp;
-                            <InputNumber value={item.sectionMinute} onChange={v=>changeLearnMinute(v, index, subIndex)} min={0}/>
-                            &nbsp;&nbsp;分钟
-                          </div>
-                          :
-                          <div style={{float: 'right'}}>
-                            学习时长不少于&nbsp;&nbsp;{item.sectionMinute}&nbsp;&nbsp;分钟
-                          </div>
-                        }
-
-                      </List.Item>
-                    )
-                  }
-                /><br/>
+                <Button onClick={cancel1} style={{marginRight: '20px'}}>取消</Button>
+                <Button onClick={saveMinute} type="primary">保存</Button>
               </>
+              :
+              <Button onClick={edit1}>编辑时长</Button>
             }
           </div>
-        ))}
-        <div>
-          <Divider orientation="left">
-            <p className="evidence-title">权重占比</p>
-          </Divider>
-          {!published ?
-            <div style={{float: 'right'}}>
-              {editWeight ?
-                <>
-                  <Button onClick={cancel2} style={{marginRight: '20px'}}>取消</Button>
-                  <Button onClick={saveWeight} type="primary">保存</Button>
-                </>
-                :
-                <Button onClick={edit2}>编辑权重</Button>
-              }
-            </div>
-            : null
+          : null
+        }
+      </div>
+
+
+      {chapters.map((item, index) => (
+        <div key={index.toString()} style={{textAlign: 'left'}}>
+          <p style={{fontWeight: 'bold', fontSize: '16px'}}>
+            {util.FormatChapterName(item.chapterName, item.chapterNumber)}
+          </p>
+          {(item.sections === null || item.sections === undefined) ?
+            null
+            :
+            <>
+              <List
+                size="large"
+                dataSource={item.sections}
+                renderItem={
+                  (item, subIndex) => (
+                    <List.Item>
+                      {util.FormatSectionName(item.sectionName, item.chapterNumber, item.sectionNumber)}
+                      {editMinute ?
+                        <div style={{float: 'right'}}>
+                          学习时长不少于&nbsp;&nbsp;
+                          <InputNumber value={item.sectionMinute} onChange={v => changeLearnMinute(v, index, subIndex)}
+                                       min={0}/>
+                          &nbsp;&nbsp;分钟
+                        </div>
+                        :
+                        <div style={{float: 'right'}}>
+                          学习时长不少于&nbsp;&nbsp;{item.sectionMinute}&nbsp;&nbsp;分钟
+                        </div>
+                      }
+
+                    </List.Item>
+                  )
+                }
+              /><br/>
+            </>
           }
         </div>
-        <Divider />
-        <Row style={{padding: '15px'}} gutter={[10, 10]}>
-          <Col span={8}>
-            <span style={{fontWeight: 'bold'}}>学习时长</span></Col>
-          <Col span={8}>
-          </Col>
-          <Col span={8}>
-            <span>权重&nbsp;&nbsp;</span>
+      ))}
+      <div>
+        <Divider orientation="left">
+          <p className="evidence-title">权重占比</p>
+        </Divider>
+        {!published ?
+          <div style={{float: 'right'}}>
             {editWeight ?
-              <span><InputNumber value={learnMinuteWeight} onChange={changeLearnMinuteWeight} min={0}/></span>
+              <>
+                <Button onClick={cancel2} style={{marginRight: '20px'}}>取消</Button>
+                <Button onClick={saveWeight} type="primary">保存</Button>
+              </>
               :
-              <span>{obj.project.learnMinuteWeight}</span>
+              <Button onClick={edit2}>编辑权重</Button>
             }
-            &nbsp;&nbsp;%
-          </Col>
-        </Row>
-        <Divider />
-        <Table
-          columns={getColumns()}
-          dataSource={tasks}
-          pagination={false}
-        />
+          </div>
+          : null
+        }
       </div>
+      <Divider/>
+      <Row style={{padding: '15px'}} gutter={[10, 10]}>
+        <Col span={8}>
+          <span style={{fontWeight: 'bold'}}>学习时长</span></Col>
+        <Col span={8}>
+        </Col>
+        <Col span={8}>
+          <span>权重&nbsp;&nbsp;</span>
+          {editWeight ?
+            <span><InputNumber value={learnMinuteWeight} onChange={changeLearnMinuteWeight} min={0}/></span>
+            :
+            <span>{obj.project.learnMinuteWeight}</span>
+          }
+          &nbsp;&nbsp;%
+        </Col>
+      </Row>
+      <Divider/>
+      <Table
+        columns={getColumns()}
+        dataSource={tasks}
+        pagination={false}
+      />
+    </div>
   );
 }
 

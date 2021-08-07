@@ -273,10 +273,14 @@ function OutlineEditPage(obj) {
               {util.FormatChapterName(item.chapterName, item.chapterNumber)}
               <span style={{float: 'right', marginRight: '20px'}}>
                 <Button shape="circle" type="text" onClick={e => modifyChapter(e, item, index)} icon={<EditOutlined/>}/>
-                <Button shape="circle" type="text" icon={<ArrowUpOutlined/>} onClick={e => exchangeChapter(e, index - 1, index)}/>
-                <Button shape="circle" type="text" icon={<ArrowDownOutlined/>} onClick={e => exchangeChapter(e, index, index + 1)}/>
-                <Popconfirm title="确定删除章节？" onConfirm={e => deleteChapter(e, item, index)} onCancel={cancel} placement="topLeft">
-                  <Button onClick={del} shape="circle" type="text" icon={<DeleteOutlined/>} style={{color: 'red', marginLeft: '20px'}}/>
+                <Button shape="circle" type="text" icon={<ArrowUpOutlined/>}
+                        onClick={e => exchangeChapter(e, index - 1, index)}/>
+                <Button shape="circle" type="text" icon={<ArrowDownOutlined/>}
+                        onClick={e => exchangeChapter(e, index, index + 1)}/>
+                <Popconfirm title="确定删除章节？" onConfirm={e => deleteChapter(e, item, index)} onCancel={cancel}
+                            placement="topLeft">
+                  <Button onClick={del} shape="circle" type="text" icon={<DeleteOutlined/>}
+                          style={{color: 'red', marginLeft: '20px'}}/>
                 </Popconfirm>
               </span>
             </div>
@@ -291,12 +295,17 @@ function OutlineEditPage(obj) {
                     <Button type="text">编辑资源</Button>
                   </Link>
 
-                  <Button shape="circle" type="text" onClick={e => modifySection(subItem, index, subIndex)} icon={<EditOutlined/>}/>
-                  <Button shape="circle" type="text" icon={<ArrowUpOutlined/>} onClick={e => exchangeSection(index, subIndex - 1, subIndex)}/>
-                  <Button shape="circle" type="text" icon={<ArrowDownOutlined/>} onClick={e => exchangeSection(index, subIndex, subIndex + 1)}/>
+                  <Button shape="circle" type="text" onClick={e => modifySection(subItem, index, subIndex)}
+                          icon={<EditOutlined/>}/>
+                  <Button shape="circle" type="text" icon={<ArrowUpOutlined/>}
+                          onClick={e => exchangeSection(index, subIndex - 1, subIndex)}/>
+                  <Button shape="circle" type="text" icon={<ArrowDownOutlined/>}
+                          onClick={e => exchangeSection(index, subIndex, subIndex + 1)}/>
 
-                  <Popconfirm title="确定删除小节？" onConfirm={e => deleteSection(subItem, index, subIndex)} placement="topLeft">
-                    <Button shape="circle" type="text" icon={<DeleteOutlined/>} style={{color: 'red', marginLeft: '20px'}}/>
+                  <Popconfirm title="确定删除小节？" onConfirm={e => deleteSection(subItem, index, subIndex)}
+                              placement="topLeft">
+                    <Button shape="circle" type="text" icon={<DeleteOutlined/>}
+                            style={{color: 'red', marginLeft: '20px'}}/>
                   </Popconfirm>
 
                 </span>

@@ -9,7 +9,7 @@ function TaskCard(obj) {
 
   const updateComment = (item, index) => {
     SubmitApi.updateSubmit(obj.pid, item.id, item.submit.id, item.submit)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           message.success(res.data.msg)
           obj.getTasks()
@@ -17,12 +17,14 @@ function TaskCard(obj) {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const submitComment = (item, index) => {
     item.submit.submitType = item.taskType
     SubmitApi.createSubmit(obj.pid, item.id, item.submit)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           message.success(res.data.msg)
           obj.getTasks()
@@ -30,7 +32,9 @@ function TaskCard(obj) {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const changeComment = (v, index) => {
     obj.item.submit.submitContent = v.target.value
@@ -42,7 +46,7 @@ function TaskCard(obj) {
     multiple: true,
     action: '',
     onChange(info) {
-      const { status } = info.file;
+      const {status} = info.file;
       if (status !== 'uploading') {
         console.log(info.file, info.fileList);
       }
@@ -65,7 +69,7 @@ function TaskCard(obj) {
         <div>
           <Upload.Dragger {...props} disabled={!obj.editable}>
             <p className="ant-upload-drag-icon">
-              <InboxOutlined />
+              <InboxOutlined/>
             </p>
             <p className="ant-upload-text">点击或拖动文件上传</p>
             <p className="ant-upload-hint">hint
@@ -76,12 +80,14 @@ function TaskCard(obj) {
       }
       {obj.item.taskType === 'comment' ?
         <div>
-          <Input.TextArea value={obj.item.submit.submitContent} onChange={v=>changeComment(v, obj.index)} />
+          <Input.TextArea value={obj.item.submit.submitContent} onChange={v => changeComment(v, obj.index)}/>
           <div style={{textAlign: 'right', marginTop: '10px'}}>
             {obj.item.submitted ?
-              <Button disabled={!obj.editable} type="primary" onClick={e=>updateComment(obj.item, obj.index)}>更新</Button>
+              <Button disabled={!obj.editable} type="primary"
+                      onClick={e => updateComment(obj.item, obj.index)}>更新</Button>
               :
-              <Button disabled={!obj.editable} type="primary" onClick={e => submitComment(obj.item, obj.index)}>提交</Button>
+              <Button disabled={!obj.editable} type="primary"
+                      onClick={e => submitComment(obj.item, obj.index)}>提交</Button>
             }
           </div>
         </div>
@@ -100,7 +106,7 @@ function TaskCard(obj) {
         />
         : null
       }
-      </>
+    </>
   )
 }
 

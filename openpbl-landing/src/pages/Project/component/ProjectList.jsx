@@ -45,7 +45,7 @@ function ProjectList(obj) {
 
   const updateProjectList = (p, size, subject, skill, text) => {
     let q = {
-      page: p-1,
+      page: p - 1,
       size: size,
       orderBy: 'create_at',
       orderType: 'desc',
@@ -164,7 +164,8 @@ function ProjectList(obj) {
                       description={
                         <div>
                           {item.subjects === '' ? '无' : item.subjects}
-                          {item.learning ? <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>学习中</Tag> : null}
+                          {item.learning ?
+                            <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>学习中</Tag> : null}
                           {item.teacherId === uid && type === 'teacher' ?
                             <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>我的项目</Tag> : null}
                         </div>

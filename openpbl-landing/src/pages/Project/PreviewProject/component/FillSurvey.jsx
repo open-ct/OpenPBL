@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {Button, Checkbox, Divider, Input, Radio, message, Collapse} from "antd";
+import React, {useState} from "react";
+import {Button, Checkbox, Collapse, Divider, Input, message, Radio} from "antd";
 
 import Question from "../../CreateProject/Survey/component/Question"
 import "../preview.less"
@@ -17,13 +17,13 @@ function FillSurvey(obj) {
     obj.item.submit.submitType = 'survey'
     let data = Object.assign({}, obj.item.submit)
     let c = [...obj.item.choices]
-    for (let i=0; i<c.length; i++) {
+    for (let i = 0; i < c.length; i++) {
       c[i].questionId = obj.item.questions[i].id
       c[i].choiceOptions = c[i].choiceOptions.toString()
     }
     data['choices'] = JSON.stringify(c)
     SubmitApi.createSubmit(obj.pid, obj.item.id, data)
-      .then(res=>{
+      .then(res => {
         setSubmitLoading(false)
         if (res.data.code === 200) {
           message.success(res.data.msg)
@@ -32,7 +32,9 @@ function FillSurvey(obj) {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   const updateSurvey = e => {
     setSubmitLoading(true)
@@ -40,12 +42,12 @@ function FillSurvey(obj) {
 
     let data = Object.assign({}, obj.item.submit)
     let c = [...obj.item.choices]
-    for (let i=0; i<c.length; i++) {
+    for (let i = 0; i < c.length; i++) {
       c[i].choiceOptions = c[i].choiceOptions.toString()
     }
     data['choices'] = JSON.stringify(c)
     SubmitApi.updateSubmit(obj.pid, obj.item.id, obj.item.submit.id, data)
-      .then(res=>{
+      .then(res => {
         setSubmitLoading(false)
         if (res.data.code === 200) {
           message.success(res.data.msg)
@@ -54,7 +56,9 @@ function FillSurvey(obj) {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
 
   }
   const changeCheckBox = (v, subIndex) => {
@@ -106,14 +110,15 @@ function FillSurvey(obj) {
   return (
     <div className="survey">
       <h2 style={{textAlign: 'center'}}>{obj.item.survey.surveyTitle}</h2>
-      <Divider />
+      <Divider/>
       <div style={{marginLeft: '20px', marginRight: '20px'}}>
-        {obj.item.questions.map((subItem, subIndex)=>(
+        {obj.item.questions.map((subItem, subIndex) => (
           <div key={subIndex.toString()}>
-            {subItem.questionType==='singleChoice' || subItem.questionType==='scale5' || subItem.questionType==='scale7' ?
+            {subItem.questionType === 'singleChoice' || subItem.questionType === 'scale5' || subItem.questionType === 'scale7' ?
               <div style={{textAlign: "left", marginTop: '10px'}}>
                 <p>{subItem.questionTitle}</p>
-                <Radio.Group value={obj.item.choices[subIndex].choiceOptions[0]} onChange={v=>changeRadio(v, subIndex)}>
+                <Radio.Group value={obj.item.choices[subIndex].choiceOptions[0]}
+                             onChange={v => changeRadio(v, subIndex)}>
                   {subItem.questionOptions.map((optItem, optIndex) => (
                     <div style={{marginTop: '10px'}} key={optIndex.toString()}>
                       <Radio value={optIndex.toString()}>
@@ -124,10 +129,11 @@ function FillSurvey(obj) {
                 </Radio.Group>
               </div>
               : null}
-            {subItem.questionType==='multipleChoice' ?
+            {subItem.questionType === 'multipleChoice' ?
               <div style={{textAlign: "left", marginTop: '10px'}}>
                 <p>{subItem.questionTitle}</p>
-                <Checkbox.Group value={obj.item.choices[subIndex].choiceOptions} onChange={v=>changeCheckBox(v, subIndex)}>
+                <Checkbox.Group value={obj.item.choices[subIndex].choiceOptions}
+                                onChange={v => changeCheckBox(v, subIndex)}>
                   {subItem.questionOptions.map((optItem, optIndex) => (
                     <div key={optIndex.toString()} style={{marginTop: '10px'}}>
                       <Checkbox value={optIndex.toString()}>
@@ -138,14 +144,16 @@ function FillSurvey(obj) {
                 </Checkbox.Group>
               </div>
               : null}
-            {subItem.questionType==='blankFill' ?
+            {subItem.questionType === 'blankFill' ?
               <div style={{textAlign: "left", marginTop: '10px'}}>
                 <p>{subItem.questionTitle}</p>
                 {subItem.questionOptions.map((optItem, optIndex) => (
                   <div style={{marginTop: '10px'}} key={optIndex.toString()}>
                     {optItem === blank ?
                       <span style={{float: 'left', margin: '5px'}}>
-                        <Input value={obj.item.choices[subIndex].choiceOptions[optIndex]} onChange={v=>changeBlankFill(v, subIndex, optIndex)} style={{borderBottom: '1.5px solid black'}} bordered={false}/>
+                        <Input value={obj.item.choices[subIndex].choiceOptions[optIndex]}
+                               onChange={v => changeBlankFill(v, subIndex, optIndex)}
+                               style={{borderBottom: '1.5px solid black'}} bordered={false}/>
                       </span>
                       :
                       <span style={{float: 'left', margin: '5px'}}>{optItem}</span>}
@@ -154,10 +162,11 @@ function FillSurvey(obj) {
               </div>
               : null}
 
-            {subItem.questionType==='briefAnswer' ?
+            {subItem.questionType === 'briefAnswer' ?
               <div style={{textAlign: "left", marginTop: '10px'}}>
                 <p>{subItem.questionOptions[0]}</p>
-                <Input.TextArea value={obj.item.choices[subIndex].choiceOptions[0]} onChange={v=>changeBriefAnswer(v, subIndex)}/>
+                <Input.TextArea value={obj.item.choices[subIndex].choiceOptions[0]}
+                                onChange={v => changeBriefAnswer(v, subIndex)}/>
               </div>
               : null}
 
@@ -176,14 +185,14 @@ function FillSurvey(obj) {
         <div style={{textAlign: 'left', marginTop: '20px'}}>
           <Collapse onChange={openCount}>
             <Collapse.Panel key={1} header="查看统计结果">
-              {obj.item.questions.map((subItem, subIndex)=>(
+              {obj.item.questions.map((subItem, subIndex) => (
                 <div key={subIndex.toString()}>
-                  {subItem.questionType==='singleChoice' || subItem.questionType==='multipleChoice'
-                  || subItem.questionType==='scale5' || subItem.questionType==='scale7' ?
+                  {subItem.questionType === 'singleChoice' || subItem.questionType === 'multipleChoice'
+                  || subItem.questionType === 'scale5' || subItem.questionType === 'scale7' ?
                     <div style={{textAlign: "left", marginTop: '10px'}}>
                       <p>{subItem.questionTitle}</p>
                       <ReactEcharts option={getOption(subIndex)}/>
-                      <Divider />
+                      <Divider/>
                     </div>
                     :
                     null

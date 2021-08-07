@@ -1,6 +1,6 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
-import {Avatar, Button, Card, Col, Divider, Image, Menu, PageHeader, Popconfirm, Row, message, BackTop} from 'antd';
+import {Avatar, BackTop, Button, Card, Col, Divider, Image, Menu, message, PageHeader, Popconfirm, Row} from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import localStorage from 'localStorage';
 import {Link} from 'react-router-dom';
@@ -41,6 +41,7 @@ class ProjectInfo extends React.PureComponent {
     this.loadProjectDetail()
     this.loadLastLearn()
   }
+
   loadProjectDetail = () => {
     ProjectApi.getProjectDetail(this.state.pid)
       .then((res) => {
@@ -55,14 +56,16 @@ class ProjectInfo extends React.PureComponent {
   }
   loadLastLearn = () => {
     StudentApi.getLastLearnSection(this.state.pid)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           this.setState({
             lastLearn: res.data.data
           })
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   loadTeacherInfo = (teacherId) => {
     getUser(teacherId)
@@ -73,11 +76,13 @@ class ProjectInfo extends React.PureComponent {
           })
         }
       })
-      .catch((e)=>{console.log(e)})
+      .catch((e) => {
+        console.log(e)
+      })
   }
 
   handleClick = (e) => {
-    if (this.state.type==='student' && e.key === "student-evidence" && !this.state.project.learning) {
+    if (this.state.type === 'student' && e.key === "student-evidence" && !this.state.project.learning) {
       message.warn("请先加入学习")
       return
     }
@@ -120,7 +125,7 @@ class ProjectInfo extends React.PureComponent {
   }
   closeProject = e => {
     ProjectApi.closeProject(this.state.pid)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           let p = Object.assign({}, this.state.project)
           p.closed = true
@@ -131,7 +136,9 @@ class ProjectInfo extends React.PureComponent {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   exitProject = e => {
     StudentApi.exitProject(this.state.pid)
@@ -142,18 +149,22 @@ class ProjectInfo extends React.PureComponent {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   deleteProject = e => {
     ProjectApi.deleteProject(this.state.pid)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           window.location.href = "/my-project"
         } else {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
 
   setProject = project => {
@@ -185,15 +196,15 @@ class ProjectInfo extends React.PureComponent {
               结束项目
             </Button>
           </Popconfirm>
-          : null }
+          : null}
         {!project.published ?
           <div>
             <Popconfirm
-                title="确定发布项目?"
-                placement="topRight"
-                onConfirm={this.publishProject}
-                okText="确定"
-                cancelText="取消"
+              title="确定发布项目?"
+              placement="topRight"
+              onConfirm={this.publishProject}
+              okText="确定"
+              cancelText="取消"
             >
               <Button
                 shape="round"
@@ -209,7 +220,7 @@ class ProjectInfo extends React.PureComponent {
                 size="middle"
                 style={{margin: '5px'}}
               >
-              编辑项目
+                编辑项目
               </Button>
             </Link>
             <Popconfirm
@@ -225,7 +236,7 @@ class ProjectInfo extends React.PureComponent {
                 icon={<DeleteOutlined/>}
               />
             </Popconfirm>
-          </div> : null }
+          </div> : null}
         {project.closed ?
           <div>
             <Popconfirm
@@ -242,7 +253,7 @@ class ProjectInfo extends React.PureComponent {
               />
             </Popconfirm>
           </div>
-          : null }
+          : null}
       </div>
     )
     const studentBt = (
@@ -267,7 +278,7 @@ class ProjectInfo extends React.PureComponent {
               >继续学习
               </Button>
             </Link>
-            <Popconfirm title="确认退出项目？" onConfirm={this.exitProject} placement="topRight" >
+            <Popconfirm title="确认退出项目？" onConfirm={this.exitProject} placement="topRight">
               <Button
                 type="danger"
                 shape="round"
@@ -293,7 +304,7 @@ class ProjectInfo extends React.PureComponent {
     return (
       <DocumentTitle title="Project">
         <div style={{backgroundColor: '#f2f4f5'}}>
-          <BackTop />
+          <BackTop/>
           <div
             style={{
               width: '100%',
@@ -306,87 +317,87 @@ class ProjectInfo extends React.PureComponent {
             }}
           >
             <PageHeader
-                className="site-page-header"
-                onBack={() => this.back()}
-                title="返回"
-                subTitle="项目详情"
-              />
-              <QueueAnim>
-                <div key="1">
-                  <Card hoverable style={{textAlign: 'left'}}>
-                    <Row>
-                      <Col span={6}>
-                        <Image
-                          alt="example"
-                          src={project.image}
-                          placeholder
-                          preview={false}
-                        />
-                      </Col>
-                      <Col span={1}>&nbsp;</Col>
-                      <Col flex="auto">
-                        <p style={{fontSize: '20px'}}>{project.projectTitle}</p>
-                        <p
-                          style={{fontSize: '14px', color: 'gray'}}
-                        >发布时间：{util.FilterTime(project.createAt)}
-                        </p>
-                        <div>
-                          <span>{project.readNum}&nbsp;人看过</span>
-                          <Divider type="vertical"/>
-                          <span>{project.joinNum}&nbsp;人加入学习</span>
-                          <Divider type="vertical"/>
-                          <span>授课教师：&nbsp;
-                            <Avatar src={teacher.avatar} />&nbsp;&nbsp;
-                            {teacher.displayName}
-                          </span>
-                        </div>
-                        <br/>
-                        {type === 'student' ? studentBt : teacherBt}
-                      </Col>
-                    </Row>
-                  </Card>
-                </div>
-                <div key="2">
-                  <Menu
-                    onClick={this.handleClick}
-                    selectedKeys={menu}
-                    mode="horizontal"
-                    style={{marginTop: '20px'}}
-                  >
-                    <Menu.Item key="project-introduce">项目信息</Menu.Item>
-                    <Menu.Item key="project-outline">项目大纲</Menu.Item>
-                    <Menu.Item key="project-evaluation">评价方案</Menu.Item>
-
-                    {type === 'teacher' ? <Menu.Item key="student-admin">学生管理</Menu.Item>
-                      : null}
-                    {type === 'student' ? <Menu.Item key="student-evidence">证据收集</Menu.Item>
-                      : null}
-                  </Menu>
-                  <div style={{
-                    backgroundColor: 'white',
-                    padding: '20px',
-                  }}
-                  >
-                    {menu === 'project-introduce' ? <ProjectIntroduce project={project}/> : null}
-                    {menu === 'project-outline' ? <ProjectOutline project={project}/> : null}
-                    {menu === 'project-comment' ? <ProjectComment project={project}/> : null}
-                    {menu === 'project-evaluation' ?
-                      <ProjectEvaluation
-                        project={project}
-                        setProject={this.setProject}
-                        loadProjectDetail={this.loadProjectDetail}
+              className="site-page-header"
+              onBack={() => this.back()}
+              title="返回"
+              subTitle="项目详情"
+            />
+            <QueueAnim>
+              <div key="1">
+                <Card hoverable style={{textAlign: 'left'}}>
+                  <Row>
+                    <Col span={6}>
+                      <Image
+                        alt="example"
+                        src={project.image}
+                        placeholder
+                        preview={false}
                       />
-                      : null
-                    }
+                    </Col>
+                    <Col span={1}>&nbsp;</Col>
+                    <Col flex="auto">
+                      <p style={{fontSize: '20px'}}>{project.projectTitle}</p>
+                      <p
+                        style={{fontSize: '14px', color: 'gray'}}
+                      >发布时间：{util.FilterTime(project.createAt)}
+                      </p>
+                      <div>
+                        <span>{project.readNum}&nbsp;人看过</span>
+                        <Divider type="vertical"/>
+                        <span>{project.joinNum}&nbsp;人加入学习</span>
+                        <Divider type="vertical"/>
+                        <span>授课教师：&nbsp;
+                          <Avatar src={teacher.avatar}/>&nbsp;&nbsp;
+                          {teacher.displayName}
+                          </span>
+                      </div>
+                      <br/>
+                      {type === 'student' ? studentBt : teacherBt}
+                    </Col>
+                  </Row>
+                </Card>
+              </div>
+              <div key="2">
+                <Menu
+                  onClick={this.handleClick}
+                  selectedKeys={menu}
+                  mode="horizontal"
+                  style={{marginTop: '20px'}}
+                >
+                  <Menu.Item key="project-introduce">项目信息</Menu.Item>
+                  <Menu.Item key="project-outline">项目大纲</Menu.Item>
+                  <Menu.Item key="project-evaluation">评价方案</Menu.Item>
 
-                    {menu === 'student-admin' ? <StudentAdmin project={project}/> : null}
+                  {type === 'teacher' ? <Menu.Item key="student-admin">学生管理</Menu.Item>
+                    : null}
+                  {type === 'student' ? <Menu.Item key="student-evidence">证据收集</Menu.Item>
+                    : null}
+                </Menu>
+                <div style={{
+                  backgroundColor: 'white',
+                  padding: '20px',
+                }}
+                >
+                  {menu === 'project-introduce' ? <ProjectIntroduce project={project}/> : null}
+                  {menu === 'project-outline' ? <ProjectOutline project={project}/> : null}
+                  {menu === 'project-comment' ? <ProjectComment project={project}/> : null}
+                  {menu === 'project-evaluation' ?
+                    <ProjectEvaluation
+                      project={project}
+                      setProject={this.setProject}
+                      loadProjectDetail={this.loadProjectDetail}
+                    />
+                    : null
+                  }
 
-                    {menu === 'student-evidence' ? <StudentEvidence project={project}/> : null}
+                  {menu === 'student-admin' ? <StudentAdmin project={project}/> : null}
 
-                  </div>
+                  {menu === 'student-evidence' ? <StudentEvidence project={project}/> : null}
+
                 </div>
-              </QueueAnim>
-            </div>
+              </div>
+            </QueueAnim>
+          </div>
         </div>
       </DocumentTitle>
     );
