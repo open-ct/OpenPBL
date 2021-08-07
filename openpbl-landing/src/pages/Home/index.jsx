@@ -2,7 +2,6 @@ import React from 'react';
 import DocumentTitle from 'react-document-title';
 import {enquireScreen} from 'enquire-js';
 
-import GlobalHeader from '../component/GlobalHeader/GlobalHeader';
 import Banner from './Banner';
 import Page1 from './Page1';
 import Page2 from './Page2';
@@ -35,8 +34,7 @@ class Home extends React.PureComponent {
   render() {
     return (
       <DocumentTitle title="OpenCT">
-        <div style={{textAlign: 'left'}}>
-          <GlobalHeader current="landing"/>
+        <div style={{textAlign: 'left', backgroundColor: 'white'}}>
           <div className="home-wrapper">
             <Banner isMobile={this.state.isMobile}/>
             <TestPage isMobile={this.state.isMobile}/>

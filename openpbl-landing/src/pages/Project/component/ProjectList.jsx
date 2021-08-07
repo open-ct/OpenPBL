@@ -91,7 +91,7 @@ function ProjectList(obj) {
   };
   return (
     <QueueAnim delay={100} className="queue-simple">
-      <Card style={{backgroundColor: 'white', borderRadius: '4px', textAlign: 'left'}}>
+      <Card bordered={false} style={{backgroundColor: 'white', borderRadius: '4px', textAlign: 'left'}}>
         <Search
           size="large"
           placeholder="搜索"

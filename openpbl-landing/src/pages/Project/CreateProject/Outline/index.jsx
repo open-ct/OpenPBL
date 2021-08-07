@@ -26,21 +26,22 @@ class EditOutline extends React.PureComponent {
     const {pid} = this.state
     return (
       <DocumentTitle title="Project">
-        <div style={{backgroundColor: '#f2f4f5', minHeight: '100vh',}}>
-          <PageHeader
-            className="site-page-header"
-            onBack={() => this.back()}
-            title="返回"
-            subTitle="我的项目"
-          />
-          <div
-            style={{
-              paddingTop: '20px',
-              paddingLeft: '20px',
-              paddingRight: '20px',
-              paddingBottom: '20px'
-            }}
-          >
+        <div
+          style={{
+            paddingLeft: '20px',
+            paddingRight: '20px',
+            paddingBottom: '20px',
+            maxWidth: '1200px',
+            margin: 'auto',
+          }}
+        >
+
+            <PageHeader
+              className="site-page-header"
+              onBack={() => this.back()}
+              title="返回"
+              subTitle="我的项目"
+            />
             <Card className="edit-card">
               <Steps current={1} style={{marginLeft: '20px'}}>
                 <Step title="填写信息"/>
@@ -49,7 +50,6 @@ class EditOutline extends React.PureComponent {
               <Divider/>
               <OutlineEditPage pid={pid}/>
             </Card>
-          </div>
         </div>
       </DocumentTitle>
     )

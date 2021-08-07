@@ -294,32 +294,23 @@ class ProjectInfo extends React.PureComponent {
       <DocumentTitle title="Project">
         <div style={{backgroundColor: '#f2f4f5'}}>
           <BackTop />
-
-          <PageHeader
-            className="site-page-header"
-            onBack={() => this.back()}
-            title="返回"
-            subTitle="项目详情"
-          />
           <div
             style={{
               width: '100%',
               height: '100%',
-              display: 'flex',
               paddingRight: '20px',
               paddingLeft: '20px',
               paddingBottom: '20px',
-              marginTop: '20px'
+              margin: 'auto',
+              maxWidth: '1200px',
             }}
           >
-            <div
-              style={{
-                margin: 'auto',
-                width: '100%',
-                maxWidth: '1200px',
-                minHeight: '100vh',
-              }}
-            >
+            <PageHeader
+                className="site-page-header"
+                onBack={() => this.back()}
+                title="返回"
+                subTitle="项目详情"
+              />
               <QueueAnim>
                 <div key="1">
                   <Card hoverable style={{textAlign: 'left'}}>
@@ -364,9 +355,6 @@ class ProjectInfo extends React.PureComponent {
                   >
                     <Menu.Item key="project-introduce">项目信息</Menu.Item>
                     <Menu.Item key="project-outline">项目大纲</Menu.Item>
-{/*
-                    <Menu.Item key="project-comment">评论区</Menu.Item>
-*/}
                     <Menu.Item key="project-evaluation">评价方案</Menu.Item>
 
                     {type === 'teacher' ? <Menu.Item key="student-admin">学生管理</Menu.Item>
@@ -399,7 +387,6 @@ class ProjectInfo extends React.PureComponent {
                 </div>
               </QueueAnim>
             </div>
-          </div>
         </div>
       </DocumentTitle>
     );

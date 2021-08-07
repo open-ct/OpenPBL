@@ -1,11 +1,8 @@
 import React from "react";
-import {useState} from "react";
-import GlobalHeader from "../component/GlobalHeader/GlobalHeader";
-import MenuBar from "../Project/component/MenuBar";
 import DocumentTitle from "react-document-title";
 import {Layout, Menu, Affix} from "antd";
 
-import { Route, BrowserRouter, Switch, Link } from "react-router-dom";
+import { Route, Switch, Link } from "react-router-dom";
 
 import AllMessage from "./AllMessage";
 import UnreadMessage from "./UnreadMessage";
@@ -20,8 +17,6 @@ class Message extends React.Component {
     const {menu} = this.state
     return (
       <DocumentTitle title="Project">
-        <div style={{minHeight: '100vh', backgroundColor: '#f2f4f5'}}>
-          <GlobalHeader current="null"/>
           <div style={{maxWidth: '1200px', margin: 'auto', padding: '20px'}}>
             <Layout>
               <Affix offsetTop={0}>
@@ -51,7 +46,6 @@ class Message extends React.Component {
               </Layout.Content>
             </Layout>
           </div>
-        </div>
       </DocumentTitle>
     )
   }

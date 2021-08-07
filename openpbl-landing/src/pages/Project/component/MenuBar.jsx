@@ -1,3 +1,5 @@
+// deprecated
+
 import React from 'react';
 import {Affix, Button, Layout, Menu} from 'antd';
 import {
@@ -7,6 +9,7 @@ import {
   HighlightOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
+import {Switch, Route, Link} from 'react-router-dom'
 
 import LearningProject from '../LearningProject';
 import './menu-bar.less';
@@ -17,7 +20,6 @@ import EditingProject from "../EditingProject";
 import localStorage from "localStorage";
 import ProjectApi from "../../../api/ProjectApi";
 
-const {Sider, Content} = Layout;
 
 class MenuBar extends React.PureComponent {
   state = {
@@ -47,27 +49,32 @@ class MenuBar extends React.PureComponent {
     return (
       <Layout style={{minHeight: '90.5vh'}}>
         <Affix offsetTop={top}>
-          <Sider
+          <Layout.Sider
             breakpoint="lg"
             collapsedWidth="0"
             style={{height: '100%', backgroundColor: '#f2f4f5'}}
           >
             <Menu
-              onClick={this.handleClick}
+              defaultSelectedKeys={['published']}
               className="menu-bar"
-              defaultSelectedKeys={[menu]}
               mode="inline"
             >
               {type === 'teacher' ?
                 <>
                   <Menu.Item key="published" icon={<CheckCircleOutlined/>}>
-                    已发布
+                    <Link to="/my-project/published">
+                      已发布
+                    </Link>
                   </Menu.Item>
                   <Menu.Item key="editing" icon={<HighlightOutlined/>}>
-                    未发布
+                    <Link to="/my-project/editing">
+                      未发布
+                    </Link>
                   </Menu.Item>
                   <Menu.Item key="finished" icon={<CopyOutlined/>}>
-                    已结束
+                    <Link to="/my-project/finished">
+                      已结束
+                    </Link>
                   </Menu.Item>
                 </>
                 :
@@ -93,25 +100,21 @@ class MenuBar extends React.PureComponent {
               :
               null
             }
-          </Sider>
+          </Layout.Sider>
         </Affix>
 
-        <Layout>
-          {type === 'teacher' ?
+          {/*{type === 'teacher' ?
             <Content className="project-content">
-              {/*{menu === 'public' ? <PublicProject/> : null}*/}
               {menu === 'published' ? <PublishedProject/> : null}
               {menu === 'editing' ? <EditingProject/> : null}
               {menu === 'finished' ? <FinishedProject/> : null}
             </Content>
             :
             <Content className="project-content">
-              {/*{menu === 'public' ? <PublicProject/> : null}*/}
               {menu === 'learning' ? <LearningProject/> : null}
               {menu === 'finished' ? <FinishedProject/> : null}
             </Content>
-          }
-        </Layout>
+          }*/}
       </Layout>
     );
   }

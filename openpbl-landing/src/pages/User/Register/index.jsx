@@ -7,7 +7,6 @@ import localStorage from 'localStorage';
 import QueueAnim from 'rc-queue-anim';
 
 import './register.less';
-import GlobalHeader from '../../component/GlobalHeader/GlobalHeader';
 
 const {TabPane} = Tabs;
 
@@ -43,7 +42,6 @@ class Register extends React.PureComponent {
     return (
       <DocumentTitle title="Login">
         <div style={{height: '100vh'}}>
-          <GlobalHeader/>
           <QueueAnim delay={100}>
             <Card className="login-card" key="1">
               <Tabs defaultActiveKey={type} onChange={this.changeTab}>
