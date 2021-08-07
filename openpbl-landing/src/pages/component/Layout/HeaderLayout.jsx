@@ -105,7 +105,7 @@ class HeaderLayout extends React.Component {
   render() {
     const {current} = this.state;
     return (
-      <Layout style={{minHeight: '100vh'}}>
+      <Layout style={{minHeight: '100vh', textAlign: 'left'}}>
         <Layout.Header style={{backgroundColor: 'white'}}>
           <Row>
             <Col xxl={15} xl={11} lg={8} md={6} sm={6} xs={10}>
@@ -142,8 +142,8 @@ class HeaderLayout extends React.Component {
             <Col xxl={3} xl={3} lg={4} md={4} sm={6} xs={8}>
               {
                 <>
-                  <span style={{float: 'left'}}>
-                    <Link to="/message/all">
+                  <span style={{float: 'left', marginRight: '20px'}}>
+                    <Link to="/message">
                       <Button
                         shape="circle"
                         type="text"
@@ -154,8 +154,8 @@ class HeaderLayout extends React.Component {
                         }
                         size="large"
                       />
-                      </Link>
-                    </span>
+                    </Link>
+                  </span>
                   {this.renderAccount()}
                 </>
               }

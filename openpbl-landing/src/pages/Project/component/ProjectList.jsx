@@ -208,7 +208,7 @@ function ProjectList(obj) {
         </Row>
         <div
           style={{
-            margin: 'auto',
+            textAlign: 'center',
             marginTop: '20px',
           }}
         >

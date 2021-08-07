@@ -226,7 +226,7 @@ class ProjectInfo extends React.PureComponent {
             <Popconfirm
               title="确定删除项目？删除后不能恢复"
               onConfirm={this.deleteProject}
-              placement="topLeft"
+              placement="topRight"
             >
               <Button
                 shape="circle"
@@ -242,7 +242,7 @@ class ProjectInfo extends React.PureComponent {
             <Popconfirm
               title="确定删除项目？删除后不能恢复"
               onConfirm={this.deleteProject}
-              placement="topLeft"
+              placement="topRight"
             >
               <Button
                 shape="circle"

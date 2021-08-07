@@ -2,7 +2,7 @@ import React from "react";
 import DocumentTitle from "react-document-title";
 import {Affix, Layout, Menu} from "antd";
 
-import {Link, Route, Switch} from "react-router-dom";
+import {Link, Redirect, Route, Switch} from "react-router-dom";
 
 import AllMessage from "./AllMessage";
 import UnreadMessage from "./UnreadMessage";
@@ -39,6 +39,9 @@ class Message extends React.Component {
             </Affix>
             <Layout.Content style={{backgroundColor: 'white'}}>
               <Switch>
+                <Route exact path="/message" render={() => (
+                  <Redirect to="/message/all"/>
+                )}/>
                 <Route exact path="/message/all" component={AllMessage}/>
                 <Route exact path="/message/unread" component={UnreadMessage}/>
                 <Route exact path="/message/read" component={ReadMessage}/>
