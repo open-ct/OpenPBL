@@ -90,7 +90,7 @@ class MyProject extends React.PureComponent {
                 }
               </Layout.Sider>
             </Affix>
-            <Layout.Content style={{marginLeft: '10px', marginTop: '5px'}}>
+            <Layout.Content>
               {type === 'teacher' ?
                 <Switch>
                   <Route exact path="/my-project" render={()=>(
