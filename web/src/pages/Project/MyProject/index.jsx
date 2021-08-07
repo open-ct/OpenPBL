@@ -39,44 +39,46 @@ class MyProject extends React.PureComponent {
               theme="light"
               style={{backgroundColor: '#f2f4f5'}}
             >
-              <Menu
-                defaultSelectedKeys={['published']}
-                className="menu-bar"
-                mode="inline"
-              >
-                {type === 'teacher' ?
-                  <>
-                    <Menu.Item key="published" icon={<CheckCircleOutlined/>}>
-                      <Link to="/my-project/published">
-                        已发布
-                      </Link>
-                    </Menu.Item>
-                    <Menu.Item key="editing" icon={<HighlightOutlined/>}>
-                      <Link to="/my-project/editing">
-                        未发布
-                      </Link>
-                    </Menu.Item>
-                    <Menu.Item key="finished" icon={<CopyOutlined/>}>
-                      <Link to="/my-project/finished">
-                        已结束
-                      </Link>
-                    </Menu.Item>
-                  </>
-                  :
-                  <>
-                    <Menu.Item key="learning" icon={<SyncOutlined/>}>
-                      <Link to="/my-project/learning">
-                        进行中
-                      </Link>
-                    </Menu.Item>
-                    <Menu.Item key="finished" icon={<CheckOutlined/>}>
-                      <Link to="/my-project/finished">
-                        已完成
-                      </Link>
-                    </Menu.Item>
-                  </>
-                }
-              </Menu>
+              {type === 'teacher' ?
+                <Menu
+                  defaultSelectedKeys={['published']}
+                  className="menu-bar"
+                  mode="inline"
+                >
+                  <Menu.Item key="published" icon={<CheckCircleOutlined/>}>
+                    <Link to="/my-project/published">
+                      已发布
+                    </Link>
+                  </Menu.Item>
+                  <Menu.Item key="editing" icon={<HighlightOutlined/>}>
+                    <Link to="/my-project/editing">
+                      未发布
+                    </Link>
+                  </Menu.Item>
+                  <Menu.Item key="finished" icon={<CopyOutlined/>}>
+                    <Link to="/my-project/finished">
+                      已结束
+                    </Link>
+                  </Menu.Item>
+                </Menu>
+                :
+                <Menu
+                  defaultSelectedKeys={['learning']}
+                  className="menu-bar"
+                  mode="inline"
+                >
+                  <Menu.Item key="learning" icon={<SyncOutlined/>}>
+                    <Link to="/my-project/learning">
+                      进行中
+                    </Link>
+                  </Menu.Item>
+                  <Menu.Item key="finished" icon={<CheckOutlined/>}>
+                    <Link to="/my-project/finished">
+                      已完成
+                    </Link>
+                  </Menu.Item>
+                </Menu>
+              }
               {type === 'teacher' ?
                 <Button
                   type='primary'

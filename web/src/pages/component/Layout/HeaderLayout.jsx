@@ -128,7 +128,7 @@ class HeaderLayout extends React.Component {
                   </Link>
                 </Menu.Item>
                 <Menu.Item key="my-project">
-                  <Link to="/my-project/published">
+                  <Link to="/my-project">
                     我的空间
                   </Link>
                 </Menu.Item>
