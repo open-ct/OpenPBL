@@ -64,7 +64,30 @@ clientSecret =
 casdoorOrganization = "openct"
 ```
 
+开发环境
+```bash
+bee run -runargs -RUNMODE=dev
+```
+或
 ```bash
 go build main.go
-./main
+./main -RUNMODE dev
+```
+
+生产环境
+```bash
+go build main.go
+./main -RUNMODE prod
+```
+
+运行参数
+```RUNMODE```
+```
+dev: 加载顺序 conf/app-dev.conf  conf/app.conf
+```
+```
+prod: 加载顺序 conf/app-prod.conf  conf/app.conf
+```
+```
+: 加载顺序 conf/app.conf
 ```
