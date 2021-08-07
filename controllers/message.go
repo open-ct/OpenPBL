@@ -63,7 +63,7 @@ func (m *MessageController) GetUserMessages() {
 		size = 10
 	}
 	t := m.GetString(":type")
-	uid := user.Username
+	uid := util.GetUserId(user)
 
 	var messages []models.Message
 	var rows     int64

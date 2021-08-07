@@ -32,7 +32,7 @@ func (p *ProjectController) GetProjectChapters() {
 	uid := ""
 	show := false
 	if user.Tag == "student" {
-		uid = user.Username
+		uid = user.Name
 		show = true
 	}
 	if user.Tag == "teacher" {

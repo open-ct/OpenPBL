@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"OpenPBL/models"
+	"OpenPBL/util"
 	"strconv"
 )
 
@@ -44,7 +45,7 @@ func (p *ProjectController) GetSectionTasksDetail() {
 	if user.Tag == "teacher" {
 		showCount = true
 	}
-	uid := user.Username
+	uid := util.GetUserId(user)
 	pid := p.GetString(":projectId")
 	learning = models.IsLearningProject(pid, uid)
 	tasks, err := models.GetSectionTasks(sid, uid, learning)
@@ -130,7 +131,7 @@ func (p *ProjectController) GetProjectTasksDetail() {
 
 	showSubmit := false
 	teacherScore := false
-	uid := user.Username
+	uid := util.GetUserId(user)
 	editable := true
 	showCount := false
 	pid := p.GetString(":projectId")
