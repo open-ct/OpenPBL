@@ -39,7 +39,7 @@ func main() {
 		beego.BConfig.WebConfig.DirectoryIndex = true
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
-	beego.SetStaticPath("/static", "openpbl-landing/build/static")
+	beego.SetStaticPath("/static", "web/build/static")
 	beego.BConfig.WebConfig.DirectoryIndex = true
 	beego.InsertFilter("/", beego.BeforeRouter, routers.TransparentStatic)
 	beego.InsertFilter("/*", beego.BeforeRouter, routers.TransparentStatic)

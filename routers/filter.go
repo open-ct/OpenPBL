@@ -13,7 +13,7 @@ func TransparentStatic(ctx *context.Context) {
 		return
 	}
 
-	path := "openpbl-landing/build"
+	path := "web/build"
 	if urlPath == "/" {
 		path += "/index.html"
 	} else {
@@ -21,7 +21,7 @@ func TransparentStatic(ctx *context.Context) {
 	}
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		http.ServeFile(ctx.ResponseWriter, ctx.Request, "openpbl-landing/build/index.html")
+		http.ServeFile(ctx.ResponseWriter, ctx.Request, "web/build/index.html")
 	} else {
 		http.ServeFile(ctx.ResponseWriter, ctx.Request, path)
 	}

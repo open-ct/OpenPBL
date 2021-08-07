@@ -1,8 +1,16 @@
 import axios from 'axios'
 import {message} from 'antd'
 
+function getServerUrl() {
+  const hostname = window.location.hostname
+  if (hostname === 'localhost') {
+    return `http://${hostname}:5000/api`
+  }
+  return '/api'
+}
+
 const request = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL,
+  baseURL: getServerUrl(),
   timeout: 10000,
   withCredentials: true
 })
