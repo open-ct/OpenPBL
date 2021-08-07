@@ -17,12 +17,14 @@ import SectionEditPage from "./pages/Project/CreateProject/Section/SectionEditPa
 import PreviewSection from "./pages/Project/PreviewProject/PreviewSection";
 import SurveyEditPage from "./pages/Project/CreateProject/Survey/SurveyEditPage";
 import Evidence from "./pages/Project/Evidence";
+import Message from "./pages/Message";
+import AllMessage from "./pages/Message/AllMessage";
+import UnreadMessage from "./pages/Message/UnreadMessage";
 
 function App() {
   return (
       <div className="App">
         <BrowserRouter>
-          <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/callback" component={AuthCallback} />
 
@@ -45,10 +47,9 @@ function App() {
             <Route exact path="/project/:pid/section/:sid/task/:tid/survey/edit" component={SurveyEditPage} />
             <Route exact path="/project/:pid/section/:sid/preview" component={PreviewSection} />
 
+            <Route path="/message" component={Message}/>
 
             <Route exact path="/project/learning/:pid/:cid/:sid" component={Learning} />
-
-          </Switch>
         </BrowserRouter>
       </div>
   );
