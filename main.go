@@ -5,22 +5,22 @@ import (
 	"OpenPBL/models"
 	"OpenPBL/routers"
 	_ "OpenPBL/routers"
+	"OpenPBL/util"
+	"flag"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	"log"
-	"os"
 )
 
+
 func main() {
-	mode := os.Getenv("RUNMODE")
+	var mode string
+	flag.StringVar(&mode, "RUNMODE", "default", "运行模式")
+	flag.Parse()
 	var err error
-	if mode == "prod" {
-		err = beego.LoadAppConfig("ini", "conf/app-prod.conf")
-	} else if mode == "dev" {
-		err = beego.LoadAppConfig("ini", "conf/app-dev.conf")
-	} else {
-		err = beego.LoadAppConfig("ini", "conf/app.conf")
-	}
+	configPath := util.GetConfigFile(mode)
+	err = beego.LoadAppConfig("ini", configPath)
+
 	if err != nil {
 		panic(err)
 	}
