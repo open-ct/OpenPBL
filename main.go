@@ -19,7 +19,7 @@ func main() {
 	} else if mode == "dev" {
 		err = beego.LoadAppConfig("ini", "conf/app-dev.conf")
 	} else {
-		err = beego.LoadAppConfig("ini", "conf/app-dev.conf")
+		err = beego.LoadAppConfig("ini", "conf/app.conf")
 	}
 	if err != nil {
 		panic(err)
