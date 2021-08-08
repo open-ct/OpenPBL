@@ -34,11 +34,47 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["OpenPBL/controllers:HomeController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:HomeController"],
+        beego.ControllerComments{
+            Method: "GetLatestProjects",
+            Router: "/projects/latest",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["OpenPBL/controllers:MessageController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:MessageController"],
         beego.ControllerComments{
             Method: "GetUserMessages",
             Router: "/",
             AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:MessageController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:MessageController"],
+        beego.ControllerComments{
+            Method: "DeleteUserMessage",
+            Router: "/:messageId/delete",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:MessageController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:MessageController"],
+        beego.ControllerComments{
+            Method: "ReadUserMessage",
+            Router: "/:messageId/read",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["OpenPBL/controllers:MessageController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:MessageController"],
+        beego.ControllerComments{
+            Method: "ReadAllUserMessage",
+            Router: "/read-all",
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -54,18 +90,18 @@ func init() {
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "GetProjectDetail",
+            Method: "UpdateProject",
             Router: "/:id",
-            AllowHTTPMethods: []string{"get"},
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "UpdateProject",
+            Method: "GetProjectDetail",
             Router: "/:id",
-            AllowHTTPMethods: []string{"post"},
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -288,18 +324,18 @@ func init() {
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "CreateSurvey",
+            Method: "GetSurveyDetailByTaskId",
             Router: "/:projectId/task/:taskId/survey",
-            AllowHTTPMethods: []string{"post"},
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
     beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:ProjectController"],
         beego.ControllerComments{
-            Method: "GetSurveyDetailByTaskId",
+            Method: "CreateSurvey",
             Router: "/:projectId/task/:taskId/survey",
-            AllowHTTPMethods: []string{"get"},
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

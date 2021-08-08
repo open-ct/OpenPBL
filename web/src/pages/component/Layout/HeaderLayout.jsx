@@ -24,6 +24,7 @@ class HeaderLayout extends React.Component {
   state = {
     current: 'home',
     account: null,
+    messageCount: 0,
   }
 
   componentDidMount() {
@@ -103,7 +104,7 @@ class HeaderLayout extends React.Component {
   }
 
   render() {
-    const {current} = this.state;
+    const {current, messageCount} = this.state;
     return (
       <Layout style={{minHeight: '100vh', textAlign: 'left'}}>
         <Layout.Header style={{backgroundColor: 'white'}}>
@@ -148,7 +149,7 @@ class HeaderLayout extends React.Component {
                         shape="circle"
                         type="text"
                         icon={
-                          <Badge count={999} overflowCount={99} size="small">
+                          <Badge count={messageCount} overflowCount={99} size="small">
                             <BellOutlined/>
                           </Badge>
                         }

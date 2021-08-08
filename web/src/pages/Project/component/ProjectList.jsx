@@ -143,7 +143,7 @@ function ProjectList(obj) {
       </Card>
 
       <div key="1" style={{marginTop: '10px'}}>
-        <Row gutter={[15, 15]}>
+        <Row gutter={[20, 20]}>
           {
             learningProjectList.map((item, index) => (
               <Col key={index.toString()} {...topColResponsiveProps}>
@@ -151,7 +151,9 @@ function ProjectList(obj) {
                   <Card
                     hoverable
                     bordered={false}
-                    className="item-card"
+                    style={{
+                      borderRadius: '10px',
+                    }}
                     cover={
                       <Image
                         src={item.image}

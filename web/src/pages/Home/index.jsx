@@ -2,6 +2,7 @@ import React from "react";
 import CarouselPBL from "./component/CarouselPBL";
 import DocumentTitle from 'react-document-title'
 import LatestProject from "./component/LatestProject";
+import {Divider} from "antd";
 
 class Home extends React.PureComponent {
   render() {
@@ -14,6 +15,7 @@ class Home extends React.PureComponent {
           }}
         >
           <CarouselPBL/><br/>
+          <Divider orientation="center">最近的项目</Divider>
           <div>
             <LatestProject />
           </div>
