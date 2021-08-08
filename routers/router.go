@@ -35,6 +35,10 @@ func init() {
 			beego.NSInclude(
 				&controllers.StudentController{})),
 
+		beego.NSNamespace("/message",
+			beego.NSInclude(
+				&controllers.MessageController{})),
+
 	)
 	beego.AddNamespace(ns)
 }

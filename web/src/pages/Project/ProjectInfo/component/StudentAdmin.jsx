@@ -4,7 +4,7 @@ import {Avatar, Button, message, Pagination, Popconfirm, Table} from "antd";
 import {DeleteOutlined} from "@ant-design/icons"
 
 import ProjectApi from "../../../../api/ProjectApi";
-import util from "../../component/Util"
+import util from "../../../component/Util"
 import {Link} from "react-router-dom";
 
 function StudentAdmin(obj) {

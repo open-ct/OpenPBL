@@ -6,21 +6,17 @@ import (
 )
 
 type Message struct {
-	Id           int64     `json:"id" xorm:"not null pk"`
-	ReceiverId   string    `json:"receiverId" xorm:"not null index"`
+	Id            int64    	`json:"id" xorm:"not null pk autoincr"`
+	ReceiverId    string   	`json:"receiverId" xorm:"index"`
 
-	SenderId     string    `json:"senderId" xorm:"index"`
-	SenderName   string    `json:"senderName"`
+	MessageType   string    `json:"messageType" xorm:"not null index"`  // warn error info
 
-	ProjectId    int64     `json:"projectId" xorm:"index"`
-	ProjectTitle string    `json:"projectTitle"`
+	MessageTitle  string    `json:"messageTitle" xorm:"text"`
+	Content       string    `json:"content" xorm:"longtext"`
 
-	MessageType string    `json:"messageType" xorm:"not null index"`  // remind message
-	Content   string    `json:"content" xorm:"text"`
+	Read          bool      `json:"read" xorm:"default false index"`
 
-	Read      bool      `json:"read" xorm:"default false index"`
-
-	CreateAt  time.Time `json:"CreateAt" xorm:"created"`
+	CreateAt      time.Time `json:"createAt" xorm:"created"`
 }
 
 
@@ -37,34 +33,50 @@ func (m *Message) Delete() (err error) {
 	return
 }
 
-func ReadMessage(messageId int64) (err error) {
+func ReadMessage(messageId int64, uid string) (err error) {
 	_, err = (&Message{}).GetEngine().
 		ID(messageId).
 		Update(&Message{
 			Id:   messageId,
+			ReceiverId: uid,
+			Read: true,
+		})
+	return
+}
+func ReadAllMessage(uid string) (err error) {
+	_, err = (&Message{}).GetEngine().
+		Update(&Message{
+			ReceiverId: uid,
 			Read: true,
 		})
 	return
 }
 
-func GetReceivedMessages(uid string, orderType string, from int, size int) (m []Message, rows int64, err error) {
-	err = (&Message{}).GetEngine().
-		Where("receiver_id = ?", uid).
-		Desc("create_at").
-		Limit(size, from).
-		Find(&m)
-	rows, err = (&Message{}).GetEngine().
-		Count(&Message{ReceiverId:   uid})
-	return
-}
+func GetMessages(uid string, orderType string, messageType string, read string, from int, size int) (m []Message, rows int64, err error) {
+	s := (&Message{}).GetEngine().
+		Where("receiver_id = ?", uid)
+	s2 := (&Message{}).GetEngine().
+		Where("receiver_id = ?", uid)
+	if read == "read" {
+		s = s.Where("read = true")
+		s2 = s2.Where("read = true")
+	} else if read == "unread" {
+		s = s.Where("read = false")
+		s2 = s2.Where("read = false")
+	}
+	if messageType == "error" || messageType == "info" || messageType == "warn" {
+		s = s.Where("message_type = ?", messageType)
+		s2 = s2.Where("message_type = ?", messageType)
+	}
 
-func GetSentMessages(uid string, orderType string, from int, size int) (m []Message, rows int64, err error) {
-	err = (&Message{}).GetEngine().
-		Where("sender_id = ?", uid).
-		Desc("create_at").
-		Limit(size, from).
-		Find(&m)
-	rows, err = (&Message{}).GetEngine().
-		Count(&Message{SenderId:   uid})
+	rows, err = s2.Count()
+
+	if orderType == "asc" {
+		s = s.Asc("create_at")
+	} else {
+		s = s.Desc("create_at")
+	}
+
+	err = s.Limit(size, from).Find(&m)
 	return
 }

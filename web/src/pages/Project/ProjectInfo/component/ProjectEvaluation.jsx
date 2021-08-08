@@ -11,7 +11,7 @@ import TaskApi from "../../../../api/TaskApi";
 import ProjectApi from "../../../../api/ProjectApi";
 import ChapterApi from "../../../../api/ChapterApi";
 import SectionApi from "../../../../api/SectionApi";
-import util from "../../component/Util"
+import util from "../../../component/Util"
 import "./index.less"
 
 const {SubMenu} = Menu

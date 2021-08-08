@@ -3,7 +3,7 @@ import {Menu, message, Progress} from 'antd'
 import QueueAnim from 'rc-queue-anim';
 
 import ChapterApi from "../../../../api/ChapterApi";
-import util from "../../component/Util"
+import util from "../../../component/Util"
 
 const {SubMenu} = Menu;
 

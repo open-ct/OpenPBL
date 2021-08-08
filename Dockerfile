@@ -8,11 +8,11 @@ RUN go env -w CGO_ENABLED=0 GOPROXY=https://goproxy.io,direct GOOS=linux GOARCH=
 ENV PATH=$PATH:/openpbl/node-v12.22.0-linux-x64/bin
 RUN npm install -g yarn
 
-COPY openpbl-landing/package.json /openpbl/openpbl-landing/package.json
-RUN cd openpbl-landing && yarn install
+COPY web/package.json /openpbl/web/package.json
+RUN cd web && yarn install
 
-COPY openpbl-landing /openpbl/openpbl-landing
-RUN cd openpbl-landing && yarn build && rm -rf node_modules
+COPY web /openpbl/web
+RUN cd web && yarn build && rm -rf node_modules
 
 COPY ./ /openpbl
 RUN cd /openpbl && go build main.go

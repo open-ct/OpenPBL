@@ -9,8 +9,6 @@ System of PBL.
 `web/.env`
 
 ```dotenv
-REACT_APP_BASE_URL='http://localhost:5000/api'
-
 REACT_APP_OSS_REGION='oss-cn-hangzhou'
 REACT_APP_OSS_ACCESSKEYID=
 REACT_APP_OSS_ACCESSKEYSECRET=
@@ -23,6 +21,7 @@ REACT_APP_APP_NAME=
 REACT_APP_CASDOOR_ORGANIZATION='openct'
 
 GENERATE_SOURCEMAP=false
+SKIP_PREFLIGHT_CHECK=true
 ```
 
 ```bash
@@ -56,6 +55,7 @@ driverName = mysql
 dataSourceName = root:123@tcp(localhost:3306)/
 dbName = openpbl_db
 
+redisEndpoint = 
 jwtSecret = CasdoorSecret
 
 casdoorEndpoint =

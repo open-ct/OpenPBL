@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom'
 import ChapterApi from "../../../../../api/ChapterApi"
 import SectionApi from "../../../../../api/SectionApi"
 
-import util from "../../../component/Util"
+import util from "../../../../component/Util"
 
 const {SubMenu} = Menu;
 

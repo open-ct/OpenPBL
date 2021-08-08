@@ -14,7 +14,7 @@ import StudentApi from "../../../api/StudentApi";
 import StudentAdmin from "./component/StudentAdmin";
 import {getUser} from "../../User/Auth/Auth";
 import {DeleteOutlined} from "@ant-design/icons";
-import util from "../component/Util"
+import util from "../../component/Util"
 import StudentEvidence from "../Evidence/component/StudentEvidence";
 
 class ProjectInfo extends React.PureComponent {

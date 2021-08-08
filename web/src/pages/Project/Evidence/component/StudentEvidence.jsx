@@ -4,7 +4,7 @@ import {Button, Collapse, Divider, InputNumber, List, message, Progress, Tooltip
 import TaskApi from "../../../../api/TaskApi";
 import ChapterApi from "../../../../api/ChapterApi";
 import TaskCard from "../../PreviewProject/component/TaskCard";
-import util from "../../component/Util"
+import util from "../../../component/Util"
 import SubmitApi from "../../../../api/SubmitApi";
 
 function StudentEvidence(obj) {

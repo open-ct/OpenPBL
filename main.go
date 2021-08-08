@@ -9,6 +9,7 @@ import (
 	"flag"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	_ "github.com/astaxie/beego/session/redis"
 	"log"
 )
 
@@ -20,11 +21,11 @@ func main() {
 	var err error
 	configPath := util.GetConfigFile(mode)
 	err = beego.LoadAppConfig("ini", configPath)
-
 	if err != nil {
 		panic(err)
 	}
 	log.Println("App start with runmode: " + mode)
+	log.Println("Load config file: " + configPath)
 	models.InitAdapter()
 	controllers.InitCasdoor()
 
@@ -39,15 +40,20 @@ func main() {
 		beego.BConfig.WebConfig.DirectoryIndex = true
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
-	beego.SetStaticPath("/static", "openpbl-landing/build/static")
+	beego.SetStaticPath("/static", "web/build/static")
 	beego.BConfig.WebConfig.DirectoryIndex = true
 	beego.InsertFilter("/", beego.BeforeRouter, routers.TransparentStatic)
 	beego.InsertFilter("/*", beego.BeforeRouter, routers.TransparentStatic)
 
-	beego.BConfig.WebConfig.Session.SessionName = "openct_session_id"
-	beego.BConfig.WebConfig.Session.SessionProvider = "file"
-	beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"
-	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
+	beego.BConfig.WebConfig.Session.SessionName = "openpbl_session_id"
+	if beego.AppConfig.String("redisEndpoint") == "" {
+		beego.BConfig.WebConfig.Session.SessionProvider = "file"
+		beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"
+	} else {
+		beego.BConfig.WebConfig.Session.SessionProvider = "redis"
+		beego.BConfig.WebConfig.Session.SessionProviderConfig = beego.AppConfig.String("redisEndpoint")
+	}
+	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 30
 
 	beego.Run()
 }

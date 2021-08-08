@@ -37,7 +37,7 @@ func init() {
     beego.GlobalControllerRouter["OpenPBL/controllers:MessageController"] = append(beego.GlobalControllerRouter["OpenPBL/controllers:MessageController"],
         beego.ControllerComments{
             Method: "GetUserMessages",
-            Router: "/:type",
+            Router: "/",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
