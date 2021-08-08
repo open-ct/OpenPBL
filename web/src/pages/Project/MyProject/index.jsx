@@ -31,7 +31,7 @@ class MyProject extends React.PureComponent {
     const {type} = this.state
     return (
       <DocumentTitle title="My Project">
-        <Layout>
+        <Layout style={{margin: '20px'}}>
           <Affix offsetTop={0}>
             <Layout.Sider
               breakpoint="lg"
@@ -95,7 +95,7 @@ class MyProject extends React.PureComponent {
               }
             </Layout.Sider>
           </Affix>
-          <Layout.Content>
+          <Layout.Content style={{marginLeft: '10px'}}>
             {type === 'teacher' ?
               <Switch>
                 <Route exact path="/my-project" render={() => (

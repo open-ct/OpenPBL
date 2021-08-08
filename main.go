@@ -20,11 +20,11 @@ func main() {
 	var err error
 	configPath := util.GetConfigFile(mode)
 	err = beego.LoadAppConfig("ini", configPath)
-
 	if err != nil {
 		panic(err)
 	}
 	log.Println("App start with runmode: " + mode)
+	log.Println("Load config file: " + configPath)
 	models.InitAdapter()
 	controllers.InitCasdoor()
 
