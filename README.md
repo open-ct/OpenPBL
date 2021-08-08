@@ -56,6 +56,7 @@ driverName = mysql
 dataSourceName = root:123@tcp(localhost:3306)/
 dbName = openpbl_db
 
+redisEndpoint = 
 jwtSecret = CasdoorSecret
 
 casdoorEndpoint =
