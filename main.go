@@ -44,10 +44,15 @@ func main() {
 	beego.InsertFilter("/", beego.BeforeRouter, routers.TransparentStatic)
 	beego.InsertFilter("/*", beego.BeforeRouter, routers.TransparentStatic)
 
-	beego.BConfig.WebConfig.Session.SessionName = "openct_session_id"
-	beego.BConfig.WebConfig.Session.SessionProvider = "file"
-	beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"
-	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
+	beego.BConfig.WebConfig.Session.SessionName = "openpbl_session_id"
+	if beego.AppConfig.String("redisEndpoint") == "" {
+		beego.BConfig.WebConfig.Session.SessionProvider = "file"
+		beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"
+	} else {
+		beego.BConfig.WebConfig.Session.SessionProvider = "redis"
+		beego.BConfig.WebConfig.Session.SessionProviderConfig = beego.AppConfig.String("redisEndpoint")
+	}
+	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 30
 
 	beego.Run()
 }
