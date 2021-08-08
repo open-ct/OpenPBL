@@ -56,7 +56,7 @@ func (p *ProjectController) GetProjectDetail() {
 		p.ServeJSON()
 		return
 	}
-	uid := user.Username
+	uid := util.GetUserId(user)
 	var err error
 	var project models.ProjectDetail
 	if user.Tag == "student" {
@@ -108,7 +108,7 @@ func (p *ProjectController) CreateProject() {
 		p.ServeJSON()
 		return
 	}
-	uid := user.Username
+	uid := util.GetUserId(user)
 	project := &models.Project{
 		TeacherId:        uid,
 	}
@@ -158,7 +158,7 @@ func (p *ProjectController) UpdateProject() {
 		p.ServeJSON()
 		return
 	}
-	uid := user.Username
+	uid := util.GetUserId(user)
 	pid, err := p.GetInt64(":id")
 	if err != nil {
 		resp = Response{

@@ -57,7 +57,7 @@ func (u *StudentController) LearnProject() {
 		u.ServeJSON()
 		return
 	}
-	uid := user.Username
+	uid := util.GetUserId(user)
 
 	l := &models.LearnProject{
 		Avatar:    user.Avatar,
@@ -112,7 +112,7 @@ func (u *StudentController) ExitProject() {
 		u.ServeJSON()
 		return
 	}
-	uid := user.Username
+	uid := util.GetUserId(user)
 
 	l := &models.LearnProject{
 		StudentId: uid,
@@ -185,7 +185,7 @@ func (u *StudentController) GetLearnSection() {
 		u.ServeJSON()
 		return
 	}
-	uid := user.Username
+	uid := util.GetUserId(user)
 	sid, err := u.GetInt64(":sectionId")
 	projectId, err := u.GetInt64(":projectId")
 	l, err := models.GetLearnSection(sid, uid, projectId)
@@ -231,7 +231,7 @@ func (u *StudentController) UpdateLearnSection() {
 		u.ServeJSON()
 		return
 	}
-	uid := user.Username
+	uid := util.GetUserId(user)
 	sid, err := u.GetInt64(":sectionId")
 	m, err := u.GetInt("learnMinute")
 	s, err := u.GetInt("learnSecond")
@@ -283,7 +283,7 @@ func (u *StudentController) GetLastLearnSection() {
 		u.ServeJSON()
 		return
 	}
-	uid := user.Username
+	uid := util.GetUserId(user)
 	projectId := u.GetString(":projectId")
 	l, err := models.GetLastLearnSection(uid, projectId)
 	if err != nil {

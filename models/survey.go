@@ -18,7 +18,7 @@ type Question struct {
 	QuestionTitle   string    `json:"questionTitle"`
 	QuestionType    string    `json:"questionType"`
 	QuestionOptions string    `json:"questionOptions" xorm:"text"`
-	QuestionCount   string    `json:"question" xorm:"text"`
+	QuestionCount   string    `json:"questionCount" xorm:"text"`
 }
 type SurveyDetail struct {
 	Survey               `json:"survey" xorm:"extends"`

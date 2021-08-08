@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"OpenPBL/util"
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
@@ -82,9 +81,6 @@ func (c *AuthController) Login() {
 		return
 	}
 
-	fmt.Println(claims.StandardClaims)
-
-	claims.AccessToken = token.AccessToken
 	c.SetSessionUser(claims)
 
 	resp := &Response{

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"OpenPBL/models"
+	"OpenPBL/util"
 	"encoding/json"
 	"strconv"
 	"time"
@@ -35,7 +36,7 @@ func (p *ProjectController) CreateSubmit() {
 		p.ServeJSON()
 		return
 	}
-	uid := user.Username
+	uid := util.GetUserId(user)
 	tid, err := p.GetInt64(":taskId")
 	pid, err := p.GetInt64(":projectId")
 
@@ -97,7 +98,7 @@ func (p *ProjectController) UpdateSubmit() {
 	}
 	var uid string
 	if user.Tag == "student" {
-		uid = user.Username
+		uid = util.GetUserId(user)
 	}
 	tid, err := p.GetInt64(":taskId")
 	sid, err := p.GetInt64(":submitId")

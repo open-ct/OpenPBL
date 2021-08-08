@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"OpenPBL/models"
+	"OpenPBL/util"
 	"strconv"
 )
 
@@ -11,6 +12,7 @@ type TaskResponse struct {
 	Learning     bool                `json:"learning"`
 	Editable     bool                `json:"editable"`
 	TeacherScore bool                `json:"teacherScore"`
+	ShowCount    bool                `json:"showCount"`
 }
 
 // GetSectionTasksDetail
@@ -36,10 +38,14 @@ func (p *ProjectController) GetSectionTasksDetail() {
 		p.ServeJSON()
 		return
 	}
+	showCount := false
 	if user.Tag != "student" {
 		learning = false
 	}
-	uid := user.Username
+	if user.Tag == "teacher" {
+		showCount = true
+	}
+	uid := util.GetUserId(user)
 	pid := p.GetString(":projectId")
 	learning = models.IsLearningProject(pid, uid)
 	tasks, err := models.GetSectionTasks(sid, uid, learning)
@@ -60,6 +66,7 @@ func (p *ProjectController) GetSectionTasksDetail() {
 			Tasks:    tasks,
 			Learning: learning,
 			Editable: learning,
+			ShowCount: showCount,
 		}
 	}
 	p.ServeJSON()
@@ -75,11 +82,9 @@ func (p *ProjectController) GetSectionTasksDetail() {
 func (p *ProjectController) GetProjectTasks() {
 	user := p.GetSessionUser()
 	if user == nil {
-		p.Data["json"] = TaskResponse{
-			Response: Response{
-				Code: 401,
-				Msg:  "请先登录",
-			},
+		p.Data["json"] = Response{
+			Code: 401,
+			Msg:  "请先登录",
 		}
 		p.ServeJSON()
 		return
@@ -126,8 +131,9 @@ func (p *ProjectController) GetProjectTasksDetail() {
 
 	showSubmit := false
 	teacherScore := false
-	uid := user.Username
+	uid := util.GetUserId(user)
 	editable := true
+	showCount := false
 	pid := p.GetString(":projectId")
 
 
@@ -136,6 +142,7 @@ func (p *ProjectController) GetProjectTasksDetail() {
 		showSubmit = true
 		editable = false
 		teacherScore = true
+		showCount = true
 	}
 	if user.Tag != "student" {
 		learning = false
@@ -165,6 +172,7 @@ func (p *ProjectController) GetProjectTasksDetail() {
 			Learning: learning,
 			Editable: editable,
 			TeacherScore: teacherScore,
+			ShowCount: showCount,
 		}
 	}
 	p.ServeJSON()

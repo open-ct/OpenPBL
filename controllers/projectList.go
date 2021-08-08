@@ -82,7 +82,7 @@ func (pl *ProjectListController) GetUserProjectList() {
 		pl.ServeJSON()
 		return
 	}
-	uid := user.Username
+	uid := util.GetUserId(user)
 
 	var projects []models.ProjectDetail
 	var count    int64
