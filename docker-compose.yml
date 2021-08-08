@@ -16,4 +16,4 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - /usr/local/docker/openpbl-mysql:/var/lib/mysql
+      - /usr/local/docker/mysql:/var/lib/mysql
