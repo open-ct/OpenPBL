@@ -6,7 +6,7 @@ import SectionApi from "../../../api/SectionApi";
 import "../CreateProject/Section/component/section-edit.less"
 import "./preview.less"
 import TaskApi from "../../../api/TaskApi";
-import util from "../component/Util"
+import util from "../../component/Util"
 import StudentApi from "../../../api/StudentApi";
 import TaskCard from "./component/TaskCard";
 

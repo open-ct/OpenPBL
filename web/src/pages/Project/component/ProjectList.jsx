@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom';
 
 import './project-list.less';
 import ProjectListApi from '../../../api/ProjectListApi'
-import util from './Util'
+import util from '../../component/Util'
 
 const {Meta} = Card;
 const {Search} = Input;

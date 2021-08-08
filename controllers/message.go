@@ -3,6 +3,7 @@ package controllers
 import (
 	"OpenPBL/models"
 	"OpenPBL/util"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
@@ -36,12 +37,14 @@ type MessagesResponse struct {
 // GetUserMessages
 // @Title
 // @Description
-// @Param type path string true "received sent"
+// @Param readType params string true "read unread all"
+// @Param messageType params string true "info warn error all"
 // @Param from params int false ""
 // @Param size params int false ""
+// @Param orderType params string false "desc asc"
 // @Success 200 {object} MessagesResponse
 // @Failure 400
-// @router /:type [get]
+// @router / [get]
 func (m *MessageController) GetUserMessages() {
 	user := m.GetSessionUser()
 	var resp ProjectResponse
@@ -62,16 +65,17 @@ func (m *MessageController) GetUserMessages() {
 	if err != nil {
 		size = 10
 	}
-	t := m.GetString(":type")
+	orderType := m.GetString("orderType")
+	r := m.GetString("readType")
+	t := m.GetString("messageType")
 	uid := util.GetUserId(user)
 
 	var messages []models.Message
 	var rows     int64
-	if t == "received" {
-		messages, rows, err = models.GetReceivedMessages(uid, "desc", from, size)
-	} else if t == "sent" {
-		messages, rows, err = models.GetSentMessages(uid, "desc", from, size)
-	}
+	messages, rows, err = models.GetMessages(uid, orderType, t, r, from, size)
+
+	fmt.Println(err)
+
 	if err != nil {
 		m.Data["json"] = MessagesResponse{
 			Code:    400,
@@ -84,4 +88,122 @@ func (m *MessageController) GetUserMessages() {
 		}
 	}
 	m.ServeJSON()
+}
+
+// ReadUserMessage
+// @Title
+// @Description
+// @Param messageId path string true ""
+// @Success 200 {object} Response
+// @Failure 400
+// @router /:messageId/read [post]
+func (m *MessageController) ReadUserMessage() {
+	user := m.GetSessionUser()
+	var resp ProjectResponse
+	if user == nil {
+		resp = ProjectResponse{
+			Code:    401,
+			Msg:     "请先登录",
+		}
+		m.Data["json"] = resp
+		m.ServeJSON()
+		return
+	}
+	uid := util.GetUserId(user)
+	mid, err := m.GetInt64(":messageId")
+	err = models.ReadMessage(mid, uid)
+	if err != nil {
+		m.Data["json"] = Response{
+			Code:    400,
+			Msg:     err.Error(),
+		}
+	} else {
+		m.Data["json"] = Response{
+			Code:    200,
+		}
+	}
+	m.ServeJSON()
+}
+
+// DeleteUserMessage
+// @Title
+// @Description
+// @Param messageId path string true ""
+// @Success 200 {object} Response
+// @Failure 400
+// @router /:messageId/delete [post]
+func (m *MessageController) DeleteUserMessage() {
+	user := m.GetSessionUser()
+	var resp ProjectResponse
+	if user == nil {
+		resp = ProjectResponse{
+			Code:    401,
+			Msg:     "请先登录",
+		}
+		m.Data["json"] = resp
+		m.ServeJSON()
+		return
+	}
+	uid := util.GetUserId(user)
+	mid, err := m.GetInt64(":messageId")
+	msg := models.Message{
+		Id:           mid,
+		ReceiverId:   uid,
+	}
+	err = msg.Delete()
+	if err != nil {
+		m.Data["json"] = Response{
+			Code:    400,
+			Msg:     err.Error(),
+		}
+	} else {
+		m.Data["json"] = Response{
+			Code:    200,
+		}
+	}
+	m.ServeJSON()
+}
+
+// ReadAllUserMessage
+// @Title
+// @Description
+// @Success 200 {object} Response
+// @Failure 400
+// @router /read-all [post]
+func (m *MessageController) ReadAllUserMessage() {
+	user := m.GetSessionUser()
+	var resp ProjectResponse
+	if user == nil {
+		resp = ProjectResponse{
+			Code:    401,
+			Msg:     "请先登录",
+		}
+		m.Data["json"] = resp
+		m.ServeJSON()
+		return
+	}
+	uid := util.GetUserId(user)
+	err := models.ReadAllMessage(uid)
+	if err != nil {
+		m.Data["json"] = Response{
+			Code:    400,
+			Msg:     err.Error(),
+		}
+	} else {
+		m.Data["json"] = Response{
+			Code:    200,
+		}
+	}
+	m.ServeJSON()
+}
+
+
+
+
+func CreateMessage(msg *models.Message) bool {
+	err := msg.Create()
+	if err != nil {
+		return false
+	}
+	return true
 }
