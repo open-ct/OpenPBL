@@ -160,7 +160,11 @@ class ProjectInfo extends React.PureComponent {
     StudentApi.exitProject(this.state.pid)
       .then(res => {
         if (res.data.code === 200) {
-          window.location.href = "/my-project"
+          if (this.props.userType === 'teacher') {
+            window.location.href = '/my-project/published'
+          } else {
+            window.location.href = '/my-project/learning'
+          }
         } else {
           message.error(res.data.msg)
         }
@@ -173,8 +177,11 @@ class ProjectInfo extends React.PureComponent {
     ProjectApi.deleteProject(this.state.pid)
       .then(res => {
         if (res.data.code === 200) {
-          window.location.href = "/my-project"
-        } else {
+          if (this.props.userType === 'teacher') {
+            window.location.href = '/my-project/published'
+          } else {
+            window.location.href = '/my-project/learning'
+          }        } else {
           message.error(res.data.msg)
         }
       })
