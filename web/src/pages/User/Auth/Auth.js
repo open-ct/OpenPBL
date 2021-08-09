@@ -44,6 +44,9 @@ export function getUserProfileUrl(userName, account) {
 }
 
 export function getMyProfileUrl(account) {
+
+  console.log(account)
+
   let param = "";
   if (account !== undefined && account !== null) {
     param = `?access_token=${account.accessToken}`;

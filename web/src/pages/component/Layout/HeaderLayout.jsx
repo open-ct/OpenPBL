@@ -36,8 +36,6 @@ class HeaderLayout extends React.Component {
             account: res.data.data
           })
           this.props.setUserType(res.data.data.tag)
-          console.log(this.props.userType)
-
         } else {
           this.props.setUserType("")
         }
@@ -115,7 +113,7 @@ class HeaderLayout extends React.Component {
               </Link>
             </Col>
             <Col xxl={6} xl={10} lg={12} md={14} sm={12} xs={6}>
-              <Menu theme="light" mode="horizontal" defaultSelectedKeys={[current]} style={{border: 0}}>
+              <Menu theme="light" mode="horizontal" style={{border: 0}}>
                 <Menu.Item key="home">
                   <Link to="/home">
                     首页

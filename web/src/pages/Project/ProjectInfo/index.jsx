@@ -45,7 +45,6 @@ class ProjectInfo extends React.PureComponent {
       project: {},
       teacher: {},
       menu: menu,
-      userType: this.props.userType,
       lastLearn: {}
     };
   }
@@ -95,7 +94,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   handleClick = (e) => {
-    if (this.state.userType === 'student' && e.key === "student-evidence" && !this.state.project.learning) {
+    if (this.props.userType === 'student' && e.key === "student-evidence" && !this.state.project.learning) {
       message.warn("请先加入学习")
       return
     }
@@ -104,7 +103,11 @@ class ProjectInfo extends React.PureComponent {
     });
   }
   back = e => {
-    window.location.href = '/my-project'
+    if (this.props.userType === 'teacher') {
+      window.location.href = '/my-project/published'
+    } else {
+      window.location.href = '/my-project/learning'
+    }
   }
   learnProject = e => {
     StudentApi.learnProject(this.state.pid)
@@ -187,7 +190,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   render() {
-    const {project, teacher, menu, userType, pid, lastLearn} = this.state;
+    const {project, teacher, menu, pid, lastLearn} = this.state;
 
     const teacherBt = (
       <div style={{float: 'right'}}>
@@ -370,7 +373,7 @@ class ProjectInfo extends React.PureComponent {
                           </span>
                       </div>
                       <br/>
-                      {userType === 'student' ?
+                      {this.props.userType === 'student' ?
                         studentBt
                         :
                         <>

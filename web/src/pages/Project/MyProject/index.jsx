@@ -12,12 +12,7 @@ import {Affix, Button, Layout, Menu} from "antd";
 import ProjectApi from "../../../api/ProjectApi";
 
 class MyProject extends React.PureComponent {
-  constructor(props) {
-    super(props)
-    this.state = {
-      userType: this.props.userType,
-    }
-  }
+
   createProject = e => {
     ProjectApi.createProject()
       .then((res) => {
@@ -31,7 +26,6 @@ class MyProject extends React.PureComponent {
   }
 
   render() {
-    const {userType} = this.state
     return (
       <DocumentTitle title="My Project">
         <Layout style={{margin: '20px'}}>
@@ -42,7 +36,7 @@ class MyProject extends React.PureComponent {
               theme="light"
               style={{backgroundColor: '#f2f4f5'}}
             >
-              {userType === 'teacher' ?
+              {this.props.userType === 'teacher' ?
                 <Menu
                   defaultSelectedKeys={['published']}
                   className="menu-bar"
@@ -82,7 +76,7 @@ class MyProject extends React.PureComponent {
                   </Menu.Item>
                 </Menu>
               }
-              {userType === 'teacher' ?
+              {this.props.userType === 'teacher' ?
                 <Button
                   type='primary'
                   shape='round'
@@ -99,7 +93,7 @@ class MyProject extends React.PureComponent {
             </Layout.Sider>
           </Affix>
           <Layout.Content style={{marginLeft: '10px'}}>
-            {userType === 'teacher' ?
+            {this.props.userType === 'teacher' ?
               <Switch>
                 <Route exact path="/my-project" render={() => (
                   <Redirect to="/my-project/published"/>

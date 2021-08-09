@@ -146,9 +146,9 @@ function ProjectList(obj) {
         </Row>
       </Card>
 
-      <div style={{marginTop: '10px'}}>
+      <div style={{marginTop: '10px', textAlign: 'center'}}>
         <Spin spinning={loadProjects} />
-        <Row gutter={[20, 20]}>
+        <Row gutter={[20, 20]} style={{textAlign: 'left'}}>
           {
             learningProjectList.map((item, index) => (
               <Col key={index.toString()} {...topColResponsiveProps}>
