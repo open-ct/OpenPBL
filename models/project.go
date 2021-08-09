@@ -34,6 +34,7 @@ type Project struct {
 type ProjectDetail struct {
 	Project            `xorm:"extends"`
 	Learning bool      `json:"learning"`
+	Created  bool      `json:"created"`
 }
 
 type ProjectSkill struct {
@@ -56,14 +57,16 @@ func (p *ProjectSubject) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(p)
 }
 
-func GetProjectByPidForTeacher(pid string) (pd ProjectDetail, err error) {
+func GetProjectByPidForTeacher(pid string, uid string) (pd ProjectDetail, err error) {
 	var p Project
 	c, err := (&Project{}).GetEngine().
 		ID(pid).
 		Get(&p)
+	created := uid == p.TeacherId
 	pd = ProjectDetail{
 		Project:  p,
 		Learning: false,
+		Created: created,
 	}
 	if !c {
 		err = errors.New("404")

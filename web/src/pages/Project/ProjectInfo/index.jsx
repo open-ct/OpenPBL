@@ -1,6 +1,20 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
-import {Avatar, BackTop, Button, Card, Col, Divider, Image, Menu, message, PageHeader, Popconfirm, Row} from 'antd';
+import {
+  Avatar,
+  BackTop,
+  Button,
+  Card,
+  Col,
+  Divider,
+  Image,
+  Menu,
+  message,
+  PageHeader,
+  Popconfirm,
+  Row,
+  Tag
+} from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import localStorage from 'localStorage';
 import {Link} from 'react-router-dom';
@@ -337,7 +351,11 @@ class ProjectInfo extends React.PureComponent {
                     </Col>
                     <Col span={1}>&nbsp;</Col>
                     <Col flex="auto">
-                      <p style={{fontSize: '20px'}}>{project.projectTitle}</p>
+                      <p style={{fontSize: '20px'}}>
+                        {project.projectTitle}&nbsp;&nbsp;
+                        {project.created ? <Tag color="geekblue">我创建的项目</Tag> : null}
+                        {project.learning ? <Tag color="geekblue">正在学习</Tag> : null}
+                      </p>
                       <p
                         style={{fontSize: '14px', color: 'gray'}}
                       >发布时间：{util.FilterTime(project.createAt)}
@@ -353,7 +371,16 @@ class ProjectInfo extends React.PureComponent {
                           </span>
                       </div>
                       <br/>
-                      {type === 'student' ? studentBt : teacherBt}
+                      {type === 'student' ?
+                        studentBt
+                        :
+                        <>
+                          {project.created ?
+                            teacherBt
+                            : null
+                          }
+                        </>
+                      }
                     </Col>
                   </Row>
                 </Card>
@@ -369,9 +396,9 @@ class ProjectInfo extends React.PureComponent {
                   <Menu.Item key="project-outline">项目大纲</Menu.Item>
                   <Menu.Item key="project-evaluation">评价方案</Menu.Item>
 
-                  {type === 'teacher' ? <Menu.Item key="student-admin">学生管理</Menu.Item>
+                  {project.created ? <Menu.Item key="student-admin">学生管理</Menu.Item>
                     : null}
-                  {type === 'student' ? <Menu.Item key="student-evidence">证据收集</Menu.Item>
+                  {project.learning ? <Menu.Item key="student-evidence">证据收集</Menu.Item>
                     : null}
                 </Menu>
                 <div style={{
@@ -392,7 +419,6 @@ class ProjectInfo extends React.PureComponent {
                   }
 
                   {menu === 'student-admin' ? <StudentAdmin project={project}/> : null}
-
                   {menu === 'student-evidence' ? <StudentEvidence project={project}/> : null}
 
                 </div>

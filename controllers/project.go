@@ -59,10 +59,10 @@ func (p *ProjectController) GetProjectDetail() {
 	uid := util.GetUserId(user)
 	var err error
 	var project models.ProjectDetail
-	if user.Tag == "student" {
+	if util.IsStudent(user) {
 		project, err = models.GetProjectByPidForStudent(pid, uid)
-	} else if user.Tag == "teacher" {
-		project, err = models.GetProjectByPidForTeacher(pid)
+	} else if util.IsTeacher(user) {
+		project, err = models.GetProjectByPidForTeacher(pid, uid)
 	}
 	if err != nil {
 		resp = ProjectResponse{
@@ -99,7 +99,7 @@ func (p *ProjectController) CreateProject() {
 		p.ServeJSON()
 		return
 	}
-	if user.Tag != "teacher" {
+	if !util.IsTeacher(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法用户",
