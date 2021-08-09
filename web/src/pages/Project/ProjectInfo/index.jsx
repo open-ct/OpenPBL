@@ -332,6 +332,7 @@ class ProjectInfo extends React.PureComponent {
                         src={project.image}
                         placeholder
                         preview={false}
+                        fallback={require("../../assets/empty.png").default}
                       />
                     </Col>
                     <Col span={1}>&nbsp;</Col>

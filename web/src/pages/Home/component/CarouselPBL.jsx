@@ -14,17 +14,17 @@ class CarouselPBL extends React.Component {
     super(props);
     this.imgArray = [
       {
-        img: require('../static/image/pbl1.png').default,
+        img: require('../../Project/PublicProject/static/image/pbl1.png').default,
         title: '',
         text: '',
       },
       {
-        img: require('../static/image/pbl2.png').default,
+        img: require('../../Project/PublicProject/static/image/pbl2.png').default,
         title: '',
         text: '',
       },
       {
-        img: require('../static/image/pbl3.png').default,
+        img: require('../../Project/PublicProject/static/image/pbl3.png').default,
         title: '',
         text: '',
       },
@@ -137,8 +137,7 @@ class CarouselPBL extends React.Component {
               <div style={{fontSize: '30px'}}>{item.text}</div>
             </TweenOne>
           </Element>
-        ))
-        }
+        ))}
 
         <Arrow
           arrowType="prev"

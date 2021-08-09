@@ -23,7 +23,7 @@ class AuthCallback extends React.Component {
         if (res.data.code === 200) {
           localStorage.setItem("type", res.data.data.tag)
           message.success("登录成功，跳转主页");
-          window.location.href = "/public-project"
+          window.location.href = "/home"
         } else {
           this.setState({
             msg: res.msg,

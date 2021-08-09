@@ -22,8 +22,9 @@ import PreviewSection from "../../Project/PreviewProject/PreviewSection";
 
 class HeaderLayout extends React.Component {
   state = {
-    current: this.props.current,
+    current: 'home',
     account: null,
+    messageCount: 0,
   }
 
   componentDidMount() {
@@ -103,13 +104,13 @@ class HeaderLayout extends React.Component {
   }
 
   render() {
-    const {current} = this.state;
+    const {current, messageCount} = this.state;
     return (
       <Layout style={{minHeight: '100vh', textAlign: 'left'}}>
         <Layout.Header style={{backgroundColor: 'white'}}>
           <Row>
             <Col xxl={15} xl={11} lg={8} md={6} sm={6} xs={10}>
-              <Link to="/landing">
+              <Link to="/home">
                 <div className="logo">
                   <span style={{fontSize: '25px', color: 'black', float: 'left', marginLeft: '80px'}}>OpenCT</span>
                 </div>
@@ -117,8 +118,8 @@ class HeaderLayout extends React.Component {
             </Col>
             <Col xxl={6} xl={10} lg={12} md={14} sm={12} xs={6}>
               <Menu theme="light" mode="horizontal" defaultSelectedKeys={[current]} style={{border: 0}}>
-                <Menu.Item key="landing">
-                  <Link to="/landing">
+                <Menu.Item key="home">
+                  <Link to="/home">
                     首页
                   </Link>
                 </Menu.Item>
@@ -148,7 +149,7 @@ class HeaderLayout extends React.Component {
                         shape="circle"
                         type="text"
                         icon={
-                          <Badge count={999} overflowCount={99} size="small">
+                          <Badge count={messageCount} overflowCount={99} size="small">
                             <BellOutlined/>
                           </Badge>
                         }
@@ -165,10 +166,10 @@ class HeaderLayout extends React.Component {
         <Layout.Content>
           <Switch>
             <Route exact path="/" render={() => (
-              <Redirect to="/landing"/>
+              <Redirect to="/home"/>
             )}/>
 
-            <Route exact path="/landing" component={Home}/>
+            <Route exact path="/home" component={Home}/>
             <Route exact path="/public-project" component={Project}/>
             <Route path="/my-project" component={MyProject}/>
             <Route path="/message" component={Message}/>
