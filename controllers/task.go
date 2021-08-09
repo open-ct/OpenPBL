@@ -100,14 +100,14 @@ func (p *ProjectController) GetProjectTasksDetail() {
 	editable := true
 	showCount := false
 	pid := p.GetString(":projectId")
-	if user.Tag == "teacher" {
+	if util.IsTeacher(user) {
 		uid = p.GetString("studentId")
 		showSubmit = true
 		editable = false
 		teacherScore = true
 		showCount = true
 	}
-	if user.Tag != "student" {
+	if !util.IsStudent(user) {
 		learning = false
 	} else {
 		learning = models.IsLearningProject(pid, uid)

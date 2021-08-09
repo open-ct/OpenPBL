@@ -101,7 +101,7 @@ func (p *ProjectController) UpdateSubmit() {
 		Scored:          scored,
 	}
 	var c = make([]models.Choice, 0)
-	if user.Tag == "student" && f.SubmitType == "survey" {
+	if util.IsStudent(user) && f.SubmitType == "survey" {
 		err = json.Unmarshal([]byte(p.GetString("choices")), &c)
 	}
 	err = f.Update(c)

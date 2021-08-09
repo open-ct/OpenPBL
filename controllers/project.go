@@ -120,7 +120,7 @@ func (p *ProjectController) CreateProject() {
 func (p *ProjectController) UpdateProject() {
 	user := p.GetSessionUser()
 	var resp Response
-	if user.Tag != "teacher" {
+	if !util.IsTeacher(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法用户",
@@ -178,7 +178,7 @@ func (p *ProjectController) UpdateProject() {
 func (p *ProjectController) UpdateProjectWeight() {
 	user := p.GetSessionUser()
 	var resp Response
-	if user.Tag != "teacher" {
+	if !util.IsTeacher(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法用户",
@@ -236,7 +236,7 @@ func (u *ProjectController) PublishProject() {
 	pid, err := u.GetInt64(":id")
 	var resp Response
 	user := u.GetSessionUser()
-	if user.Tag != "teacher" {
+	if !util.IsTeacher(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法的用户",
@@ -280,7 +280,7 @@ func (u *ProjectController) CloseProject() {
 	pid, err := u.GetInt64(":id")
 	var resp Response
 	user := u.GetSessionUser()
-	if user.Tag != "teacher" {
+	if !util.IsTeacher(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法的用户",
@@ -324,7 +324,7 @@ func (u *ProjectController) DeleteProject() {
 	pid, err := u.GetInt64(":id")
 	var resp Response
 	user := u.GetSessionUser()
-	if user.Tag != "teacher" {
+	if !util.IsTeacher(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法的用户",

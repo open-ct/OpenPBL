@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"OpenPBL/models"
+	"OpenPBL/util"
 	"strconv"
 )
 
@@ -23,11 +24,11 @@ func (p *ProjectController) GetProjectChapters() {
 	user := p.GetSessionUser()
 	uid := ""
 	show := false
-	if user.Tag == "student" {
+	if util.IsStudent(user) {
 		uid = user.Name
 		show = true
 	}
-	if user.Tag == "teacher" {
+	if util.IsTeacher(user) {
 		uid = p.GetString("studentId")
 		if uid != "" {
 			show = true
