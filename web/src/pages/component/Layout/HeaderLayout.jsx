@@ -26,6 +26,7 @@ class HeaderLayout extends React.Component {
     current: 'home',
     account: null,
     messageCount: 0,
+    menu: 'home'
   }
 
   componentDidMount() {
@@ -41,6 +42,24 @@ class HeaderLayout extends React.Component {
         }
       })
       .catch((e) => {console.log(e)})
+
+    this.changeMenu()
+  }
+
+  changeMenu = (e) => {
+    if (e !== undefined ) {
+      this.setState({menu: e.key})
+      return
+    }
+    const p = this.props.location.pathname
+    console.log(p)
+    if (p.startsWith('/home')) {
+      this.setState({menu: 'home'})
+    } else if (p.startsWith("/my-project")) {
+      this.setState({menu: 'my-project'})
+    } else if (p.startsWith("/public-project")) {
+      this.setState({menu: 'public-project'})
+    }
   }
 
   handleRightDropdownClick(e) {
@@ -100,7 +119,7 @@ class HeaderLayout extends React.Component {
   }
 
   render() {
-    const {current, messageCount} = this.state;
+    const {menu, messageCount} = this.state;
     return (
       <Layout style={{minHeight: '100vh', textAlign: 'left'}}>
         <Layout.Header style={{backgroundColor: 'white'}}>
@@ -113,7 +132,14 @@ class HeaderLayout extends React.Component {
               </Link>
             </Col>
             <Col xxl={6} xl={10} lg={12} md={14} sm={12} xs={6}>
-              <Menu theme="light" mode="horizontal" style={{border: 0}}>
+              <Menu
+                theme="light"
+                mode="horizontal"
+                style={{border: 0}}
+                defaultSelectedKeys={['home']}
+                selectedKeys={[menu]}
+                onClick={e=>this.changeMenu(e)}
+              >
                 <Menu.Item key="home">
                   <Link to="/home">
                     首页

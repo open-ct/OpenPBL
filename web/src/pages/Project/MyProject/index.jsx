@@ -12,6 +12,30 @@ import {Affix, Button, Layout, Menu} from "antd";
 import ProjectApi from "../../../api/ProjectApi";
 
 class MyProject extends React.PureComponent {
+  state = {
+    menu: 'published'
+  }
+
+  componentDidMount() {
+    this.changeMenu()
+  }
+
+  changeMenu = (e) => {
+    if (e !== undefined ) {
+      this.setState({menu: e.key})
+      return
+    }
+    const p = this.props.location.pathname
+    if (p.endsWith("/published")) {
+      this.setState({menu: 'published'})
+    } else if (p.endsWith("/editing")) {
+      this.setState({menu: 'editing'})
+    } else if (p.endsWith("/finished")) {
+      this.setState({menu: 'finished'})
+    } else if (p.endsWith("/learning")) {
+      this.setState({menu: 'learning'})
+    }
+  }
 
   createProject = e => {
     ProjectApi.createProject()
@@ -26,6 +50,7 @@ class MyProject extends React.PureComponent {
   }
 
   render() {
+    const {menu} = this.state
     return (
       <DocumentTitle title="My Project">
         <Layout style={{margin: '20px'}}>
@@ -40,6 +65,8 @@ class MyProject extends React.PureComponent {
                 <Menu
                   defaultSelectedKeys={['published']}
                   className="menu-bar"
+                  selectedKeys={[menu]}
+                  onClick={e=>this.changeMenu(e)}
                   mode="inline"
                 >
                   <Menu.Item key="published" icon={<CheckCircleOutlined/>}>
@@ -62,6 +89,8 @@ class MyProject extends React.PureComponent {
                 <Menu
                   defaultSelectedKeys={['learning']}
                   className="menu-bar"
+                  selectedKeys={[menu]}
+                  onClick={e=>this.changeMenu(e)}
                   mode="inline"
                 >
                   <Menu.Item key="learning" icon={<SyncOutlined/>}>
