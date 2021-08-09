@@ -21,14 +21,6 @@ type ChaptersResponse struct {
 // @router /:id/chapters [get]
 func (p *ProjectController) GetProjectChapters() {
 	user := p.GetSessionUser()
-	if user == nil {
-		p.Data["json"] = ChaptersResponse{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		p.ServeJSON()
-		return
-	}
 	uid := ""
 	show := false
 	if user.Tag == "student" {

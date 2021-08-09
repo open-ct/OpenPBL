@@ -71,18 +71,8 @@ func (pl *ProjectListController) GetUserProjectList() {
 	text := pl.GetString("text")
 
 	user := pl.GetSessionUser()
-	var data ProjectList
-
-	if user == nil {
-		data = ProjectList{
-			Code:     401,
-			Msg:      "请先登录",
-		}
-		pl.Data["json"] = data
-		pl.ServeJSON()
-		return
-	}
 	uid := util.GetUserId(user)
+	var data ProjectList
 
 	var projects []models.ProjectDetail
 	var count    int64

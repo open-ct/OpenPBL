@@ -46,16 +46,6 @@ type ProjectResponse struct {
 func (p *ProjectController) GetProjectDetail() {
 	pid := p.GetString(":id")
 	user := p.GetSessionUser()
-	var resp ProjectResponse
-	if user == nil {
-		resp = ProjectResponse{
-			Code:    401,
-			Msg:     "请先登录",
-		}
-		p.Data["json"] = resp
-		p.ServeJSON()
-		return
-	}
 	uid := util.GetUserId(user)
 	var err error
 	var project models.ProjectDetail
@@ -65,17 +55,16 @@ func (p *ProjectController) GetProjectDetail() {
 		project, err = models.GetProjectByPidForTeacher(pid, uid)
 	}
 	if err != nil {
-		resp = ProjectResponse{
+		p.Data["json"] = ProjectResponse{
 			Code:    400,
 			Msg:     err.Error(),
 		}
 	} else {
-		resp = ProjectResponse{
+		p.Data["json"] = ProjectResponse{
 			Code:    200,
 			Project: project,
 		}
 	}
-	p.Data["json"] = resp
 	p.ServeJSON()
 }
 
@@ -90,15 +79,6 @@ func (p *ProjectController) GetProjectDetail() {
 func (p *ProjectController) CreateProject() {
 	user := p.GetSessionUser()
 	var resp Response
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		p.Data["json"] = resp
-		p.ServeJSON()
-		return
-	}
 	if !util.IsTeacher(user) {
 		resp = Response{
 			Code: 403,
@@ -140,15 +120,6 @@ func (p *ProjectController) CreateProject() {
 func (p *ProjectController) UpdateProject() {
 	user := p.GetSessionUser()
 	var resp Response
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		p.Data["json"] = resp
-		p.ServeJSON()
-		return
-	}
 	if user.Tag != "teacher" {
 		resp = Response{
 			Code: 403,
@@ -207,15 +178,6 @@ func (p *ProjectController) UpdateProject() {
 func (p *ProjectController) UpdateProjectWeight() {
 	user := p.GetSessionUser()
 	var resp Response
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		p.Data["json"] = resp
-		p.ServeJSON()
-		return
-	}
 	if user.Tag != "teacher" {
 		resp = Response{
 			Code: 403,
@@ -274,15 +236,6 @@ func (u *ProjectController) PublishProject() {
 	pid, err := u.GetInt64(":id")
 	var resp Response
 	user := u.GetSessionUser()
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		u.Data["json"] = resp
-		u.ServeJSON()
-		return
-	}
 	if user.Tag != "teacher" {
 		resp = Response{
 			Code: 403,
@@ -327,15 +280,6 @@ func (u *ProjectController) CloseProject() {
 	pid, err := u.GetInt64(":id")
 	var resp Response
 	user := u.GetSessionUser()
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		u.Data["json"] = resp
-		u.ServeJSON()
-		return
-	}
 	if user.Tag != "teacher" {
 		resp = Response{
 			Code: 403,
@@ -380,15 +324,6 @@ func (u *ProjectController) DeleteProject() {
 	pid, err := u.GetInt64(":id")
 	var resp Response
 	user := u.GetSessionUser()
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		u.Data["json"] = resp
-		u.ServeJSON()
-		return
-	}
 	if user.Tag != "teacher" {
 		resp = Response{
 			Code: 403,
@@ -429,16 +364,6 @@ func (u *ProjectController) RemoveStudent() {
 	pid, err := u.GetInt64(":projectId")
 	sid := u.GetString(":studentId")
 	var resp Response
-	user := u.GetSessionUser()
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		u.Data["json"] = resp
-		u.ServeJSON()
-		return
-	}
 	l := &models.LearnProject{
 		StudentId: sid,
 		ProjectId: pid,

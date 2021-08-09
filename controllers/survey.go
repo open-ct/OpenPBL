@@ -44,7 +44,7 @@ func (p *ProjectController) CreateSurvey() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "创建失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
@@ -79,7 +79,7 @@ func (p *ProjectController) UpdateSurvey() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "更新失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
@@ -114,7 +114,7 @@ func (p *ProjectController) CreateQuestion() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "创建失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
@@ -151,7 +151,7 @@ func (p *ProjectController) UpdateQuestion() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "更新失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
@@ -177,6 +177,7 @@ func (p *ProjectController) ExchangeQuestion() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
+			Msg: err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
@@ -203,7 +204,7 @@ func (p *ProjectController) DeleteQuestion() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "参数非法",
+			Msg:  err.Error(),
 		}
 		p.ServeJSON()
 		return
@@ -212,7 +213,7 @@ func (p *ProjectController) DeleteQuestion() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "删除失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
