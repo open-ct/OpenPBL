@@ -123,7 +123,7 @@ func (p *ProjectController) UpdateChapterSection() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "更新失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
@@ -158,7 +158,7 @@ func (p *ProjectController) DeleteChapterSection() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "删除失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{

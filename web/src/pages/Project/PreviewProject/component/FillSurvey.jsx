@@ -1,11 +1,12 @@
 import React, {useState} from "react";
 import {Button, Checkbox, Collapse, Divider, Input, message, Radio} from "antd";
+import ReactEcharts from "echarts-for-react";
 
 import Question from "../../CreateProject/Survey/component/Question"
 import "../preview.less"
 import "../../CreateProject/Section/component/section-edit.less"
 import SubmitApi from "../../../../api/SubmitApi";
-import ReactEcharts from "echarts-for-react";
+
 
 const blank = Question.blank
 

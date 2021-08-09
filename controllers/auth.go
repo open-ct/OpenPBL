@@ -81,6 +81,7 @@ func (c *AuthController) Login() {
 		return
 	}
 
+	// claims.AccessToken = token.AccessToken
 	c.SetSessionUser(claims)
 
 	resp := &Response{

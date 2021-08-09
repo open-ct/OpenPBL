@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import QueueAnim from 'rc-queue-anim';
-import {Card, Col, Divider, Image, Input, Pagination, Row, Select, Tag} from 'antd';
+import {Card, Col, Divider, Empty, Image, Input, Pagination, Row, Select, Spin, Tag} from 'antd';
 import {EyeOutlined, TeamOutlined} from '@ant-design/icons';
 import {Link} from 'react-router-dom';
 
@@ -20,6 +19,9 @@ const topColResponsiveProps = {
 
 function ProjectList(obj) {
   const [learningProjectList, setLearningProjectList] = useState([]);
+
+  const [loadProjects, setLoadProjects] = useState(false)
+
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
 
@@ -44,8 +46,9 @@ function ProjectList(obj) {
   }
 
   const updateProjectList = (p, size, subject, skill, text) => {
+    setLoadProjects(true)
     let q = {
-      page: p - 1,
+      from: (p - 1)*size,
       size: size,
       orderBy: 'create_at',
       orderType: 'desc',
@@ -55,6 +58,7 @@ function ProjectList(obj) {
     }
     ProjectListApi.getUserProjectList(mode, q)
       .then((res) => {
+        setLoadProjects(false)
         if (res.data.projects === null) {
           setLearningProjectList([])
         } else {
@@ -90,7 +94,7 @@ function ProjectList(obj) {
     updateProjectList(page, size, selectedSubjects.toString(), selectedSkills.toString(), v)
   };
   return (
-    <QueueAnim delay={100} className="queue-simple">
+    <div>
       <Card bordered={false} style={{backgroundColor: 'white', borderRadius: '4px', textAlign: 'left'}}>
         <Search
           size="large"
@@ -142,8 +146,9 @@ function ProjectList(obj) {
         </Row>
       </Card>
 
-      <div key="1" style={{marginTop: '10px'}}>
-        <Row gutter={[15, 15]}>
+      <div style={{marginTop: '10px'}}>
+        <Spin spinning={loadProjects} />
+        <Row gutter={[20, 20]}>
           {
             learningProjectList.map((item, index) => (
               <Col key={index.toString()} {...topColResponsiveProps}>
@@ -151,16 +156,25 @@ function ProjectList(obj) {
                   <Card
                     hoverable
                     bordered={false}
-                    className="item-card"
+                    style={{
+                      borderRadius: '10px',
+                    }}
                     cover={
                       <Image
                         src={item.image}
                         preview={false}
+                        style={{
+                          borderTopLeftRadius: '10px',
+                          borderTopRightRadius: '10px',
+                        }}
+                        fallback={require("../../assets/empty.png").default}
                       />
                     }
                   >
                     <Meta
-                      title={item.projectTitle}
+                      title={
+                        item.projectTitle === '' ? "无": item.projectTitle
+                      }
                       description={
                         <div>
                           {item.subjects === '' ? '无' : item.subjects}
@@ -222,7 +236,7 @@ function ProjectList(obj) {
         </div>
         <br/>
       </div>
-    </QueueAnim>
+    </div>
   );
 }
 

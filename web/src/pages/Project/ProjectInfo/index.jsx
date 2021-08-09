@@ -1,9 +1,23 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
-import {Avatar, BackTop, Button, Card, Col, Divider, Image, Menu, message, PageHeader, Popconfirm, Row} from 'antd';
+import {
+  Avatar,
+  BackTop,
+  Button,
+  Card,
+  Col,
+  Divider,
+  Image,
+  Menu,
+  message,
+  PageHeader,
+  Popconfirm,
+  Row,
+  Tag
+} from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import localStorage from 'localStorage';
 import {Link} from 'react-router-dom';
+import {connect} from "react-redux";
 
 import ProjectIntroduce from './component/ProjectIntroduce';
 import ProjectOutline from './component/ProjectOutline';
@@ -23,7 +37,6 @@ class ProjectInfo extends React.PureComponent {
     const pid = this.props.match.params.id;
     let url = new URLSearchParams(this.props.location.search)
     let menu = url.get("menu")
-    console.log(menu)
     if (menu === undefined || menu === null) {
       menu = 'project-introduce'
     }
@@ -32,7 +45,7 @@ class ProjectInfo extends React.PureComponent {
       project: {},
       teacher: {},
       menu: menu,
-      type: localStorage.getItem('type'),
+      userType: this.props.userType,
       lastLearn: {}
     };
   }
@@ -82,7 +95,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   handleClick = (e) => {
-    if (this.state.type === 'student' && e.key === "student-evidence" && !this.state.project.learning) {
+    if (this.state.userType === 'student' && e.key === "student-evidence" && !this.state.project.learning) {
       message.warn("请先加入学习")
       return
     }
@@ -174,7 +187,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   render() {
-    const {project, teacher, menu, type, pid, lastLearn} = this.state;
+    const {project, teacher, menu, userType, pid, lastLearn} = this.state;
 
     const teacherBt = (
       <div style={{float: 'right'}}>
@@ -332,11 +345,16 @@ class ProjectInfo extends React.PureComponent {
                         src={project.image}
                         placeholder
                         preview={false}
+                        fallback={require("../../assets/empty.png").default}
                       />
                     </Col>
                     <Col span={1}>&nbsp;</Col>
                     <Col flex="auto">
-                      <p style={{fontSize: '20px'}}>{project.projectTitle}</p>
+                      <p style={{fontSize: '20px'}}>
+                        {project.projectTitle}&nbsp;&nbsp;
+                        {project.created ? <Tag color="geekblue">我创建的项目</Tag> : null}
+                        {project.learning ? <Tag color="geekblue">正在学习</Tag> : null}
+                      </p>
                       <p
                         style={{fontSize: '14px', color: 'gray'}}
                       >发布时间：{util.FilterTime(project.createAt)}
@@ -352,7 +370,16 @@ class ProjectInfo extends React.PureComponent {
                           </span>
                       </div>
                       <br/>
-                      {type === 'student' ? studentBt : teacherBt}
+                      {userType === 'student' ?
+                        studentBt
+                        :
+                        <>
+                          {project.created ?
+                            teacherBt
+                            : null
+                          }
+                        </>
+                      }
                     </Col>
                   </Row>
                 </Card>
@@ -368,9 +395,9 @@ class ProjectInfo extends React.PureComponent {
                   <Menu.Item key="project-outline">项目大纲</Menu.Item>
                   <Menu.Item key="project-evaluation">评价方案</Menu.Item>
 
-                  {type === 'teacher' ? <Menu.Item key="student-admin">学生管理</Menu.Item>
+                  {project.created ? <Menu.Item key="student-admin">学生管理</Menu.Item>
                     : null}
-                  {type === 'student' ? <Menu.Item key="student-evidence">证据收集</Menu.Item>
+                  {project.learning ? <Menu.Item key="student-evidence">证据收集</Menu.Item>
                     : null}
                 </Menu>
                 <div style={{
@@ -391,7 +418,6 @@ class ProjectInfo extends React.PureComponent {
                   }
 
                   {menu === 'student-admin' ? <StudentAdmin project={project}/> : null}
-
                   {menu === 'student-evidence' ? <StudentEvidence project={project}/> : null}
 
                 </div>
@@ -404,4 +430,11 @@ class ProjectInfo extends React.PureComponent {
   }
 }
 
-export default ProjectInfo
+function mapStateToProps(state) {
+  return {
+    userType: state.get("userType").get("userType")
+  }
+}
+
+
+export default connect(mapStateToProps, null)(ProjectInfo)

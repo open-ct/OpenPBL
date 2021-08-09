@@ -1,52 +1,28 @@
-import React from 'react';
-import DocumentTitle from 'react-document-title';
-import {enquireScreen} from 'enquire-js';
-
-import Banner from './Banner';
-import Page1 from './Page1';
-import Page2 from './Page2';
-import Footer from './Footer';
-import './static/style';
-import TestPage from "./TestPage";
-import Teams2 from "./Teams2";
-import {Teams20DataSource} from './data.source';
-
-
-let isMobile;
-
-enquireScreen((b) => {
-  isMobile = b;
-});
+import React from "react";
+import CarouselPBL from "./component/CarouselPBL";
+import DocumentTitle from 'react-document-title'
+import LatestProject from "./component/LatestProject";
+import {Divider} from "antd";
 
 class Home extends React.PureComponent {
-  state = {
-    isMobile,
-  }
-
-  componentDidMount() {
-    enquireScreen((b) => {
-      this.setState({
-        isMobile: !!b,
-      });
-    });
-  }
-
   render() {
     return (
-      <DocumentTitle title="OpenCT">
-        <div style={{textAlign: 'left', backgroundColor: 'white'}}>
-          <div className="home-wrapper">
-            <Banner isMobile={this.state.isMobile}/>
-            <TestPage isMobile={this.state.isMobile}/>
-            <Page1 isMobile={this.state.isMobile}/>
-            <Page2/>
-            <Teams2 dataSource={Teams20DataSource} isMobile={this.state.isMobile}/>
+      <DocumentTitle title="Home">
+        <div
+          style={{
+            margin: 'auto',
+            padding: '20px',
+          }}
+        >
+          <CarouselPBL/><br/>
+          <Divider orientation="center">最近的项目</Divider>
+          <div>
+            <LatestProject />
           </div>
-          <Footer/>
         </div>
       </DocumentTitle>
     );
   }
 }
 
-export default Home;
+export default Home

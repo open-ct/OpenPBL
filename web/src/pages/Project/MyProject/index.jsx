@@ -1,19 +1,22 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
-
-import localStorage from "localStorage";
 import {Link, Redirect, Route, Switch} from 'react-router-dom'
+import {CheckCircleOutlined, CheckOutlined, CopyOutlined, HighlightOutlined, SyncOutlined} from "@ant-design/icons";
+import {connect} from "react-redux";
+
 import PublishedProject from "../PublishedProject";
 import EditingProject from "../EditingProject";
 import FinishedProject from "../FinishedProject";
 import LearningProject from "../LearningProject";
 import {Affix, Button, Layout, Menu} from "antd";
-import {CheckCircleOutlined, CheckOutlined, CopyOutlined, HighlightOutlined, SyncOutlined} from "@ant-design/icons";
 import ProjectApi from "../../../api/ProjectApi";
 
 class MyProject extends React.PureComponent {
-  state = {
-    type: localStorage.getItem('type'),
+  constructor(props) {
+    super(props)
+    this.state = {
+      userType: this.props.userType,
+    }
   }
   createProject = e => {
     ProjectApi.createProject()
@@ -28,7 +31,7 @@ class MyProject extends React.PureComponent {
   }
 
   render() {
-    const {type} = this.state
+    const {userType} = this.state
     return (
       <DocumentTitle title="My Project">
         <Layout style={{margin: '20px'}}>
@@ -39,7 +42,7 @@ class MyProject extends React.PureComponent {
               theme="light"
               style={{backgroundColor: '#f2f4f5'}}
             >
-              {type === 'teacher' ?
+              {userType === 'teacher' ?
                 <Menu
                   defaultSelectedKeys={['published']}
                   className="menu-bar"
@@ -79,7 +82,7 @@ class MyProject extends React.PureComponent {
                   </Menu.Item>
                 </Menu>
               }
-              {type === 'teacher' ?
+              {userType === 'teacher' ?
                 <Button
                   type='primary'
                   shape='round'
@@ -96,7 +99,7 @@ class MyProject extends React.PureComponent {
             </Layout.Sider>
           </Affix>
           <Layout.Content style={{marginLeft: '10px'}}>
-            {type === 'teacher' ?
+            {userType === 'teacher' ?
               <Switch>
                 <Route exact path="/my-project" render={() => (
                   <Redirect to="/my-project/published"/>
@@ -121,4 +124,10 @@ class MyProject extends React.PureComponent {
   }
 }
 
-export default MyProject;
+function mapStateToProps(state) {
+  return {
+    userType: state.get("userType").get("userType")
+  }
+}
+
+export default connect(mapStateToProps, null)(MyProject);

@@ -2,6 +2,7 @@ import React from "react";
 import {Avatar, Badge, Button, Col, Dropdown, Layout, Menu, Row} from "antd";
 import {Link, Redirect, Route, Switch} from "react-router-dom";
 import {BellOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
+import {connect} from "react-redux";
 
 import './index.less'
 
@@ -22,8 +23,9 @@ import PreviewSection from "../../Project/PreviewProject/PreviewSection";
 
 class HeaderLayout extends React.Component {
   state = {
-    current: this.props.current,
+    current: 'home',
     account: null,
+    messageCount: 0,
   }
 
   componentDidMount() {
@@ -33,19 +35,18 @@ class HeaderLayout extends React.Component {
           this.setState({
             account: res.data.data
           })
-          localStorage.setItem("type", res.data.data.tag)
+          this.props.setUserType(res.data.data.tag)
+          console.log(this.props.userType)
+
         } else {
-          localStorage.setItem("type", "")
+          this.props.setUserType("")
         }
       })
-      .catch((e) => {
-        console.log(e)
-      })
+      .catch((e) => {console.log(e)})
   }
 
   handleRightDropdownClick(e) {
     let account = this.state.account;
-    console.log(account)
     if (e.key === 'my-account') {
       window.open(Auth.getMyProfileUrl(account));
     } else if (e.key === 'logout') {
@@ -55,13 +56,11 @@ class HeaderLayout extends React.Component {
             this.setState({
               account: null
             })
-            localStorage.setItem("type", "")
+            this.props.setUserType("")
             window.location.href = '/'
           }
         })
-        .catch(e => {
-          console.log(e)
-        })
+        .catch(e => {console.log(e)})
     }
   }
 
@@ -79,7 +78,7 @@ class HeaderLayout extends React.Component {
       </Menu>
     )
     return (
-      <Dropdown overlay={menu} placement="bottomRight">
+      <Dropdown overlay={menu} placement="bottomRight" trigger="click">
         <div style={{cursor: 'pointer'}}>
           <Avatar size="large" src={this.state.account.avatar}/>&nbsp;
           <span>{this.state.account.name}</span>
@@ -103,13 +102,13 @@ class HeaderLayout extends React.Component {
   }
 
   render() {
-    const {current} = this.state;
+    const {current, messageCount} = this.state;
     return (
       <Layout style={{minHeight: '100vh', textAlign: 'left'}}>
         <Layout.Header style={{backgroundColor: 'white'}}>
           <Row>
             <Col xxl={15} xl={11} lg={8} md={6} sm={6} xs={10}>
-              <Link to="/landing">
+              <Link to="/home">
                 <div className="logo">
                   <span style={{fontSize: '25px', color: 'black', float: 'left', marginLeft: '80px'}}>OpenCT</span>
                 </div>
@@ -117,8 +116,8 @@ class HeaderLayout extends React.Component {
             </Col>
             <Col xxl={6} xl={10} lg={12} md={14} sm={12} xs={6}>
               <Menu theme="light" mode="horizontal" defaultSelectedKeys={[current]} style={{border: 0}}>
-                <Menu.Item key="landing">
-                  <Link to="/landing">
+                <Menu.Item key="home">
+                  <Link to="/home">
                     首页
                   </Link>
                 </Menu.Item>
@@ -148,7 +147,7 @@ class HeaderLayout extends React.Component {
                         shape="circle"
                         type="text"
                         icon={
-                          <Badge count={999} overflowCount={99} size="small">
+                          <Badge count={messageCount} overflowCount={99} size="small">
                             <BellOutlined/>
                           </Badge>
                         }
@@ -165,10 +164,10 @@ class HeaderLayout extends React.Component {
         <Layout.Content>
           <Switch>
             <Route exact path="/" render={() => (
-              <Redirect to="/landing"/>
+              <Redirect to="/home"/>
             )}/>
 
-            <Route exact path="/landing" component={Home}/>
+            <Route exact path="/home" component={Home}/>
             <Route exact path="/public-project" component={Project}/>
             <Route path="/my-project" component={MyProject}/>
             <Route path="/message" component={Message}/>
@@ -190,4 +189,23 @@ class HeaderLayout extends React.Component {
   }
 }
 
-export default HeaderLayout;
+function mapStateToProps(state) {
+  return {
+    userType: state.get("userType").get("userType")
+  }
+}
+
+const setType = (userType) => {
+  return {
+    type: 'set',
+    userType: userType
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setUserType: (userType)=>dispatch(setType(userType))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HeaderLayout);

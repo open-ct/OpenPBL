@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"OpenPBL/models"
+	"OpenPBL/util"
 	"strconv"
 )
 
@@ -21,21 +22,13 @@ type ChaptersResponse struct {
 // @router /:id/chapters [get]
 func (p *ProjectController) GetProjectChapters() {
 	user := p.GetSessionUser()
-	if user == nil {
-		p.Data["json"] = ChaptersResponse{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		p.ServeJSON()
-		return
-	}
 	uid := ""
 	show := false
-	if user.Tag == "student" {
+	if util.IsStudent(user) {
 		uid = user.Name
 		show = true
 	}
-	if user.Tag == "teacher" {
+	if util.IsTeacher(user) {
 		uid = p.GetString("studentId")
 		if uid != "" {
 			show = true

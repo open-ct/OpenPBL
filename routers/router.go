@@ -39,6 +39,10 @@ func init() {
 			beego.NSInclude(
 				&controllers.MessageController{})),
 
+		beego.NSNamespace("/home",
+			beego.NSInclude(
+				&controllers.HomeController{})),
+
 	)
 	beego.AddNamespace(ns)
 }
