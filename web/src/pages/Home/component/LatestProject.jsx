@@ -49,11 +49,18 @@ function LatestProject(obj) {
                     <Image
                       src={item.image}
                       preview={false}
+                      style={{
+                        borderTopLeftRadius: '10px',
+                        borderTopRightRadius: '10px',
+                      }}
+                      fallback={require("../../assets/empty.png").default}
                     />
                   }
                 >
                   <Card.Meta
-                    title={item.projectTitle}
+                    title={
+                      item.projectTitle === '' ? '无':item.projectTitle
+                    }
                     description={
                       <div>
                         {item.subjects === '' ? '无' : item.subjects}

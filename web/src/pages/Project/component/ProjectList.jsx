@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import QueueAnim from 'rc-queue-anim';
-import {Card, Col, Divider, Image, Input, Pagination, Row, Select, Tag} from 'antd';
+import {Card, Col, Divider, Empty, Image, Input, Pagination, Row, Select, Tag} from 'antd';
 import {EyeOutlined, TeamOutlined} from '@ant-design/icons';
 import {Link} from 'react-router-dom';
 
@@ -158,11 +158,18 @@ function ProjectList(obj) {
                       <Image
                         src={item.image}
                         preview={false}
+                        style={{
+                          borderTopLeftRadius: '10px',
+                          borderTopRightRadius: '10px',
+                        }}
+                        fallback={require("../../assets/empty.png").default}
                       />
                     }
                   >
                     <Meta
-                      title={item.projectTitle}
+                      title={
+                        item.projectTitle === '' ? "无": item.projectTitle
+                      }
                       description={
                         <div>
                           {item.subjects === '' ? '无' : item.subjects}
