@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import QueueAnim from 'rc-queue-anim';
 import {Card, Col, Divider, Empty, Image, Input, Pagination, Row, Select, Spin, Tag} from 'antd';
 import {EyeOutlined, TeamOutlined} from '@ant-design/icons';
 import {Link} from 'react-router-dom';

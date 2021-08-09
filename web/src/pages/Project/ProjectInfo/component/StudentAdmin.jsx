@@ -2,10 +2,10 @@ import React, {useEffect, useState} from 'react';
 import QueueAnim from 'rc-queue-anim';
 import {Avatar, Button, message, Pagination, Popconfirm, Table} from "antd";
 import {DeleteOutlined} from "@ant-design/icons"
+import {Link} from "react-router-dom";
 
 import ProjectApi from "../../../../api/ProjectApi";
 import util from "../../../component/Util"
-import {Link} from "react-router-dom";
 
 function StudentAdmin(obj) {
   const pid = obj.project.id

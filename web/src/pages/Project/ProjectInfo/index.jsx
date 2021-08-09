@@ -16,8 +16,8 @@ import {
   Tag
 } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import localStorage from 'localStorage';
 import {Link} from 'react-router-dom';
+import {connect} from "react-redux";
 
 import ProjectIntroduce from './component/ProjectIntroduce';
 import ProjectOutline from './component/ProjectOutline';
@@ -37,7 +37,6 @@ class ProjectInfo extends React.PureComponent {
     const pid = this.props.match.params.id;
     let url = new URLSearchParams(this.props.location.search)
     let menu = url.get("menu")
-    console.log(menu)
     if (menu === undefined || menu === null) {
       menu = 'project-introduce'
     }
@@ -46,7 +45,7 @@ class ProjectInfo extends React.PureComponent {
       project: {},
       teacher: {},
       menu: menu,
-      type: localStorage.getItem('type'),
+      userType: this.props.userType,
       lastLearn: {}
     };
   }
@@ -96,7 +95,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   handleClick = (e) => {
-    if (this.state.type === 'student' && e.key === "student-evidence" && !this.state.project.learning) {
+    if (this.state.userType === 'student' && e.key === "student-evidence" && !this.state.project.learning) {
       message.warn("请先加入学习")
       return
     }
@@ -188,7 +187,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   render() {
-    const {project, teacher, menu, type, pid, lastLearn} = this.state;
+    const {project, teacher, menu, userType, pid, lastLearn} = this.state;
 
     const teacherBt = (
       <div style={{float: 'right'}}>
@@ -371,7 +370,7 @@ class ProjectInfo extends React.PureComponent {
                           </span>
                       </div>
                       <br/>
-                      {type === 'student' ?
+                      {userType === 'student' ?
                         studentBt
                         :
                         <>
@@ -431,4 +430,11 @@ class ProjectInfo extends React.PureComponent {
   }
 }
 
-export default ProjectInfo
+function mapStateToProps(state) {
+  return {
+    userType: state.get("userType").get("userType")
+  }
+}
+
+
+export default connect(mapStateToProps, null)(ProjectInfo)
