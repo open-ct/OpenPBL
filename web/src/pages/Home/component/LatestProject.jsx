@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
-import HomeApi from "../../../api/HomeApi";
-import {Card, Col, Divider, Image, Row} from "antd";
+import {Card, Col, Divider, Image, Row, Empty} from "antd";
 import {Link} from "react-router-dom";
 import {EyeOutlined, TeamOutlined} from "@ant-design/icons";
+
+import HomeApi from "../../../api/HomeApi";
 import util from "../../component/Util";
 
 const topColResponsiveProps = {
@@ -24,7 +25,9 @@ function LatestProject(obj) {
     HomeApi.getLatestProjects(4)
       .then(res => {
         if (res.data.code === 200) {
-          setProjects(res.data.projects)
+          if (res.data.projects !== null) {
+            setProjects(res.data.projects)
+          }
         }
       })
       .catch(e => {
@@ -102,6 +105,8 @@ function LatestProject(obj) {
           ))
         }
       </Row>
+      {projects.length === 0 ? <Empty />: null}
+
     </div>
   )
 }
