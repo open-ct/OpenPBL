@@ -10,6 +10,7 @@ import {Link} from "react-router-dom";
 function StudentAdmin(obj) {
   const pid = obj.project.id
   const [students, setStudents] = useState([])
+  const [loadStudents, setLoadStudents] = useState(false)
 
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
@@ -21,8 +22,10 @@ function StudentAdmin(obj) {
   }, [pid]);
 
   const updateStudentList = () => {
+    setLoadStudents(true)
     ProjectApi.getProjectStudents(pid)
       .then((res) => {
+        setLoadStudents(false)
         if (res.data.code === 200) {
           setStudents(res.data.students);
           setTotal(res.data.count)
@@ -51,6 +54,7 @@ function StudentAdmin(obj) {
     <QueueAnim>
       <div style={{textAlign: 'left'}} key="1">
         <Table
+          loading={loadStudents}
           dataSource={students}
           columns={[
             {
