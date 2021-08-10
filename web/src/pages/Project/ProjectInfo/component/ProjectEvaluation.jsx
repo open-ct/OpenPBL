@@ -20,11 +20,15 @@ function ProjectEvaluation(obj) {
   const pid = obj.project.id
   const published = obj.project.published
   const type = localStorage.getItem("type")
+
   const [chapters, setChapters] = useState([])
+  const [loadChapters, setLoadChapters] = useState(false)
+
   const [defaultOpenedKeys, setDefaultOpenedKeys] = useState([])
   const [openedKeys, setOpenedKeys] = useState([])
   const [data, setData] = useState([])
   const [tasks, setTasks] = useState([])
+  const [loadTasks, setLoadTasks] = useState(false)
 
   const [learnMinuteWeight, setLearnMinuteWeight] = useState(obj.project.learnMinuteWeight)
 
@@ -36,8 +40,10 @@ function ProjectEvaluation(obj) {
     getTasks()
   }, []);
   const getTasks = () => {
+    setLoadTasks(true)
     TaskApi.getProjectTasks(pid)
       .then(res => {
+        setLoadTasks(false)
         if (res.data.code === 200) {
           if (res.data.data != null) {
             setTasks(res.data.data)
@@ -52,8 +58,10 @@ function ProjectEvaluation(obj) {
       })
   }
   const getChapters = () => {
+    setLoadChapters(true)
     ChapterApi.getProjectChapters(pid)
       .then((res) => {
+        setLoadChapters(false)
         if (res.data.chapters === null) {
           setChapters([])
           setDefaultOpenedKeys(0)
@@ -223,7 +231,7 @@ function ProjectEvaluation(obj) {
   });
   return (
     <div style={{textAlign: 'left', marginBottom: '30px'}} key="1">
-      <ReactEcharts option={getOptions()}/>
+      <ReactEcharts option={getOptions()} showLoading={loadTasks}/>
       <div>
         <Divider orientation="left">
           <p className="evidence-title">章节学习时长</p>
@@ -256,6 +264,8 @@ function ProjectEvaluation(obj) {
               <List
                 size="large"
                 dataSource={item.sections}
+                locale={{emptyText: '空的'}}
+                loading={loadChapters}
                 renderItem={
                   (item, subIndex) => (
                     <List.Item>
@@ -317,6 +327,7 @@ function ProjectEvaluation(obj) {
       </Row>
       <Divider/>
       <Table
+        loading={loadTasks}
         columns={getColumns()}
         dataSource={tasks}
         pagination={false}
