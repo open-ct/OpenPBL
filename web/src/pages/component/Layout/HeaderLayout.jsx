@@ -2,6 +2,7 @@ import React from "react";
 import {Avatar, Badge, Button, Col, Dropdown, Layout, Menu, Row} from "antd";
 import {Link, Redirect, Route, Switch} from "react-router-dom";
 import {BellOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
+import {connect} from "react-redux";
 
 import './index.less'
 
@@ -25,6 +26,7 @@ class HeaderLayout extends React.Component {
     current: 'home',
     account: null,
     messageCount: 0,
+    menu: 'home'
   }
 
   componentDidMount() {
@@ -34,19 +36,34 @@ class HeaderLayout extends React.Component {
           this.setState({
             account: res.data.data
           })
-          localStorage.setItem("type", res.data.data.tag)
+          this.props.setUserType(res.data.data.tag)
         } else {
-          localStorage.setItem("type", "")
+          this.props.setUserType("")
         }
       })
-      .catch((e) => {
-        console.log(e)
-      })
+      .catch((e) => {console.log(e)})
+
+    this.changeMenu()
+  }
+
+  changeMenu = (e) => {
+    if (e !== undefined ) {
+      this.setState({menu: e.key})
+      return
+    }
+    const p = this.props.location.pathname
+    console.log(p)
+    if (p.startsWith('/home')) {
+      this.setState({menu: 'home'})
+    } else if (p.startsWith("/my-project")) {
+      this.setState({menu: 'my-project'})
+    } else if (p.startsWith("/public-project")) {
+      this.setState({menu: 'public-project'})
+    }
   }
 
   handleRightDropdownClick(e) {
     let account = this.state.account;
-    console.log(account)
     if (e.key === 'my-account') {
       window.open(Auth.getMyProfileUrl(account));
     } else if (e.key === 'logout') {
@@ -56,13 +73,11 @@ class HeaderLayout extends React.Component {
             this.setState({
               account: null
             })
-            localStorage.setItem("type", "")
+            this.props.setUserType("")
             window.location.href = '/'
           }
         })
-        .catch(e => {
-          console.log(e)
-        })
+        .catch(e => {console.log(e)})
     }
   }
 
@@ -80,7 +95,7 @@ class HeaderLayout extends React.Component {
       </Menu>
     )
     return (
-      <Dropdown overlay={menu} placement="bottomRight">
+      <Dropdown overlay={menu} placement="bottomRight" trigger="click">
         <div style={{cursor: 'pointer'}}>
           <Avatar size="large" src={this.state.account.avatar}/>&nbsp;
           <span>{this.state.account.name}</span>
@@ -104,7 +119,7 @@ class HeaderLayout extends React.Component {
   }
 
   render() {
-    const {current, messageCount} = this.state;
+    const {menu, messageCount} = this.state;
     return (
       <Layout style={{minHeight: '100vh', textAlign: 'left'}}>
         <Layout.Header style={{backgroundColor: 'white'}}>
@@ -117,7 +132,14 @@ class HeaderLayout extends React.Component {
               </Link>
             </Col>
             <Col xxl={6} xl={10} lg={12} md={14} sm={12} xs={6}>
-              <Menu theme="light" mode="horizontal" defaultSelectedKeys={[current]} style={{border: 0}}>
+              <Menu
+                theme="light"
+                mode="horizontal"
+                style={{border: 0}}
+                defaultSelectedKeys={['home']}
+                selectedKeys={[menu]}
+                onClick={e=>this.changeMenu(e)}
+              >
                 <Menu.Item key="home">
                   <Link to="/home">
                     首页
@@ -191,4 +213,23 @@ class HeaderLayout extends React.Component {
   }
 }
 
-export default HeaderLayout;
+function mapStateToProps(state) {
+  return {
+    userType: state.get("userType").get("userType")
+  }
+}
+
+const setType = (userType) => {
+  return {
+    type: 'set',
+    userType: userType
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setUserType: (userType)=>dispatch(setType(userType))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HeaderLayout);
