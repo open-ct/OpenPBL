@@ -1,20 +1,42 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
-
-import localStorage from "localStorage";
 import {Link, Redirect, Route, Switch} from 'react-router-dom'
+import {CheckCircleOutlined, CheckOutlined, CopyOutlined, HighlightOutlined, SyncOutlined} from "@ant-design/icons";
+import {connect} from "react-redux";
+
 import PublishedProject from "../PublishedProject";
 import EditingProject from "../EditingProject";
 import FinishedProject from "../FinishedProject";
 import LearningProject from "../LearningProject";
 import {Affix, Button, Layout, Menu} from "antd";
-import {CheckCircleOutlined, CheckOutlined, CopyOutlined, HighlightOutlined, SyncOutlined} from "@ant-design/icons";
 import ProjectApi from "../../../api/ProjectApi";
 
 class MyProject extends React.PureComponent {
   state = {
-    type: localStorage.getItem('type'),
+    menu: 'published'
   }
+
+  componentDidMount() {
+    this.changeMenu()
+  }
+
+  changeMenu = (e) => {
+    if (e !== undefined ) {
+      this.setState({menu: e.key})
+      return
+    }
+    const p = this.props.location.pathname
+    if (p.endsWith("/published")) {
+      this.setState({menu: 'published'})
+    } else if (p.endsWith("/editing")) {
+      this.setState({menu: 'editing'})
+    } else if (p.endsWith("/finished")) {
+      this.setState({menu: 'finished'})
+    } else if (p.endsWith("/learning")) {
+      this.setState({menu: 'learning'})
+    }
+  }
+
   createProject = e => {
     ProjectApi.createProject()
       .then((res) => {
@@ -28,7 +50,7 @@ class MyProject extends React.PureComponent {
   }
 
   render() {
-    const {type} = this.state
+    const {menu} = this.state
     return (
       <DocumentTitle title="My Project">
         <Layout style={{margin: '20px'}}>
@@ -39,10 +61,12 @@ class MyProject extends React.PureComponent {
               theme="light"
               style={{backgroundColor: '#f2f4f5'}}
             >
-              {type === 'teacher' ?
+              {this.props.userType === 'teacher' ?
                 <Menu
                   defaultSelectedKeys={['published']}
                   className="menu-bar"
+                  selectedKeys={[menu]}
+                  onClick={e=>this.changeMenu(e)}
                   mode="inline"
                 >
                   <Menu.Item key="published" icon={<CheckCircleOutlined/>}>
@@ -65,6 +89,8 @@ class MyProject extends React.PureComponent {
                 <Menu
                   defaultSelectedKeys={['learning']}
                   className="menu-bar"
+                  selectedKeys={[menu]}
+                  onClick={e=>this.changeMenu(e)}
                   mode="inline"
                 >
                   <Menu.Item key="learning" icon={<SyncOutlined/>}>
@@ -79,7 +105,7 @@ class MyProject extends React.PureComponent {
                   </Menu.Item>
                 </Menu>
               }
-              {type === 'teacher' ?
+              {this.props.userType === 'teacher' ?
                 <Button
                   type='primary'
                   shape='round'
@@ -96,7 +122,7 @@ class MyProject extends React.PureComponent {
             </Layout.Sider>
           </Affix>
           <Layout.Content style={{marginLeft: '10px'}}>
-            {type === 'teacher' ?
+            {this.props.userType === 'teacher' ?
               <Switch>
                 <Route exact path="/my-project" render={() => (
                   <Redirect to="/my-project/published"/>
@@ -121,4 +147,10 @@ class MyProject extends React.PureComponent {
   }
 }
 
-export default MyProject;
+function mapStateToProps(state) {
+  return {
+    userType: state.get("userType").get("userType")
+  }
+}
+
+export default connect(mapStateToProps, null)(MyProject);
