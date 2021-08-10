@@ -39,16 +39,7 @@ func (u *StudentController) LearnProject() {
 	pid, err := u.GetInt64(":projectId")
 	var resp Response
 	user := u.GetSessionUser()
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		u.Data["json"] = resp
-		u.ServeJSON()
-		return
-	}
-	if user.Tag != "student" {
+	if !util.IsStudent(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法的用户",
@@ -94,16 +85,7 @@ func (u *StudentController) ExitProject() {
 	pid, err := u.GetInt64(":projectId")
 	var resp Response
 	user := u.GetSessionUser()
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		u.Data["json"] = resp
-		u.ServeJSON()
-		return
-	}
-	if user.Tag != "student" {
+	if !util.IsStudent(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法的用户",
@@ -167,16 +149,7 @@ func (u *StudentController) FinishedProject() {
 func (u *StudentController) GetLearnSection() {
 	var resp Response
 	user := u.GetSessionUser()
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		u.Data["json"] = resp
-		u.ServeJSON()
-		return
-	}
-	if user.Tag != "student" {
+	if !util.IsStudent(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法的用户",
@@ -213,16 +186,7 @@ func (u *StudentController) GetLearnSection() {
 func (u *StudentController) UpdateLearnSection() {
 	var resp Response
 	user := u.GetSessionUser()
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		u.Data["json"] = resp
-		u.ServeJSON()
-		return
-	}
-	if user.Tag != "student" {
+	if !util.IsStudent(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法的用户",
@@ -265,16 +229,7 @@ func (u *StudentController) UpdateLearnSection() {
 func (u *StudentController) GetLastLearnSection() {
 	var resp Response
 	user := u.GetSessionUser()
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		u.Data["json"] = resp
-		u.ServeJSON()
-		return
-	}
-	if user.Tag != "student" {
+	if !util.IsStudent(user) {
 		resp = Response{
 			Code: 200,
 			Msg:  "",

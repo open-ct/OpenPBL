@@ -47,16 +47,6 @@ type MessagesResponse struct {
 // @router / [get]
 func (m *MessageController) GetUserMessages() {
 	user := m.GetSessionUser()
-	var resp ProjectResponse
-	if user == nil {
-		resp = ProjectResponse{
-			Code:    401,
-			Msg:     "请先登录",
-		}
-		m.Data["json"] = resp
-		m.ServeJSON()
-		return
-	}
 	from, err := m.GetInt("from")
 	if err != nil {
 		from = 0
@@ -99,16 +89,6 @@ func (m *MessageController) GetUserMessages() {
 // @router /:messageId/read [post]
 func (m *MessageController) ReadUserMessage() {
 	user := m.GetSessionUser()
-	var resp ProjectResponse
-	if user == nil {
-		resp = ProjectResponse{
-			Code:    401,
-			Msg:     "请先登录",
-		}
-		m.Data["json"] = resp
-		m.ServeJSON()
-		return
-	}
 	uid := util.GetUserId(user)
 	mid, err := m.GetInt64(":messageId")
 	err = models.ReadMessage(mid, uid)
@@ -134,16 +114,6 @@ func (m *MessageController) ReadUserMessage() {
 // @router /:messageId/delete [post]
 func (m *MessageController) DeleteUserMessage() {
 	user := m.GetSessionUser()
-	var resp ProjectResponse
-	if user == nil {
-		resp = ProjectResponse{
-			Code:    401,
-			Msg:     "请先登录",
-		}
-		m.Data["json"] = resp
-		m.ServeJSON()
-		return
-	}
 	uid := util.GetUserId(user)
 	mid, err := m.GetInt64(":messageId")
 	msg := models.Message{
@@ -172,16 +142,6 @@ func (m *MessageController) DeleteUserMessage() {
 // @router /read-all [post]
 func (m *MessageController) ReadAllUserMessage() {
 	user := m.GetSessionUser()
-	var resp ProjectResponse
-	if user == nil {
-		resp = ProjectResponse{
-			Code:    401,
-			Msg:     "请先登录",
-		}
-		m.Data["json"] = resp
-		m.ServeJSON()
-		return
-	}
 	uid := util.GetUserId(user)
 	err := models.ReadAllMessage(uid)
 	if err != nil {
