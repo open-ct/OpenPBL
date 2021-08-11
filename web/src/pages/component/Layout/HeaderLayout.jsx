@@ -1,10 +1,8 @@
 import React from "react";
-import {Avatar, Badge, Button, Col, Dropdown, Layout, Menu, Row} from "antd";
+import {Avatar, Badge, Button, Col, Dropdown, Layout, Menu, Row, Tag, Image} from "antd";
 import {Link, Redirect, Route, Switch} from "react-router-dom";
 import {BellOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import {connect} from "react-redux";
-
-import './index.less'
 
 import * as Auth from "../../User/Auth/Auth"
 import AuthApi from "../../../api/AuthApi"
@@ -20,6 +18,8 @@ import SectionEditPage from "../../Project/CreateProject/Section/SectionEditPage
 import SurveyEditPage from "../../Project/CreateProject/Survey/SurveyEditPage";
 import PreviewSection from "../../Project/PreviewProject/PreviewSection";
 
+
+const logo = "https://cdn.open-ct.com/logo/openct_logo_1082x328.png"
 
 class HeaderLayout extends React.Component {
   state = {
@@ -113,7 +113,9 @@ class HeaderLayout extends React.Component {
       );
     } else {
       return (
-        this.renderRightDropdown()
+        <>
+          {this.renderRightDropdown()}
+        </>
       )
     }
   }
@@ -126,9 +128,7 @@ class HeaderLayout extends React.Component {
           <Row>
             <Col xxl={15} xl={11} lg={8} md={6} sm={6} xs={10}>
               <Link to="/home">
-                <div className="logo">
-                  <span style={{fontSize: '25px', color: 'black', float: 'left', marginLeft: '80px'}}>OpenCT</span>
-                </div>
+                <Image height={60} style={{margin: '2px'}} src={logo} preview={false}/>
               </Link>
             </Col>
             <Col xxl={6} xl={10} lg={12} md={14} sm={12} xs={6}>

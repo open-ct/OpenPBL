@@ -14,17 +14,17 @@ class CarouselPBL extends React.Component {
     super(props);
     this.imgArray = [
       {
-        img: require('../../Project/PublicProject/static/image/pbl1.png').default,
+        img: 'https://cdn.open-ct.com/task-resources//carousel-top-1.png',
         title: '',
         text: '',
       },
       {
-        img: require('../../Project/PublicProject/static/image/pbl2.png').default,
+        img: 'https://cdn.open-ct.com/task-resources//carousel-top-2.png',
         title: '',
         text: '',
       },
       {
-        img: require('../../Project/PublicProject/static/image/pbl3.png').default,
+        img: 'https://cdn.open-ct.com/task-resources//carousel-top-3.png',
         title: '',
         text: '',
       },

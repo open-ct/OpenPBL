@@ -55,7 +55,7 @@ function LatestProject(obj) {
                         borderTopLeftRadius: '10px',
                         borderTopRightRadius: '10px',
                       }}
-                      fallback={require("../../assets/empty.png").default}
+                      fallback={"https://cdn.open-ct.com/task-resources//openpbl-empty-project.png"}
                     />
                   }
                 >

@@ -355,7 +355,7 @@ class ProjectInfo extends React.PureComponent {
                         src={project.image}
                         placeholder
                         preview={false}
-                        fallback={require("../../assets/empty.png").default}
+                        fallback={"https://cdn.open-ct.com/task-resources//openpbl-empty-project.png"}
                       />
                     </Col>
                     <Col span={1}>&nbsp;</Col>
