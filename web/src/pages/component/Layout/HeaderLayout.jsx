@@ -114,6 +114,15 @@ class HeaderLayout extends React.Component {
     } else {
       return (
         <>
+        <span style={{float: 'left'}}>
+          {this.props.userType === 'student' ? <Tag>学生</Tag> :
+            <>
+              {this.props.userType === 'teacher' ? <Tag>教师</Tag> :
+                <Tag>未知角色</Tag>
+              }
+            </>
+          }
+        </span>
           {this.renderRightDropdown()}
         </>
       )
@@ -124,14 +133,14 @@ class HeaderLayout extends React.Component {
     const {menu, messageCount} = this.state;
     return (
       <Layout style={{minHeight: '100vh', textAlign: 'left'}}>
-        <Layout.Header style={{backgroundColor: 'white'}}>
+        <Layout.Header style={{backgroundColor: 'white', paddingLeft: '4px', paddingRight: '4px'}}>
           <Row>
-            <Col xxl={15} xl={11} lg={8} md={6} sm={6} xs={10}>
+            <Col xxl={14} xl={10} lg={8} md={6} sm={6} xs={10}>
               <Link to="/home">
                 <Image height={60} style={{margin: '2px'}} src={logo} preview={false}/>
               </Link>
             </Col>
-            <Col xxl={6} xl={10} lg={12} md={14} sm={12} xs={6}>
+            <Col xxl={6} xl={10} lg={10} md={10} sm={10} xs={3}>
               <Menu
                 theme="light"
                 mode="horizontal"
@@ -162,7 +171,7 @@ class HeaderLayout extends React.Component {
                 </Menu.Item>
               </Menu>
             </Col>
-            <Col xxl={3} xl={3} lg={4} md={4} sm={6} xs={8}>
+            <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={11}>
               {
                 <>
                   <span style={{float: 'left', marginRight: '20px'}}>
