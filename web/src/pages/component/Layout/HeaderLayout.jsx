@@ -137,7 +137,7 @@ class HeaderLayout extends React.Component {
           <Row>
             <Col xxl={14} xl={10} lg={8} md={6} sm={6} xs={10}>
               <Link to="/home">
-                <Image height={60} style={{margin: '2px'}} src={logo} preview={false}/>
+                <Image height={50} width={200} style={{margin: '7px'}} src={logo} preview={false}/>
               </Link>
             </Col>
             <Col xxl={6} xl={10} lg={10} md={10} sm={10} xs={3}>
