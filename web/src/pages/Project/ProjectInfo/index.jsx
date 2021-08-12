@@ -46,7 +46,8 @@ class ProjectInfo extends React.PureComponent {
       project: {},
       teacher: {},
       menu: menu,
-      lastLearn: {}
+      lastLearn: {},
+      favBtLoading: false
     };
   }
 
@@ -191,8 +192,14 @@ class ProjectInfo extends React.PureComponent {
       })
   }
   addFavourite = e => {
+    this.setState({
+      favBtLoading: true
+    })
     ProjectApi.addFavourite(this.state.pid)
       .then(res=>{
+        this.setState({
+          favBtLoading: false
+        })
         if (res.data.code === 200) {
           this.loadProjectDetail()
           message.success(res.data.msg)
@@ -203,8 +210,14 @@ class ProjectInfo extends React.PureComponent {
       .catch(e=>{console.log(e)})
   }
   removeFavourite = e => {
+    this.setState({
+      favBtLoading: true
+    })
     ProjectApi.removeFavourite(this.state.pid)
       .then(res=>{
+        this.setState({
+          favBtLoading: false
+        })
         if (res.data.code === 200) {
           this.loadProjectDetail()
           message.success(res.data.msg)
@@ -222,7 +235,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   render() {
-    const {project, teacher, menu, pid, lastLearn} = this.state;
+    const {project, teacher, menu, pid, lastLearn, favBtLoading} = this.state;
 
     const teacherBt = (
       <div style={{float: 'right'}}>
@@ -392,11 +405,11 @@ class ProjectInfo extends React.PureComponent {
                         <span style={{float: 'right'}}>
                         {project.favourite ?
                           <Tooltip title="点击取消收藏">
-                            <StarFilled onClick={this.removeFavourite}/>
+                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarFilled/>} onClick={this.removeFavourite}/>
                           </Tooltip>
                           :
                           <Tooltip title="点击收藏">
-                            <StarOutlined onClick={this.addFavourite}/>
+                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarOutlined/>} onClick={this.addFavourite}/>
                           </Tooltip>
                         }
                         </span>
