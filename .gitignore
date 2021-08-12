@@ -1,13 +1,10 @@
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-### Go template
 # Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
+*.swp
 
 # Test binary, built with `go test -c`
 *.test
@@ -18,13 +15,16 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-*.zip
+.idea/
+*.iml
+
+tmp/
+tmpFiles/
 *.tmp
-
-.idea
-.vscode
-
-tmp
+logs/
+files/
+lastupdate.tmp
+routers/commentsRouter*.go
 
 ### Config file
 
