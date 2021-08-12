@@ -14,7 +14,7 @@ import FavouriteProject from "../FavouriteProject";
 
 class MyProject extends React.PureComponent {
   state = {
-    menu: 'published'
+    menu: ''
   }
 
   componentDidMount() {
@@ -35,6 +35,8 @@ class MyProject extends React.PureComponent {
       this.setState({menu: 'finished'})
     } else if (p.endsWith("/learning")) {
       this.setState({menu: 'learning'})
+    } else if (p.endsWith("/favourite")) {
+      this.setState({menu: 'favourite'})
     }
   }
 
