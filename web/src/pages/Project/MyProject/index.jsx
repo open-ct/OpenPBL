@@ -2,7 +2,6 @@ import React from 'react';
 import DocumentTitle from 'react-document-title';
 import {Link, Redirect, Route, Switch} from 'react-router-dom'
 import {CheckCircleOutlined, CheckOutlined, CopyOutlined, HighlightOutlined, SyncOutlined, StarFilled} from "@ant-design/icons";
-import {connect} from "react-redux";
 
 import PublishedProject from "../PublishedProject";
 import EditingProject from "../EditingProject";
@@ -64,7 +63,7 @@ class MyProject extends React.PureComponent {
               theme="light"
               style={{backgroundColor: '#f2f4f5'}}
             >
-              {this.props.userType === 'teacher' ?
+              {this.props.account.tag === '老师' ?
                 <Menu
                   defaultSelectedKeys={['published']}
                   className="menu-bar"
@@ -118,7 +117,7 @@ class MyProject extends React.PureComponent {
                   </Menu.Item>
                 </Menu>
               }
-              {this.props.userType === 'teacher' ?
+              {this.props.account.tag === '老师' ?
                 <Button
                   type='primary'
                   shape='round'
@@ -136,7 +135,7 @@ class MyProject extends React.PureComponent {
             </Layout.Sider>
           </Affix>
           <Layout.Content style={{marginLeft: '10px'}}>
-            {this.props.userType === 'teacher' ?
+            {this.props.account.tag === '老师' ?
               <Switch>
                 <Route exact path="/my-project" render={() => (
                   <Redirect to="/my-project/published"/>
@@ -163,10 +162,4 @@ class MyProject extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    userType: state.get("userType").get("userType")
-  }
-}
-
-export default connect(mapStateToProps, null)(MyProject);
+export default MyProject

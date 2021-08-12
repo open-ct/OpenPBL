@@ -1,8 +1,7 @@
 import React from "react";
-import {Avatar, Badge, Button, Col, Dropdown, Layout, Menu, Row, Tag, Image} from "antd";
+import {Avatar, Badge, Button, Col, Dropdown, Layout, Menu, Row, Tag, Image, message} from "antd";
 import {Link, Redirect, Route, Switch} from "react-router-dom";
 import {BellOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
-import {connect} from "react-redux";
 
 import * as Auth from "../../User/Auth/Auth"
 import AuthApi from "../../../api/AuthApi"
@@ -36,13 +35,6 @@ class HeaderLayout extends React.Component {
           this.setState({
             account: res.data.data
           })
-          if (res.data.data.tag === '老师') {
-            this.props.setUserType('teacher')
-          } else {
-            this.props.setUserType('student')
-          }
-        } else {
-          this.props.setUserType("")
         }
       })
       .catch((e) => {console.log(e)})
@@ -56,13 +48,23 @@ class HeaderLayout extends React.Component {
       return
     }
     const p = this.props.location.pathname
-    console.log(p)
     if (p.startsWith('/home')) {
       this.setState({menu: 'home'})
     } else if (p.startsWith("/my-project")) {
       this.setState({menu: 'my-project'})
     } else if (p.startsWith("/public-project")) {
       this.setState({menu: 'public-project'})
+    }
+  }
+
+  renderHomeIfLoggedIn(component) {
+    if (this.state.account === null) {
+      message.warn('请先登录')
+      return <Redirect to={'/home'} />
+    } else if (this.state.account === undefined) {
+      return null
+    } else {
+      return component
     }
   }
 
@@ -77,7 +79,6 @@ class HeaderLayout extends React.Component {
             this.setState({
               account: null
             })
-            this.props.setUserType("")
             window.location.href = '/'
           }
         })
@@ -119,13 +120,7 @@ class HeaderLayout extends React.Component {
       return (
         <>
         <span style={{float: 'left'}}>
-          {this.props.userType === 'student' ? <Tag>学生</Tag> :
-            <>
-              {this.props.userType === 'teacher' ? <Tag>老师</Tag> :
-                <Tag>未知角色</Tag>
-              }
-            </>
-          }
+          <Tag>{this.state.account.tag}</Tag>
         </span>
           {this.renderRightDropdown()}
         </>
@@ -204,20 +199,20 @@ class HeaderLayout extends React.Component {
               <Redirect to="/home"/>
             )}/>
 
-            <Route exact path="/home" component={Home}/>
-            <Route exact path="/public-project" component={Project}/>
-            <Route path="/my-project" component={MyProject}/>
-            <Route path="/message" component={Message}/>
+            <Route exact path="/home" render={(props)=><Home account={this.state.account} {...props} />}/>
+            <Route exact path="/public-project" render={(props)=>this.renderHomeIfLoggedIn(<Project account={this.state.account} {...props} />)} />
+            <Route path="/my-project" render={(props)=>this.renderHomeIfLoggedIn(<MyProject account={this.state.account} {...props} />)} />
+            <Route path="/message" render={(props)=>this.renderHomeIfLoggedIn(<Message account={this.state.account} {...props} />)}/>
 
-            <Route exact path="/project/:id/info" component={ProjectInfo}/>
-            <Route exact path="/project/:id/info/edit" component={EditInfo}/>
-            <Route exact path="/project/:id/outline/edit" component={EditOutlined}/>
+            <Route exact path="/project/:id/info" render={(props)=>this.renderHomeIfLoggedIn(<ProjectInfo account={this.state.account} {...props} />)}/>
+            <Route exact path="/project/:id/info/edit" render={(props)=>this.renderHomeIfLoggedIn(<EditInfo account={this.state.account} {...props} />)}/>
+            <Route exact path="/project/:id/outline/edit" render={(props)=>this.renderHomeIfLoggedIn(<EditOutlined account={this.state.account} {...props} />)}/>
 
-            <Route exact path="/project/:pid/student/:sid/evidence" component={Evidence}/>
+            <Route exact path="/project/:pid/student/:sid/evidence" render={(props)=>this.renderHomeIfLoggedIn(<Evidence account={this.state.account} {...props} />)}/>
 
-            <Route exact path="/project/:pid/section/:sid/edit" component={SectionEditPage}/>
-            <Route exact path="/project/:pid/section/:sid/task/:tid/survey/edit" component={SurveyEditPage}/>
-            <Route exact path="/project/:pid/section/:sid/preview" component={PreviewSection}/>
+            <Route exact path="/project/:pid/section/:sid/edit" render={(props)=>this.renderHomeIfLoggedIn(<SectionEditPage account={this.state.account} {...props} />)}/>
+            <Route exact path="/project/:pid/section/:sid/task/:tid/survey/edit" render={(props)=>this.renderHomeIfLoggedIn(<SurveyEditPage account={this.state.account} {...props} />)}/>
+            <Route exact path="/project/:pid/section/:sid/preview" render={(props)=>this.renderHomeIfLoggedIn(<PreviewSection account={this.state.account} {...props} />)}/>
           </Switch>
         </Layout.Content>
         <Layout.Footer style={{textAlign: 'center'}}>OpenPBL</Layout.Footer>
@@ -226,23 +221,4 @@ class HeaderLayout extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    userType: state.get("userType").get("userType")
-  }
-}
-
-const setType = (userType) => {
-  return {
-    type: 'set',
-    userType: userType
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    setUserType: (userType)=>dispatch(setType(userType))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(HeaderLayout);
+export default HeaderLayout

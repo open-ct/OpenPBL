@@ -17,7 +17,6 @@ import {
 } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import {Link} from 'react-router-dom';
-import {connect} from "react-redux";
 import {DeleteOutlined, StarFilled, StarOutlined} from "@ant-design/icons";
 
 
@@ -96,7 +95,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   handleClick = (e) => {
-    if (this.props.userType === 'student' && e.key === "student-evidence" && !this.state.project.learning) {
+    if (this.props.account.tag === '学生' && e.key === "student-evidence" && !this.state.project.learning) {
       message.warn("请先加入学习")
       return
     }
@@ -105,7 +104,7 @@ class ProjectInfo extends React.PureComponent {
     });
   }
   back = e => {
-    if (this.props.userType === 'teacher') {
+    if (this.props.account.tag === '老师') {
       window.location.href = '/my-project/published'
     } else {
       window.location.href = '/my-project/learning'
@@ -162,7 +161,7 @@ class ProjectInfo extends React.PureComponent {
     StudentApi.exitProject(this.state.pid)
       .then(res => {
         if (res.data.code === 200) {
-          if (this.props.userType === 'teacher') {
+          if (this.props.account.tag === '老师') {
             window.location.href = '/my-project/published'
           } else {
             window.location.href = '/my-project/learning'
@@ -179,11 +178,12 @@ class ProjectInfo extends React.PureComponent {
     ProjectApi.deleteProject(this.state.pid)
       .then(res => {
         if (res.data.code === 200) {
-          if (this.props.userType === 'teacher') {
+          if (this.props.account === '老师') {
             window.location.href = '/my-project/published'
           } else {
             window.location.href = '/my-project/learning'
-          }        } else {
+          }
+        } else {
           message.error(res.data.msg)
         }
       })
@@ -429,7 +429,7 @@ class ProjectInfo extends React.PureComponent {
                           </span>
                       </div>
                       <br/>
-                      {this.props.userType === 'student' ?
+                      {this.props.account.tag === '学生' ?
                         studentBt
                         :
                         <>
@@ -489,11 +489,4 @@ class ProjectInfo extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    userType: state.get("userType").get("userType")
-  }
-}
-
-
-export default connect(mapStateToProps, null)(ProjectInfo)
+export default ProjectInfo
