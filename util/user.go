@@ -7,8 +7,8 @@ func GetUserId(claims *auth.Claims) (id string) {
 }
 
 func IsStudent(claims *auth.Claims) (b bool) {
-	return claims.Tag == "student"
+	return claims.Tag != "老师"
 }
 func IsTeacher(claims *auth.Claims) (b bool) {
-	return claims.Tag == "teacher"
+	return claims.Tag == "老师"
 }

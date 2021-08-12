@@ -36,7 +36,11 @@ class HeaderLayout extends React.Component {
           this.setState({
             account: res.data.data
           })
-          this.props.setUserType(res.data.data.tag)
+          if (res.data.data.tag === '老师') {
+            this.props.setUserType('teacher')
+          } else {
+            this.props.setUserType('student')
+          }
         } else {
           this.props.setUserType("")
         }
@@ -117,7 +121,7 @@ class HeaderLayout extends React.Component {
         <span style={{float: 'left'}}>
           {this.props.userType === 'student' ? <Tag>学生</Tag> :
             <>
-              {this.props.userType === 'teacher' ? <Tag>教师</Tag> :
+              {this.props.userType === 'teacher' ? <Tag>老师</Tag> :
                 <Tag>未知角色</Tag>
               }
             </>
