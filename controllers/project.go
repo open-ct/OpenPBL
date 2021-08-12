@@ -44,10 +44,9 @@ type ProjectResponse struct {
 // @Failure 400
 // @router /:id [get]
 func (p *ProjectController) GetProjectDetail() {
-	pid := p.GetString(":id")
+	pid, err := p.GetInt64(":id")
 	user := p.GetSessionUser()
 	uid := util.GetUserId(user)
-	var err error
 	var project models.ProjectDetail
 	if util.IsStudent(user) {
 		project, err = models.GetProjectByPidForStudent(pid, uid)
@@ -457,6 +456,55 @@ func (p *ProjectController) GetProjectStudents() {
 			Code:     200,
 			Students: students,
 			Count:    rows,
+		}
+	}
+	p.ServeJSON()
+}
+
+// AddFavouriteProject
+// @Title
+// @Description
+// @Param projectId path string true ""
+// @Success 200 {object} Response
+// @Failure 401
+// @router /:projectId/favourite/add [post]
+func (p *ProjectController) AddFavouriteProject() {
+	pid, err := p.GetInt64(":projectId")
+	uid := util.GetUserId(p.GetSessionUser())
+	err = models.AddFavourite(uid, pid)
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Msg:  "收藏成功",
+		}
+	}
+	p.ServeJSON()
+}
+// RemoveFavouriteProject
+// @Title
+// @Description
+// @Param projectId path string true ""
+// @Success 200 {object} Response
+// @Failure 401
+// @router /:projectId/favourite/remove [post]
+func (p *ProjectController) RemoveFavouriteProject() {
+	pid, err := p.GetInt64(":projectId")
+	uid := util.GetUserId(p.GetSessionUser())
+	err = models.RemoveFavourite(uid, pid)
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Msg:  "移除成功",
 		}
 	}
 	p.ServeJSON()

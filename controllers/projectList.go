@@ -83,7 +83,9 @@ func (pl *ProjectListController) GetUserProjectList() {
 		} else if t == "finished" {
 			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, false)
 		} else if t == "public" {
-			projects, count, err = models.GetPublicProjectListForStudent(uid, from, size, subject, skill, text, orderBy, orderType)
+			projects, count, err = models.GetPublicProjectListForStudent(uid, from, size, subject, skill, text, orderBy, orderType, false)
+		} else if t == "favourite" {
+			projects, count, err = models.GetPublicProjectListForStudent(uid, from, size, subject, skill, text, orderBy, orderType, true)
 		}
 	} else if util.IsTeacher(user) {
 		if t == "editing" {
@@ -93,7 +95,9 @@ func (pl *ProjectListController) GetUserProjectList() {
 		} else if t == "finished" {
 			projects, count, err = models.GetMyProjectListByTid(uid, from, size, subject, skill, text, orderBy, orderType, true, true)
 		} else if t == "public" {
-			projects, count, err = models.GetPublicProjectListForTeacher(uid, from, size, subject, skill, text, orderBy, orderType)
+			projects, count, err = models.GetPublicProjectListForTeacher(uid, from, size, subject, skill, text, orderBy, orderType, false)
+		} else if t == "favourite" {
+			projects, count, err = models.GetPublicProjectListForTeacher(uid, from, size, subject, skill, text, orderBy, orderType, true)
 		}
 	}
 	data = ProjectList{

@@ -13,11 +13,13 @@ import {
   PageHeader,
   Popconfirm,
   Row,
-  Tag
+  Tag, Tooltip
 } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import {Link} from 'react-router-dom';
 import {connect} from "react-redux";
+import {DeleteOutlined, StarFilled, StarOutlined} from "@ant-design/icons";
+
 
 import ProjectIntroduce from './component/ProjectIntroduce';
 import ProjectOutline from './component/ProjectOutline';
@@ -27,7 +29,6 @@ import ProjectApi from "../../../api/ProjectApi";
 import StudentApi from "../../../api/StudentApi";
 import StudentAdmin from "./component/StudentAdmin";
 import {getUser} from "../../User/Auth/Auth";
-import {DeleteOutlined} from "@ant-design/icons";
 import util from "../../component/Util"
 import StudentEvidence from "../Evidence/component/StudentEvidence";
 
@@ -188,6 +189,30 @@ class ProjectInfo extends React.PureComponent {
       .catch(e => {
         console.log(e)
       })
+  }
+  addFavourite = e => {
+    ProjectApi.addFavourite(this.state.pid)
+      .then(res=>{
+        if (res.data.code === 200) {
+          this.loadProjectDetail()
+          message.success(res.data.msg)
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
+  }
+  removeFavourite = e => {
+    ProjectApi.removeFavourite(this.state.pid)
+      .then(res=>{
+        if (res.data.code === 200) {
+          this.loadProjectDetail()
+          message.success(res.data.msg)
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
   }
 
   setProject = project => {
@@ -364,6 +389,17 @@ class ProjectInfo extends React.PureComponent {
                         {project.projectTitle}&nbsp;&nbsp;
                         {project.created ? <Tag color="geekblue">我创建的项目</Tag> : null}
                         {project.learning ? <Tag color="geekblue">正在学习</Tag> : null}
+                        <span style={{float: 'right'}}>
+                        {project.favourite ?
+                          <Tooltip title="点击取消收藏">
+                            <StarFilled onClick={this.removeFavourite}/>
+                          </Tooltip>
+                          :
+                          <Tooltip title="点击收藏">
+                            <StarOutlined onClick={this.addFavourite}/>
+                          </Tooltip>
+                        }
+                        </span>
                       </p>
                       <p
                         style={{fontSize: '14px', color: 'gray'}}

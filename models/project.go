@@ -31,10 +31,17 @@ type Project struct {
 	LearnMinuteWeight  int       `json:"learnMinuteWeight" xorm:"default 100"`
 }
 
+type Favourite struct {
+	ProjectId          int64     `json:"projectId" xorm:"not null pk"`
+	UserId             string    `json:"userId" xorm:"not null pk"`
+	CreateAt           time.Time `json:"createAt" xorm:"created"`
+}
+
 type ProjectDetail struct {
-	Project            `xorm:"extends"`
-	Learning bool      `json:"learning"`
-	Created  bool      `json:"created"`
+	Project             `xorm:"extends"`
+	Learning  bool      `json:"learning"`
+	Created   bool      `json:"created"`
+	Favourite bool      `json:"favourite"`
 }
 
 type ProjectSkill struct {
@@ -56,17 +63,27 @@ func (p *ProjectSkill) GetEngine() *xorm.Session {
 func (p *ProjectSubject) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(p)
 }
+func (f *Favourite) GetEngine() *xorm.Session {
+	return adapter.Engine.Table(f)
+}
 
-func GetProjectByPidForTeacher(pid string, uid string) (pd ProjectDetail, err error) {
+func GetProjectByPidForTeacher(pid int64, uid string) (pd ProjectDetail, err error) {
 	var p Project
 	c, err := (&Project{}).GetEngine().
 		ID(pid).
 		Get(&p)
+	favourite, _ := (&Favourite{}).GetEngine().
+		Exist(&Favourite{
+			ProjectId: pid,
+			UserId:    uid,
+		})
+
 	created := uid == p.TeacherId
 	pd = ProjectDetail{
 		Project:  p,
 		Learning: false,
 		Created: created,
+		Favourite: favourite,
 	}
 	if !c {
 		err = errors.New("404")
@@ -74,11 +91,17 @@ func GetProjectByPidForTeacher(pid string, uid string) (pd ProjectDetail, err er
 	return
 }
 
-func GetProjectByPidForStudent(pid string, uid string) (pd ProjectDetail, err error) {
+func GetProjectByPidForStudent(pid int64, uid string) (pd ProjectDetail, err error) {
 	c, err := (&Project{}).GetEngine().
 		Where("project.id = ?", pid).
 		Join("LEFT OUTER", LearnProject{}, "project.id = learn_project.project_id and student_id = ?", uid).
 		Get(&pd)
+	favourite, _ := (&Favourite{}).GetEngine().
+		Exist(&Favourite{
+			ProjectId: pid,
+			UserId: uid,
+		})
+	pd.Favourite = favourite
 	if !c {
 		err = errors.New("404")
 	}
@@ -157,5 +180,22 @@ func UpdateClosed(p Project) (err error) {
 		Where("id = ?", p.Id).
 		Cols("closed", "closed_at").
 		Update(p)
+	return
+}
+
+func AddFavourite(uid string, pid int64) (err error) {
+	_, err = (&Favourite{}).GetEngine().Insert(Favourite{
+		ProjectId: pid,
+		UserId:    uid,
+		CreateAt:  time.Time{},
+	})
+	return
+}
+
+func RemoveFavourite(uid string, pid int64) (err error) {
+	_, err = (&Favourite{}).GetEngine().Delete(Favourite{
+		ProjectId: pid,
+		UserId:    uid,
+	})
 	return
 }

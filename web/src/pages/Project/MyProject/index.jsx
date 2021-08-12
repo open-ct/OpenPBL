@@ -1,7 +1,7 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
 import {Link, Redirect, Route, Switch} from 'react-router-dom'
-import {CheckCircleOutlined, CheckOutlined, CopyOutlined, HighlightOutlined, SyncOutlined} from "@ant-design/icons";
+import {CheckCircleOutlined, CheckOutlined, CopyOutlined, HighlightOutlined, SyncOutlined, StarFilled} from "@ant-design/icons";
 import {connect} from "react-redux";
 
 import PublishedProject from "../PublishedProject";
@@ -10,6 +10,7 @@ import FinishedProject from "../FinishedProject";
 import LearningProject from "../LearningProject";
 import {Affix, Button, Layout, Menu} from "antd";
 import ProjectApi from "../../../api/ProjectApi";
+import FavouriteProject from "../FavouriteProject";
 
 class MyProject extends React.PureComponent {
   state = {
@@ -84,6 +85,11 @@ class MyProject extends React.PureComponent {
                       已结束
                     </Link>
                   </Menu.Item>
+                  <Menu.Item key="favourite" icon={<StarFilled />}>
+                    <Link to="/my-project/favourite">
+                      收藏夹
+                    </Link>
+                  </Menu.Item>
                 </Menu>
                 :
                 <Menu
@@ -103,6 +109,11 @@ class MyProject extends React.PureComponent {
                       已完成
                     </Link>
                   </Menu.Item>
+                  <Menu.Item key="favourite" icon={<StarFilled />}>
+                    <Link to="/my-project/favourite">
+                      收藏夹
+                    </Link>
+                  </Menu.Item>
                 </Menu>
               }
               {this.props.userType === 'teacher' ?
@@ -114,6 +125,7 @@ class MyProject extends React.PureComponent {
                   style={{
                     width: '180px',
                     margin: '10px',
+                    marginTop: '30px',
                   }}
                 >创建项目</Button>
                 :
@@ -130,6 +142,7 @@ class MyProject extends React.PureComponent {
                 <Route exact path="/my-project/published" component={PublishedProject}/>
                 <Route exact path="/my-project/editing" component={EditingProject}/>
                 <Route exact path="/my-project/finished" component={FinishedProject}/>
+                <Route exact path="/my-project/favourite" component={FavouriteProject}/>
               </Switch>
               :
               <Switch>
@@ -138,6 +151,7 @@ class MyProject extends React.PureComponent {
                 )}/>
                 <Route exact path="/my-project/learning" component={LearningProject}/>
                 <Route exact path="/my-project/finished" component={FinishedProject}/>
+                <Route exact path="/my-project/favourite" component={FavouriteProject}/>
               </Switch>
             }
           </Layout.Content>
