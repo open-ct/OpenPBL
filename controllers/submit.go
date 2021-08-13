@@ -18,16 +18,7 @@ import (
 func (p *ProjectController) CreateSubmit() {
 	var resp Response
 	user := p.GetSessionUser()
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		p.Data["json"] = resp
-		p.ServeJSON()
-		return
-	}
-	if user.Tag != "student" {
+	if !util.IsStudent(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法用户",
@@ -85,19 +76,9 @@ func (p *ProjectController) CreateSubmit() {
 // @Failure 403 body is empty
 // @router /:projectId/task/:taskId/submit/:submitId [post]
 func (p *ProjectController) UpdateSubmit() {
-	var resp Response
 	user := p.GetSessionUser()
-	if user == nil {
-		resp = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		p.Data["json"] = resp
-		p.ServeJSON()
-		return
-	}
 	var uid string
-	if user.Tag == "student" {
+	if util.IsStudent(user) {
 		uid = util.GetUserId(user)
 	}
 	tid, err := p.GetInt64(":taskId")
@@ -120,7 +101,7 @@ func (p *ProjectController) UpdateSubmit() {
 		Scored:          scored,
 	}
 	var c = make([]models.Choice, 0)
-	if user.Tag == "student" && f.SubmitType == "survey" {
+	if util.IsStudent(user) && f.SubmitType == "survey" {
 		err = json.Unmarshal([]byte(p.GetString("choices")), &c)
 	}
 	err = f.Update(c)

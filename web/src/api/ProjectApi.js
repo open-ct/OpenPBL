@@ -69,9 +69,21 @@ const ProjectApi = {
   },
   updateWeight(pid, data) {
     return request({
-      url: `project/${pid}/weight`,
+      url: `/project/${pid}/weight`,
       method: 'post',
       data: qs.stringify(data)
+    })
+  },
+  addFavourite(pid) {
+    return request({
+      url: `/project/${pid}/favourite/add`,
+      method: 'post',
+    })
+  },
+  removeFavourite(pid) {
+    return request({
+      url: `/project/${pid}/favourite/remove`,
+      method: 'post',
     })
   }
 }

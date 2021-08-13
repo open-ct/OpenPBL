@@ -1,9 +1,7 @@
 import React from "react";
-import {Avatar, Badge, Button, Col, Dropdown, Layout, Menu, Row} from "antd";
+import {Avatar, Badge, Button, Col, Dropdown, Layout, Menu, Row, Tag, Image, message} from "antd";
 import {Link, Redirect, Route, Switch} from "react-router-dom";
 import {BellOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
-
-import './index.less'
 
 import * as Auth from "../../User/Auth/Auth"
 import AuthApi from "../../../api/AuthApi"
@@ -20,11 +18,14 @@ import SurveyEditPage from "../../Project/CreateProject/Survey/SurveyEditPage";
 import PreviewSection from "../../Project/PreviewProject/PreviewSection";
 
 
+const logo = "https://cdn.open-ct.com/logo/openct_logo_1082x328.png"
+
 class HeaderLayout extends React.Component {
   state = {
     current: 'home',
     account: null,
     messageCount: 0,
+    menu: 'home'
   }
 
   componentDidMount() {
@@ -34,19 +35,41 @@ class HeaderLayout extends React.Component {
           this.setState({
             account: res.data.data
           })
-          localStorage.setItem("type", res.data.data.tag)
-        } else {
-          localStorage.setItem("type", "")
         }
       })
-      .catch((e) => {
-        console.log(e)
-      })
+      .catch((e) => {console.log(e)})
+
+    this.changeMenu()
+  }
+
+  changeMenu = (e) => {
+    if (e !== undefined ) {
+      this.setState({menu: e.key})
+      return
+    }
+    const p = this.props.location.pathname
+    if (p.startsWith('/home')) {
+      this.setState({menu: 'home'})
+    } else if (p.startsWith("/my-project")) {
+      this.setState({menu: 'my-project'})
+    } else if (p.startsWith("/public-project")) {
+      this.setState({menu: 'public-project'})
+    }
+  }
+
+  renderHomeIfLoggedIn(component) {
+    if (this.state.account === null) {
+      message.warn('请先登录')
+      return <Redirect to={'/home'} />
+    } else if (this.state.account === undefined) {
+      return null
+    } else {
+      return component
+    }
   }
 
   handleRightDropdownClick(e) {
     let account = this.state.account;
-    console.log(account)
     if (e.key === 'my-account') {
       window.open(Auth.getMyProfileUrl(account));
     } else if (e.key === 'logout') {
@@ -56,13 +79,10 @@ class HeaderLayout extends React.Component {
             this.setState({
               account: null
             })
-            localStorage.setItem("type", "")
             window.location.href = '/'
           }
         })
-        .catch(e => {
-          console.log(e)
-        })
+        .catch(e => {console.log(e)})
     }
   }
 
@@ -80,7 +100,7 @@ class HeaderLayout extends React.Component {
       </Menu>
     )
     return (
-      <Dropdown overlay={menu} placement="bottomRight">
+      <Dropdown overlay={menu} placement="bottomRight" trigger="click">
         <div style={{cursor: 'pointer'}}>
           <Avatar size="large" src={this.state.account.avatar}/>&nbsp;
           <span>{this.state.account.name}</span>
@@ -98,26 +118,36 @@ class HeaderLayout extends React.Component {
       );
     } else {
       return (
-        this.renderRightDropdown()
+        <>
+        <span style={{float: 'left'}}>
+          <Tag>{this.state.account.tag}</Tag>
+        </span>
+          {this.renderRightDropdown()}
+        </>
       )
     }
   }
 
   render() {
-    const {current, messageCount} = this.state;
+    const {menu, messageCount} = this.state;
     return (
       <Layout style={{minHeight: '100vh', textAlign: 'left'}}>
-        <Layout.Header style={{backgroundColor: 'white'}}>
+        <Layout.Header style={{backgroundColor: 'white', paddingLeft: '4px', paddingRight: '4px'}}>
           <Row>
-            <Col xxl={15} xl={11} lg={8} md={6} sm={6} xs={10}>
+            <Col xxl={14} xl={10} lg={8} md={6} sm={6} xs={10}>
               <Link to="/home">
-                <div className="logo">
-                  <span style={{fontSize: '25px', color: 'black', float: 'left', marginLeft: '80px'}}>OpenCT</span>
-                </div>
+                <Image height={50} width={200} style={{margin: '7px'}} src={logo} preview={false}/>
               </Link>
             </Col>
-            <Col xxl={6} xl={10} lg={12} md={14} sm={12} xs={6}>
-              <Menu theme="light" mode="horizontal" defaultSelectedKeys={[current]} style={{border: 0}}>
+            <Col xxl={6} xl={10} lg={10} md={10} sm={10} xs={3}>
+              <Menu
+                theme="light"
+                mode="horizontal"
+                style={{border: 0}}
+                defaultSelectedKeys={['home']}
+                selectedKeys={[menu]}
+                onClick={e=>this.changeMenu(e)}
+              >
                 <Menu.Item key="home">
                   <Link to="/home">
                     首页
@@ -140,7 +170,7 @@ class HeaderLayout extends React.Component {
                 </Menu.Item>
               </Menu>
             </Col>
-            <Col xxl={3} xl={3} lg={4} md={4} sm={6} xs={8}>
+            <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={11}>
               {
                 <>
                   <span style={{float: 'left', marginRight: '20px'}}>
@@ -169,20 +199,20 @@ class HeaderLayout extends React.Component {
               <Redirect to="/home"/>
             )}/>
 
-            <Route exact path="/home" component={Home}/>
-            <Route exact path="/public-project" component={Project}/>
-            <Route path="/my-project" component={MyProject}/>
-            <Route path="/message" component={Message}/>
+            <Route exact path="/home" render={(props)=><Home account={this.state.account} {...props} />}/>
+            <Route exact path="/public-project" render={(props)=>this.renderHomeIfLoggedIn(<Project account={this.state.account} {...props} />)} />
+            <Route path="/my-project" render={(props)=>this.renderHomeIfLoggedIn(<MyProject account={this.state.account} {...props} />)} />
+            <Route path="/message" render={(props)=>this.renderHomeIfLoggedIn(<Message account={this.state.account} {...props} />)}/>
 
-            <Route exact path="/project/:id/info" component={ProjectInfo}/>
-            <Route exact path="/project/:id/info/edit" component={EditInfo}/>
-            <Route exact path="/project/:id/outline/edit" component={EditOutlined}/>
+            <Route exact path="/project/:id/info" render={(props)=>this.renderHomeIfLoggedIn(<ProjectInfo account={this.state.account} {...props} />)}/>
+            <Route exact path="/project/:id/info/edit" render={(props)=>this.renderHomeIfLoggedIn(<EditInfo account={this.state.account} {...props} />)}/>
+            <Route exact path="/project/:id/outline/edit" render={(props)=>this.renderHomeIfLoggedIn(<EditOutlined account={this.state.account} {...props} />)}/>
 
-            <Route exact path="/project/:pid/student/:sid/evidence" component={Evidence}/>
+            <Route exact path="/project/:pid/student/:sid/evidence" render={(props)=>this.renderHomeIfLoggedIn(<Evidence account={this.state.account} {...props} />)}/>
 
-            <Route exact path="/project/:pid/section/:sid/edit" component={SectionEditPage}/>
-            <Route exact path="/project/:pid/section/:sid/task/:tid/survey/edit" component={SurveyEditPage}/>
-            <Route exact path="/project/:pid/section/:sid/preview" component={PreviewSection}/>
+            <Route exact path="/project/:pid/section/:sid/edit" render={(props)=>this.renderHomeIfLoggedIn(<SectionEditPage account={this.state.account} {...props} />)}/>
+            <Route exact path="/project/:pid/section/:sid/task/:tid/survey/edit" render={(props)=>this.renderHomeIfLoggedIn(<SurveyEditPage account={this.state.account} {...props} />)}/>
+            <Route exact path="/project/:pid/section/:sid/preview" render={(props)=>this.renderHomeIfLoggedIn(<PreviewSection account={this.state.account} {...props} />)}/>
           </Switch>
         </Layout.Content>
         <Layout.Footer style={{textAlign: 'center'}}>OpenPBL</Layout.Footer>
@@ -191,4 +221,4 @@ class HeaderLayout extends React.Component {
   }
 }
 
-export default HeaderLayout;
+export default HeaderLayout

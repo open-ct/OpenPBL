@@ -1,9 +1,24 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
-import {Avatar, BackTop, Button, Card, Col, Divider, Image, Menu, message, PageHeader, Popconfirm, Row} from 'antd';
+import {
+  Avatar,
+  BackTop,
+  Button,
+  Card,
+  Col,
+  Divider,
+  Image,
+  Menu,
+  message,
+  PageHeader,
+  Popconfirm,
+  Row,
+  Tag, Tooltip
+} from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import localStorage from 'localStorage';
 import {Link} from 'react-router-dom';
+import {DeleteOutlined, StarFilled, StarOutlined} from "@ant-design/icons";
+
 
 import ProjectIntroduce from './component/ProjectIntroduce';
 import ProjectOutline from './component/ProjectOutline';
@@ -13,7 +28,6 @@ import ProjectApi from "../../../api/ProjectApi";
 import StudentApi from "../../../api/StudentApi";
 import StudentAdmin from "./component/StudentAdmin";
 import {getUser} from "../../User/Auth/Auth";
-import {DeleteOutlined} from "@ant-design/icons";
 import util from "../../component/Util"
 import StudentEvidence from "../Evidence/component/StudentEvidence";
 
@@ -23,7 +37,6 @@ class ProjectInfo extends React.PureComponent {
     const pid = this.props.match.params.id;
     let url = new URLSearchParams(this.props.location.search)
     let menu = url.get("menu")
-    console.log(menu)
     if (menu === undefined || menu === null) {
       menu = 'project-introduce'
     }
@@ -32,8 +45,8 @@ class ProjectInfo extends React.PureComponent {
       project: {},
       teacher: {},
       menu: menu,
-      type: localStorage.getItem('type'),
-      lastLearn: {}
+      lastLearn: {},
+      favBtLoading: false
     };
   }
 
@@ -82,7 +95,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   handleClick = (e) => {
-    if (this.state.type === 'student' && e.key === "student-evidence" && !this.state.project.learning) {
+    if (this.props.account.tag === '学生' && e.key === "student-evidence" && !this.state.project.learning) {
       message.warn("请先加入学习")
       return
     }
@@ -91,7 +104,11 @@ class ProjectInfo extends React.PureComponent {
     });
   }
   back = e => {
-    window.location.href = '/my-project'
+    if (this.props.account.tag === '老师') {
+      window.location.href = '/my-project/published'
+    } else {
+      window.location.href = '/my-project/learning'
+    }
   }
   learnProject = e => {
     StudentApi.learnProject(this.state.pid)
@@ -144,7 +161,11 @@ class ProjectInfo extends React.PureComponent {
     StudentApi.exitProject(this.state.pid)
       .then(res => {
         if (res.data.code === 200) {
-          window.location.href = "/my-project"
+          if (this.props.account.tag === '老师') {
+            window.location.href = '/my-project/published'
+          } else {
+            window.location.href = '/my-project/learning'
+          }
         } else {
           message.error(res.data.msg)
         }
@@ -157,7 +178,11 @@ class ProjectInfo extends React.PureComponent {
     ProjectApi.deleteProject(this.state.pid)
       .then(res => {
         if (res.data.code === 200) {
-          window.location.href = "/my-project"
+          if (this.props.account === '老师') {
+            window.location.href = '/my-project/published'
+          } else {
+            window.location.href = '/my-project/learning'
+          }
         } else {
           message.error(res.data.msg)
         }
@@ -165,6 +190,42 @@ class ProjectInfo extends React.PureComponent {
       .catch(e => {
         console.log(e)
       })
+  }
+  addFavourite = e => {
+    this.setState({
+      favBtLoading: true
+    })
+    ProjectApi.addFavourite(this.state.pid)
+      .then(res=>{
+        this.setState({
+          favBtLoading: false
+        })
+        if (res.data.code === 200) {
+          this.loadProjectDetail()
+          message.success(res.data.msg)
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
+  }
+  removeFavourite = e => {
+    this.setState({
+      favBtLoading: true
+    })
+    ProjectApi.removeFavourite(this.state.pid)
+      .then(res=>{
+        this.setState({
+          favBtLoading: false
+        })
+        if (res.data.code === 200) {
+          this.loadProjectDetail()
+          message.success(res.data.msg)
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
   }
 
   setProject = project => {
@@ -174,7 +235,7 @@ class ProjectInfo extends React.PureComponent {
   }
 
   render() {
-    const {project, teacher, menu, type, pid, lastLearn} = this.state;
+    const {project, teacher, menu, pid, lastLearn, favBtLoading} = this.state;
 
     const teacherBt = (
       <div style={{float: 'right'}}>
@@ -332,12 +393,27 @@ class ProjectInfo extends React.PureComponent {
                         src={project.image}
                         placeholder
                         preview={false}
-                        fallback={require("../../assets/empty.png").default}
+                        fallback={"https://cdn.open-ct.com/task-resources//openpbl-empty-project.png"}
                       />
                     </Col>
                     <Col span={1}>&nbsp;</Col>
                     <Col flex="auto">
-                      <p style={{fontSize: '20px'}}>{project.projectTitle}</p>
+                      <p style={{fontSize: '20px'}}>
+                        {project.projectTitle}&nbsp;&nbsp;
+                        {project.created ? <Tag color="geekblue">我创建的项目</Tag> : null}
+                        {project.learning ? <Tag color="geekblue">正在学习</Tag> : null}
+                        <span style={{float: 'right'}}>
+                        {project.favourite ?
+                          <Tooltip title="点击取消收藏">
+                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarFilled/>} onClick={this.removeFavourite}/>
+                          </Tooltip>
+                          :
+                          <Tooltip title="点击收藏">
+                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarOutlined/>} onClick={this.addFavourite}/>
+                          </Tooltip>
+                        }
+                        </span>
+                      </p>
                       <p
                         style={{fontSize: '14px', color: 'gray'}}
                       >发布时间：{util.FilterTime(project.createAt)}
@@ -353,7 +429,16 @@ class ProjectInfo extends React.PureComponent {
                           </span>
                       </div>
                       <br/>
-                      {type === 'student' ? studentBt : teacherBt}
+                      {this.props.account.tag === '学生' ?
+                        studentBt
+                        :
+                        <>
+                          {project.created ?
+                            teacherBt
+                            : null
+                          }
+                        </>
+                      }
                     </Col>
                   </Row>
                 </Card>
@@ -369,9 +454,9 @@ class ProjectInfo extends React.PureComponent {
                   <Menu.Item key="project-outline">项目大纲</Menu.Item>
                   <Menu.Item key="project-evaluation">评价方案</Menu.Item>
 
-                  {type === 'teacher' ? <Menu.Item key="student-admin">学生管理</Menu.Item>
+                  {project.created ? <Menu.Item key="student-admin">学生管理</Menu.Item>
                     : null}
-                  {type === 'student' ? <Menu.Item key="student-evidence">证据收集</Menu.Item>
+                  {project.learning ? <Menu.Item key="student-evidence">证据收集</Menu.Item>
                     : null}
                 </Menu>
                 <div style={{
@@ -392,7 +477,6 @@ class ProjectInfo extends React.PureComponent {
                   }
 
                   {menu === 'student-admin' ? <StudentAdmin project={project}/> : null}
-
                   {menu === 'student-evidence' ? <StudentEvidence project={project}/> : null}
 
                 </div>

@@ -71,31 +71,23 @@ func (pl *ProjectListController) GetUserProjectList() {
 	text := pl.GetString("text")
 
 	user := pl.GetSessionUser()
-	var data ProjectList
-
-	if user == nil {
-		data = ProjectList{
-			Code:     401,
-			Msg:      "请先登录",
-		}
-		pl.Data["json"] = data
-		pl.ServeJSON()
-		return
-	}
 	uid := util.GetUserId(user)
+	var data ProjectList
 
 	var projects []models.ProjectDetail
 	var count    int64
 
-	if user.Tag == "student" {
+	if util.IsStudent(user) {
 		if t == "learning" {
 			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, true)
 		} else if t == "finished" {
 			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, false)
 		} else if t == "public" {
-			projects, count, err = models.GetPublicProjectListForStudent(uid, from, size, subject, skill, text, orderBy, orderType)
+			projects, count, err = models.GetPublicProjectListForStudent(uid, from, size, subject, skill, text, orderBy, orderType, false)
+		} else if t == "favourite" {
+			projects, count, err = models.GetPublicProjectListForStudent(uid, from, size, subject, skill, text, orderBy, orderType, true)
 		}
-	} else if user.Tag == "teacher" {
+	} else if util.IsTeacher(user) {
 		if t == "editing" {
 			projects, count, err = models.GetMyProjectListByTid(uid, from, size, subject, skill, text, orderBy, orderType, false, false)
 		} else if t == "published" {
@@ -103,7 +95,9 @@ func (pl *ProjectListController) GetUserProjectList() {
 		} else if t == "finished" {
 			projects, count, err = models.GetMyProjectListByTid(uid, from, size, subject, skill, text, orderBy, orderType, true, true)
 		} else if t == "public" {
-			projects, count, err = models.GetPublicProjectListForTeacher(uid, from, size, subject, skill, text, orderBy, orderType)
+			projects, count, err = models.GetPublicProjectListForTeacher(uid, from, size, subject, skill, text, orderBy, orderType, false)
+		} else if t == "favourite" {
+			projects, count, err = models.GetPublicProjectListForTeacher(uid, from, size, subject, skill, text, orderBy, orderType, true)
 		}
 	}
 	data = ProjectList{

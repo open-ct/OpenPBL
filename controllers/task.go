@@ -23,26 +23,14 @@ type TaskResponse struct {
 // @Failure 400
 // @router /:projectId/section/:sectionId/tasks [get]
 func (p *ProjectController) GetSectionTasksDetail() {
-	var resp TaskResponse
 	sid := p.GetString(":sectionId")
 	var learning bool
 	user := p.GetSessionUser()
-	if user == nil {
-		resp = TaskResponse{
-			Response: Response{
-				Code: 401,
-				Msg:  "请先登录",
-			},
-		}
-		p.Data["json"] = resp
-		p.ServeJSON()
-		return
-	}
 	showCount := false
-	if user.Tag != "student" {
+	if !util.IsStudent(user) {
 		learning = false
 	}
-	if user.Tag == "teacher" {
+	if util.IsTeacher(user) {
 		showCount = true
 	}
 	uid := util.GetUserId(user)
@@ -80,16 +68,6 @@ func (p *ProjectController) GetSectionTasksDetail() {
 // @Failure 400
 // @router /:projectId/tasks [get]
 func (p *ProjectController) GetProjectTasks() {
-	user := p.GetSessionUser()
-	if user == nil {
-		p.Data["json"] = Response{
-			Code: 401,
-			Msg:  "请先登录",
-		}
-		p.ServeJSON()
-		return
-	}
-
 	pid := p.GetString(":projectId")
 	tasks, err := models.GetProjectTasks(pid)
 	if err != nil {
@@ -114,37 +92,22 @@ func (p *ProjectController) GetProjectTasks() {
 // @Failure 400
 // @router /:projectId/tasks-detail [get]
 func (p *ProjectController) GetProjectTasksDetail() {
-	var resp TaskResponse
 	var learning bool
 	user := p.GetSessionUser()
-	if user == nil {
-		resp = TaskResponse{
-			Response: Response{
-				Code: 401,
-				Msg:  "请先登录",
-			},
-		}
-		p.Data["json"] = resp
-		p.ServeJSON()
-		return
-	}
-
 	showSubmit := false
 	teacherScore := false
 	uid := util.GetUserId(user)
 	editable := true
 	showCount := false
 	pid := p.GetString(":projectId")
-
-
-	if user.Tag == "teacher" {
+	if util.IsTeacher(user) {
 		uid = p.GetString("studentId")
 		showSubmit = true
 		editable = false
 		teacherScore = true
 		showCount = true
 	}
-	if user.Tag != "student" {
+	if !util.IsStudent(user) {
 		learning = false
 	} else {
 		learning = models.IsLearningProject(pid, uid)
@@ -209,7 +172,7 @@ func (p *ProjectController) CreateTask() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "创建失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
@@ -251,7 +214,7 @@ func (p *ProjectController) UpdateTask() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "更新失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
@@ -279,7 +242,7 @@ func (p *ProjectController) DeleteTask() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
-			Msg:  "删除失败",
+			Msg:  err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
@@ -305,6 +268,7 @@ func (p *ProjectController) ExchangeTask() {
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
+			Msg: err.Error(),
 		}
 	} else {
 		p.Data["json"] = Response{
