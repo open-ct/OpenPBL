@@ -112,6 +112,16 @@ function ProjectList(obj) {
     setSelectedSkills(selected)
     updateProjectList(page, size, selectedSubjects.toString(), selected.toString(), value)
   }
+  const viewProject = (item) => {
+    if (item.published && !item.closed) {
+      ProjectApi.viewProject(item.id)
+        .then(res => {
+        })
+        .catch(e => {
+        })
+    }
+    window.location.href = `/project/${item.id}/info`
+  }
 
   const onSearch = (v) => {
     setValue(v)
@@ -176,10 +186,10 @@ function ProjectList(obj) {
           {
             learningProjectList.map((item, index) => (
               <Col key={index.toString()} {...topColResponsiveProps}>
-                <Link to={`/project/${item.id}/info`}>
                   <Card
                     hoverable
                     bordered={false}
+                    onClick={e=>viewProject(item)}
                     style={{
                       borderRadius: '10px',
                     }}
@@ -239,7 +249,6 @@ function ProjectList(obj) {
                       {util.FilterMoment(item.createAt)}
                     </span>
                   </Card>
-                </Link>
               </Col>
             ))
           }

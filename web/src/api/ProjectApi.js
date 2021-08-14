@@ -91,6 +91,12 @@ const ProjectApi = {
       url: `/project/${pid}/subjects-skills`,
       method: 'get'
     })
+  },
+  viewProject(pid) {
+    return request({
+      url: `/project/${pid}/view`,
+      method: 'post'
+    })
   }
 }
 

@@ -225,3 +225,9 @@ func GetSkills() (skills []string, err error) {
 		Find(&skills)
 	return
 }
+
+func ViewProject(pid string) (err error) {
+	_, err = adapter.Engine.
+		Exec("update project set read_num = read_num + 1 where id = ?", pid)
+	return
+}

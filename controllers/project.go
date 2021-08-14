@@ -4,7 +4,6 @@ import (
 	"OpenPBL/models"
 	"OpenPBL/util"
 	"encoding/json"
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 	"strings"
@@ -90,8 +89,8 @@ func (p *ProjectController) CreateProject() {
 	uid := util.GetUserId(user)
 	project := &models.Project{
 		TeacherId:        uid,
+		LearnMinuteWeight: 100,
 	}
-	fmt.Println(project)
 	err := project.Create()
 	if err != nil {
 		resp = Response{
@@ -535,6 +534,30 @@ func (p *ProjectController) GetProjectSubjectsAndSkills() {
 			Code:    200,
 			Subjects: subjects,
 			Skills:   skills,
+		}
+	}
+	p.ServeJSON()
+}
+
+// ViewProject
+// @Title
+// @Description create project
+// @Success 200 {object} Response
+// @Failure 401
+// @Failure 400
+// @Failure 403
+// @router /:id/view [post]
+func (p *ProjectController) ViewProject() {
+	pid := p.GetString(":id")
+	err := models.ViewProject(pid)
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
 		}
 	}
 	p.ServeJSON()
