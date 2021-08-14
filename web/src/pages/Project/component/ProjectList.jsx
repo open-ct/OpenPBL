@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Card, Col, Divider, Empty, Image, Input, Pagination, Row, Select, Spin, Tag} from 'antd';
 import {EyeOutlined, TeamOutlined} from '@ant-design/icons';
-import {Link} from 'react-router-dom';
 
 import './project-list.less';
 import ProjectListApi from '../../../api/ProjectListApi'
@@ -211,7 +210,8 @@ function ProjectList(obj) {
                       }
                       description={
                         <div>
-                          {item.subjects === '' ? '无' : item.subjects}
+                          <span className="des-text">{item.subjects === '' ? '--' : item.subjects}</span><br/>
+                          <span className="des-text">{item.skills === '' ? '--' : item.skills}</span>
                           {item.learning ?
                             <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>学习中</Tag> : null}
                           {item.teacherId === uid && type === 'teacher' ?
