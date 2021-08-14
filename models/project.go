@@ -67,6 +67,17 @@ func (f *Favourite) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(f)
 }
 
+func GetProjectById(pid int64) (project Project, err error) {
+	var b bool
+	b, err = (&Project{}).GetEngine().
+		ID(pid).
+		Get(&project)
+	if !b {
+		err = errors.New("404")
+	}
+	return
+}
+
 func GetProjectByPidForTeacher(pid int64, uid string) (pd ProjectDetail, err error) {
 	var p Project
 	c, err := (&Project{}).GetEngine().

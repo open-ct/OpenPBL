@@ -1,9 +1,10 @@
 import React from "react";
+import MessageList from "../component/MessageList";
 
 function UnreadMessage() {
   return (
     <div>
-      unread
+      <MessageList readType="unread"/>
     </div>
   )
 }

@@ -14,7 +14,7 @@ type Message struct {
 	MessageTitle  string    `json:"messageTitle" xorm:"text"`
 	Content       string    `json:"content" xorm:"longtext"`
 
-	Read          bool      `json:"read" xorm:"default false index"`
+	ReadMessage   bool      `json:"readMessage" xorm:"default false index"`
 
 	CreateAt      time.Time `json:"createAt" xorm:"created"`
 }
@@ -36,47 +36,43 @@ func (m *Message) Delete() (err error) {
 func ReadMessage(messageId int64, uid string) (err error) {
 	_, err = (&Message{}).GetEngine().
 		ID(messageId).
+		MustCols("read_message").
 		Update(&Message{
 			Id:   messageId,
 			ReceiverId: uid,
-			Read: true,
+			ReadMessage: true,
 		})
 	return
 }
 func ReadAllMessage(uid string) (err error) {
 	_, err = (&Message{}).GetEngine().
+		Where("receiver_id = ?", uid).
+		MustCols("read_message").
 		Update(&Message{
 			ReceiverId: uid,
-			Read: true,
+			ReadMessage: true,
 		})
 	return
 }
 
-func GetMessages(uid string, orderType string, messageType string, read string, from int, size int) (m []Message, rows int64, err error) {
+func GetMessages(uid string, orderType string, messageType string, readType string, from int, size int) (m []Message, rows int64, err error) {
 	s := (&Message{}).GetEngine().
 		Where("receiver_id = ?", uid)
 	s2 := (&Message{}).GetEngine().
 		Where("receiver_id = ?", uid)
-	if read == "read" {
-		s = s.Where("read = true")
-		s2 = s2.Where("read = true")
-	} else if read == "unread" {
-		s = s.Where("read = false")
-		s2 = s2.Where("read = false")
+	if readType == "read" {
+		s = s.Where("read_message = true")
+		s2 = s2.Where("read_message = true")
+	} else if readType == "unread" {
+		s = s.Where("read_message = false")
+		s2 = s2.Where("read_message = false")
 	}
-	if messageType == "error" || messageType == "info" || messageType == "warn" {
-		s = s.Where("message_type = ?", messageType)
-		s2 = s2.Where("message_type = ?", messageType)
-	}
-
-	rows, err = s2.Count()
-
+	rows, err = s2.Count(&Message{})
 	if orderType == "asc" {
 		s = s.Asc("create_at")
 	} else {
 		s = s.Desc("create_at")
 	}
-
-	err = s.Limit(size, from).Find(&m)
+	err = s.Desc("create_at").Limit(size, from).Find(&m)
 	return
 }

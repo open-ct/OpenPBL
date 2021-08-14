@@ -23,7 +23,7 @@ const logo = "https://cdn.open-ct.com/logo/openct_logo_1082x328.png"
 class HeaderLayout extends React.Component {
   state = {
     current: 'home',
-    account: null,
+    account: undefined,
     messageCount: 0,
     menu: 'home'
   }
