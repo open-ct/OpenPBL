@@ -509,3 +509,33 @@ func (p *ProjectController) RemoveFavouriteProject() {
 	}
 	p.ServeJSON()
 }
+
+type SubjectsAndSkillsResponse struct {
+	Code       int        `json:"code"`
+	Subjects   []string   `json:"subjects"`
+	Skills     []string   `json:"skills"`
+}
+
+// GetProjectSubjectsAndSkills
+// @Title
+// @Description
+// @Param id path string true "project id"
+// @Success 200 {object} models.TeacherProject
+// @Failure 400
+// @router /:id/subjects-skills [get]
+func (p *ProjectController) GetProjectSubjectsAndSkills() {
+	subjects, err := models.GetSubjects()
+	skills, err := models.GetSkills()
+	if err != nil {
+		p.Data["json"] = SubjectsAndSkillsResponse{
+			Code:     400,
+		}
+	} else {
+		p.Data["json"] = SubjectsAndSkillsResponse{
+			Code:    200,
+			Subjects: subjects,
+			Skills:   skills,
+		}
+	}
+	p.ServeJSON()
+}

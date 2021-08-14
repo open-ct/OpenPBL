@@ -210,3 +210,18 @@ func RemoveFavourite(uid string, pid int64) (err error) {
 	})
 	return
 }
+
+func GetSubjects() (subjects []string, err error) {
+	err = (&ProjectSubject{}).GetEngine().
+		Cols("subject").
+		Distinct("subject").
+		Find(&subjects)
+	return
+}
+func GetSkills() (skills []string, err error) {
+	err = (&ProjectSkill{}).GetEngine().
+		Cols("skill").
+		Distinct("skill").
+		Find(&skills)
+	return
+}
