@@ -103,6 +103,7 @@ func (a *Adapter) createTable() {
 		new(ProjectSubject),
 
 		new(Message),
+		new(Comment),
 	)
 	if err != nil {
 		fmt.Println(err)

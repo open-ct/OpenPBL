@@ -494,6 +494,7 @@ class ProjectInfo extends React.PureComponent {
                 >
                   <Menu.Item key="project-introduce">项目信息</Menu.Item>
                   <Menu.Item key="project-outline">项目大纲</Menu.Item>
+                  <Menu.Item key="project-comment">留言沟通</Menu.Item>
                   <Menu.Item key="project-evaluation">评价方案</Menu.Item>
 
                   {project.created ? <Menu.Item key="student-admin">学生管理</Menu.Item>
@@ -508,7 +509,7 @@ class ProjectInfo extends React.PureComponent {
                 >
                   {menu === 'project-introduce' ? <ProjectIntroduce project={project}/> : null}
                   {menu === 'project-outline' ? <ProjectOutline project={project}/> : null}
-                  {menu === 'project-comment' ? <ProjectComment project={project}/> : null}
+                  {menu === 'project-comment' ? <ProjectComment project={project} account={this.props.account}/> : null}
                   {menu === 'project-evaluation' ?
                     <ProjectEvaluation
                       project={project}

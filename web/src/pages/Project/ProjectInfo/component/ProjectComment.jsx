@@ -1,94 +1,91 @@
-import React, {createElement, useEffect, useState} from 'react';
-import {DislikeOutlined, LikeOutlined} from '@ant-design/icons';
-import {Avatar, Button, Comment, Form, Input, Pagination, Tooltip} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Avatar, Button, Comment, Form, Input, Pagination, message, Tooltip, Popconfirm, Switch} from 'antd';
+import {DeleteOutlined} from "@ant-design/icons"
 import QueueAnim from 'rc-queue-anim';
 
-const commentData = [
-  {
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    author: 'aaaa',
-    content: '评论内容',
-    date: '2021-6-6',
-    likes: 1,
-    dislikes: 0
-  },
-  {
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    author: 'aaaa',
-    content: '评论内容',
-    date: '2021-6-6',
-    likes: 0,
-    dislikes: 1
-  },
-  {
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    author: 'aaaa',
-    content: '评论内容',
-    date: '2021-6-6',
-    likes: 1,
-    dislikes: 0
-  },
-  {
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    author: 'aaaa',
-    content: '评论内容',
-    date: '2021-6-6',
-    likes: 0,
-    dislikes: 0
-  },
-  {
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    author: 'aaaa',
-    content: '评论内容',
-    date: '2021-6-6',
-    likes: 0,
-    dislikes: 0
-  },
-];
-
+import CommentApi from "../../../../api/CommentApi"
+import util from "../../../component/Util"
 const {TextArea} = Input;
 
-function like(item) {
-  console.log(item);
-}
-
-function dislike(item) {
-  console.log(item);
-}
 
 function ProjectComment(obj) {
-  const [project, setProject] = useState({});
   const [commentList, setCommentList] = useState([]);
   const [actions, setActions] = useState([]);
+  const [text, setText] = useState([])
+  const [isTeacher, setIsTeacher] = useState(false)
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(0);
   const [value, setValue] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const updateCommentList = (p, size) => {
-    // TODO axios.get comment list
-    console.log(p, size);
-    setCommentList(commentData);
-    setTotal(100);
+  const updateCommentList = (p, size, isTeacher) => {
+    let query = {
+      from: (p-1)*size,
+      size: size,
+      text: '',
+      isTeacher: isTeacher,
+    }
+    CommentApi.getProjectComments(obj.project.id, query)
+      .then(res=>{
+        if (res.data.code === 200) {
+          if (res.data.comments !== null) {
+            setCommentList(res.data.comments)
+            setTotal(res.data.count)
+          }
+        }
+      })
+      .catch(e=>{console.log(e)})
+
     setPage(p);
   };
   useEffect(() => {
-    setProject(obj.project);
-    updateCommentList(1, 10);
+    updateCommentList(1, pageSize, isTeacher);
   }, []);
 
   const onSubmit = () => {
-    console.log(value);
+    if (value === "") {
+      message.warn("请输入留言内容")
+      return
+    }
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setValue('');
-    }, 500);
+    let c = {
+      content:   value,
+      projectId: obj.project.id,
+    }
+    CommentApi.createComment(obj.project.id, c)
+      .then(res=>{
+        setSubmitting(false);
+        if (res.data.code === 200) {
+          message.success(res.data.msg)
+          updateCommentList(page, pageSize, isTeacher)
+          setValue('');
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
   };
+  const deleteComment = (item) => {
+    CommentApi.deleteComment(obj.project.id, item.id)
+      .then(res=>{
+        if (res.data.code === 200) {
+          message.success(res.data.msg)
+          updateCommentList(page, pageSize, isTeacher)
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
+  }
 
   const onChange = (v) => {
     setValue(v.target.value);
   };
+  const onChangeSwitch = e => {
+    setIsTeacher(e)
+    updateCommentList(page, pageSize, e)
+  }
 
   return (
     <QueueAnim>
@@ -101,37 +98,47 @@ function ProjectComment(obj) {
             提交
           </Button>
         </Form.Item>
+
+        <Switch
+          checkedChildren="只看老师"
+          unCheckedChildren="所有"
+          defaultChecked={false}
+          onChange={onChangeSwitch}
+          value={isTeacher}
+        />
         {commentList.map((item, index) => (
           <Comment
             key={index.toString()}
             actions={
               [
-                <Tooltip key="comment-basic-like" title="Like">
-                  <span onClick={e => like(item)}>
-                    {createElement(LikeOutlined)}
-                    <span className="comment-action">{item.likes}</span>
-                  </span>
-                </Tooltip>,
-                <Tooltip key="comment-basic-dislike" title="Dislike">
-                    <span onClick={e => dislike(item)}>
-                      {React.createElement(DislikeOutlined)}
-                      <span className="comment-action">{item.dislikes}</span>
-                    </span>
-                </Tooltip>,
-                <span key="comment-list-reply-to-0">Reply to</span>,
+                <>
+                  {item.isTeacher ?
+                    <span key="0" style={{color: 'green'}}>老师</span>
+                    :
+                    <span key="0">学生</span>
+                  }
+                </>,
+                <>
+                  {obj.account.name === item.userId ?
+                    <Popconfirm title="确定删除留言？" onConfirm={e=>deleteComment(item)}>
+                      <Button type="text" shape="circle" icon={<DeleteOutlined />} />
+                    </Popconfirm>
+                    : null
+                  }
+                </>
               ]
             }
-            author={item.author}
+            author={item.userName}
             avatar={
               <Avatar
-                src={item.avatar}
-                alt={item.author}
+                src={item.userAvatar}
+                alt={item.userName}
               />
             }
             content={item.content}
             datetime={
-              <Tooltip title={item.date}>
-                <span>{item.date}</span>
+              <Tooltip title={util.FilterTime(item.createAt)}>
+                <span>{util.FilterMoment(item.createAt)}</span>
               </Tooltip>
             }
           />
