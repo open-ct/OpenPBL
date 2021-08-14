@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 import './project-list.less';
 import ProjectListApi from '../../../api/ProjectListApi'
 import util from '../../component/Util'
+import ProjectApi from "../../../api/ProjectApi";
 
 const {Meta} = Card;
 const {Search} = Input;
@@ -25,14 +26,13 @@ function ProjectList(obj) {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
 
+  const iniSubjects = ['语文', '数学', '英语', '科学', '政治', '历史', '地理', '化学', '生物', '美术', '音乐']
+  const iniSkills = ['信息、媒体与技术技能', '生活与职业技能', '文化理解与传承素养', '审辨思维', '创新素养', '沟通素养', '合作素养']
+  const [subjects, setSubjects] = useState(iniSubjects)
+  const [skills, setSkills] = useState(iniSkills)
   const [total, setTotal] = useState(0);
-
-  const [subjects, setSubjects] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
-
   const [value, setValue] = useState('')
-
-  const [skills, setSkills] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([])
 
   const type = localStorage.getItem('type')
@@ -74,11 +74,35 @@ function ProjectList(obj) {
 
   useEffect(() => {
     loadPage(1, 10);
-
-    setSubjects(['语文', '数学', '英语', '科学', '信息技术']);
-    setSkills(['学习与创新技能', '信息、媒体与技术技能', '生活与职业技能']);
-
+    loadSubjectsAndSkills()
   }, []);
+
+  const loadSubjectsAndSkills = () => {
+    ProjectApi.getSubjectsAndSkills(obj.pid)
+      .then(res=>{
+        if (res.data.code === 200) {
+          if (res.data.subjects !== null) {
+            let s = res.data.subjects
+            for (let i=0; i<iniSubjects.length; i++) {
+              if (s.indexOf(iniSubjects[i]) < 0) {
+                s.push(iniSubjects[i])
+              }
+            }
+            setSubjects(s)
+          }
+          if (res.data.skills !== null) {
+            let s = res.data.skills
+            for (let i=0; i<iniSkills.length; i++) {
+              if (s.indexOf(iniSkills[i]) < 0) {
+                s.push(iniSkills[i])
+              }
+            }
+            setSkills(s)
+          }
+        }
+      })
+      .catch(e=>{console.log(e)})
+  }
 
   const handleSubjectsChange = selected => {
     setSelectedSubjects(selected)
