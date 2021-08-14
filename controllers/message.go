@@ -3,7 +3,6 @@ package controllers
 import (
 	"OpenPBL/models"
 	"OpenPBL/util"
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
@@ -63,8 +62,6 @@ func (m *MessageController) GetUserMessages() {
 	var messages []models.Message
 	var rows     int64
 	messages, rows, err = models.GetMessages(uid, orderType, t, r, from, size)
-
-	fmt.Println(err)
 
 	if err != nil {
 		m.Data["json"] = MessagesResponse{

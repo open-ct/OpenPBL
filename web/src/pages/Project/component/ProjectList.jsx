@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {Card, Col, Divider, Empty, Image, Input, Pagination, Row, Select, Spin, Tag} from 'antd';
 import {EyeOutlined, TeamOutlined} from '@ant-design/icons';
-import {Link} from 'react-router-dom';
 
 import './project-list.less';
 import ProjectListApi from '../../../api/ProjectListApi'
 import util from '../../component/Util'
+import ProjectApi from "../../../api/ProjectApi";
 
 const {Meta} = Card;
 const {Search} = Input;
@@ -25,14 +25,13 @@ function ProjectList(obj) {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
 
+  const iniSubjects = ['语文', '数学', '英语', '科学', '政治', '历史', '地理', '化学', '生物', '美术', '音乐']
+  const iniSkills = ['信息、媒体与技术技能', '生活与职业技能', '文化理解与传承素养', '审辨思维', '创新素养', '沟通素养', '合作素养']
+  const [subjects, setSubjects] = useState(iniSubjects)
+  const [skills, setSkills] = useState(iniSkills)
   const [total, setTotal] = useState(0);
-
-  const [subjects, setSubjects] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
-
   const [value, setValue] = useState('')
-
-  const [skills, setSkills] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([])
 
   const type = localStorage.getItem('type')
@@ -74,11 +73,35 @@ function ProjectList(obj) {
 
   useEffect(() => {
     loadPage(1, 10);
-
-    setSubjects(['语文', '数学', '英语', '科学', '信息技术']);
-    setSkills(['学习与创新技能', '信息、媒体与技术技能', '生活与职业技能']);
-
+    loadSubjectsAndSkills()
   }, []);
+
+  const loadSubjectsAndSkills = () => {
+    ProjectApi.getSubjectsAndSkills(obj.pid)
+      .then(res=>{
+        if (res.data.code === 200) {
+          if (res.data.subjects !== null) {
+            let s = res.data.subjects
+            for (let i=0; i<iniSubjects.length; i++) {
+              if (s.indexOf(iniSubjects[i]) < 0) {
+                s.push(iniSubjects[i])
+              }
+            }
+            setSubjects(s)
+          }
+          if (res.data.skills !== null) {
+            let s = res.data.skills
+            for (let i=0; i<iniSkills.length; i++) {
+              if (s.indexOf(iniSkills[i]) < 0) {
+                s.push(iniSkills[i])
+              }
+            }
+            setSkills(s)
+          }
+        }
+      })
+      .catch(e=>{console.log(e)})
+  }
 
   const handleSubjectsChange = selected => {
     setSelectedSubjects(selected)
@@ -87,6 +110,16 @@ function ProjectList(obj) {
   const handleSkillsChange = selected => {
     setSelectedSkills(selected)
     updateProjectList(page, size, selectedSubjects.toString(), selected.toString(), value)
+  }
+  const viewProject = (item) => {
+    if (item.published && !item.closed) {
+      ProjectApi.viewProject(item.id)
+        .then(res => {
+        })
+        .catch(e => {
+        })
+    }
+    window.location.href = `/project/${item.id}/info`
   }
 
   const onSearch = (v) => {
@@ -152,10 +185,10 @@ function ProjectList(obj) {
           {
             learningProjectList.map((item, index) => (
               <Col key={index.toString()} {...topColResponsiveProps}>
-                <Link to={`/project/${item.id}/info`}>
                   <Card
                     hoverable
                     bordered={false}
+                    onClick={e=>viewProject(item)}
                     style={{
                       borderRadius: '10px',
                     }}
@@ -177,7 +210,8 @@ function ProjectList(obj) {
                       }
                       description={
                         <div>
-                          {item.subjects === '' ? '无' : item.subjects}
+                          <span className="des-text">{item.subjects === '' ? '--' : item.subjects}</span><br/>
+                          <span className="des-text">{item.skills === '' ? '--' : item.skills}</span>
                           {item.learning ?
                             <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>学习中</Tag> : null}
                           {item.teacherId === uid && type === 'teacher' ?
@@ -215,7 +249,6 @@ function ProjectList(obj) {
                       {util.FilterMoment(item.createAt)}
                     </span>
                   </Card>
-                </Link>
               </Col>
             ))
           }

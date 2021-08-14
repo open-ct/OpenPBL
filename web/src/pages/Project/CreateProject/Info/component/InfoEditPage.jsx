@@ -9,8 +9,12 @@ import ProjectApi from "../../../../../api/ProjectApi";
 function InfoEditPage(obj) {
   const pid = obj.pid
 
-  const subjects = ['语文', '数学', '英语', '科学']
-  const skills = ['学习与创新技能', '信息、媒体与技术技能', '生活与职业技能']
+  const iniSubjects = ['语文', '数学', '英语', '科学', '政治', '历史', '地理', '化学', '生物', '美术', '音乐']
+  const iniSkills = ['信息、媒体与技术技能', '生活与职业技能', '文化理解与传承素养', '审辨思维', '创新素养', '沟通素养', '合作素养']
+  const [subjects, setSubjects] = useState(iniSubjects)
+  const [skills, setSkills] = useState(iniSkills)
+
+  const [nextPageLoading, setNextPageLoading] = useState(false)
 
   const [change, setChange] = useState(false)
 
@@ -29,6 +33,7 @@ function InfoEditPage(obj) {
     return str.split(',')
   }
   useEffect(() => {
+    loadSubjectsAndSkills()
     ProjectApi.getProjectDetail(pid)
       .then((res) => {
         if (res.data.code === 200) {
@@ -44,6 +49,33 @@ function InfoEditPage(obj) {
         console.log(e)
       })
   }, [])
+
+  const loadSubjectsAndSkills = () => {
+    ProjectApi.getSubjectsAndSkills(pid)
+      .then(res=>{
+        if (res.data.code === 200) {
+          if (res.data.subjects !== null) {
+            let s = res.data.subjects
+            for (let i=0; i<iniSubjects.length; i++) {
+              if (s.indexOf(iniSubjects[i]) < 0) {
+                s.push(iniSubjects[i])
+              }
+            }
+            setSubjects(s)
+          }
+          if (res.data.skills !== null) {
+            let s = res.data.skills
+            for (let i=0; i<iniSkills.length; i++) {
+              if (s.indexOf(iniSkills[i]) < 0) {
+                s.push(iniSkills[i])
+              }
+            }
+            setSkills(s)
+          }
+        }
+      })
+      .catch(e=>{console.log(e)})
+  }
 
   const changeTitle = value => {
     setChange(true)
@@ -110,6 +142,7 @@ function InfoEditPage(obj) {
     }
     ProjectApi.updateProject(data, pid)
       .then((res) => {
+        setNextPageLoading(false)
         if (res.data.code === 200) {
           message.success(res.data.msg)
           setTimeout(() => {
@@ -122,10 +155,12 @@ function InfoEditPage(obj) {
       })
   }
   const nextPage = () => {
+    setNextPageLoading(true)
     if (checkInput()) {
       if (change) {
         onFinish();
       } else {
+        setNextPageLoading(false)
         window.location.href = `/project/${pid}/outline/edit`
       }
     }
@@ -203,7 +238,7 @@ function InfoEditPage(obj) {
         <Col span={16}>
           <Select
             showArrow
-            mode="multiple"
+            mode="tags"
             placeholder="选择学科"
             value={selectedSubjects}
             onChange={handleSubjectsChange}
@@ -242,6 +277,7 @@ function InfoEditPage(obj) {
             size="middle"
             style={{marginRight: '20px'}}
             onClick={nextPage}
+            loading={nextPageLoading}
           >下一页
           </Button>
         </Col>

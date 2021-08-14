@@ -4,8 +4,10 @@ import (
 	"OpenPBL/models"
 	"OpenPBL/util"
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
+	"time"
 )
 
 // StudentController
@@ -69,6 +71,19 @@ func (u *StudentController) LearnProject() {
 		Code: 200,
 		Msg:  "加入成功",
 	}
+
+	project, err := models.GetProjectById(pid)
+	if err == nil {
+		content := fmt.Sprintf("成功加入课程 \"%v\" ", project.ProjectTitle)
+		CreateMessage(&models.Message{
+			ReceiverId:   uid,
+			MessageType:  "info",
+			MessageTitle: "加入课程",
+			Content:      content,
+			ReadMessage:  false,
+			CreateAt:     time.Time{},
+		})
+	}
 	u.Data["json"] = resp
 	u.ServeJSON()
 }
@@ -112,6 +127,20 @@ func (u *StudentController) ExitProject() {
 		Code: 200,
 		Msg:  "退出成功",
 	}
+
+	project, err := models.GetProjectById(pid)
+	if err == nil {
+		content := fmt.Sprintf("成功退出课程 \"%v\" ", project.ProjectTitle)
+		CreateMessage(&models.Message{
+			ReceiverId:   uid,
+			MessageType:  "info",
+			MessageTitle: "退出课程",
+			Content:      content,
+			ReadMessage:  false,
+			CreateAt:     time.Time{},
+		})
+	}
+
 	u.Data["json"] = resp
 	u.ServeJSON()
 }

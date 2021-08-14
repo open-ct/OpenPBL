@@ -85,6 +85,18 @@ const ProjectApi = {
       url: `/project/${pid}/favourite/remove`,
       method: 'post',
     })
+  },
+  getSubjectsAndSkills(pid) {
+    return request({
+      url: `/project/${pid}/subjects-skills`,
+      method: 'get'
+    })
+  },
+  viewProject(pid) {
+    return request({
+      url: `/project/${pid}/view`,
+      method: 'post'
+    })
   }
 }
 

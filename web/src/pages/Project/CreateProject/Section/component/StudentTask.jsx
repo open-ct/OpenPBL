@@ -100,7 +100,8 @@ function StudentTask(obj) {
         })
     }
   }
-  const gotoSurvey = item => {
+  const gotoSurvey = (item, index) => {
+    saveContent(item, index)
     window.location.href = `/project/${pid}/section/${obj.section.id}/task/${item.id}/survey/edit`
   }
 
@@ -129,7 +130,7 @@ function StudentTask(obj) {
           <Input.TextArea placeholder="任务描述" value={item.taskIntroduce} onChange={e => changeIntroduce(e, index)}
                           style={{marginTop: '20px'}}/>
           {item.taskType === 'survey' ?
-            <Button style={{marginTop: '10px'}} onClick={e => gotoSurvey(item)}>查看问卷</Button>
+            <Button style={{marginTop: '10px'}} onClick={e => gotoSurvey(item, index)}>查看问卷</Button>
             : null
           }
 

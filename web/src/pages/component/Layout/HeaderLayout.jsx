@@ -23,7 +23,7 @@ const logo = "https://cdn.open-ct.com/logo/openct_logo_1082x328.png"
 class HeaderLayout extends React.Component {
   state = {
     current: 'home',
-    account: null,
+    account: undefined,
     messageCount: 0,
     menu: 'home'
   }
@@ -31,11 +31,9 @@ class HeaderLayout extends React.Component {
   componentDidMount() {
     AuthApi.getAccount()
       .then((res) => {
-        if (res.data.code === 200) {
-          this.setState({
-            account: res.data.data
-          })
-        }
+        this.setState({
+          account: res.data.data
+        })
       })
       .catch((e) => {console.log(e)})
 
@@ -58,6 +56,8 @@ class HeaderLayout extends React.Component {
   }
 
   renderHomeIfLoggedIn(component) {
+    console.log(this.state.account)
+
     if (this.state.account === null) {
       message.warn('请先登录')
       return <Redirect to={'/home'} />

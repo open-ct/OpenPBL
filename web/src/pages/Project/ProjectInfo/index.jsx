@@ -46,7 +46,10 @@ class ProjectInfo extends React.PureComponent {
       teacher: {},
       menu: menu,
       lastLearn: {},
-      favBtLoading: false
+      favBtLoading: false,
+      learnBtLoading: false,
+      exitBtLoading: false,
+      closeBtLoading: false
     };
   }
 
@@ -111,8 +114,14 @@ class ProjectInfo extends React.PureComponent {
     }
   }
   learnProject = e => {
+    this.setState({
+      learnBtLoading: true
+    })
     StudentApi.learnProject(this.state.pid)
       .then((res) => {
+        this.setState({
+          learnBtLoading: true
+        })
         if (res.data.code === 200) {
           let p = Object.assign({}, this.state.project)
           p.learning = true
@@ -141,8 +150,14 @@ class ProjectInfo extends React.PureComponent {
       })
   }
   closeProject = e => {
+    this.setState({
+      closeBtLoading: true
+    })
     ProjectApi.closeProject(this.state.pid)
       .then(res => {
+        this.setState({
+          closeBtLoading: false
+        })
         if (res.data.code === 200) {
           let p = Object.assign({}, this.state.project)
           p.closed = true
@@ -158,8 +173,14 @@ class ProjectInfo extends React.PureComponent {
       })
   }
   exitProject = e => {
+    this.setState({
+      exitBtLoading: true
+    })
     StudentApi.exitProject(this.state.pid)
       .then(res => {
+        this.setState({
+          exitBtLoading: false
+        })
         if (res.data.code === 200) {
           if (this.props.account.tag === '老师') {
             window.location.href = '/my-project/published'
@@ -178,7 +199,7 @@ class ProjectInfo extends React.PureComponent {
     ProjectApi.deleteProject(this.state.pid)
       .then(res => {
         if (res.data.code === 200) {
-          if (this.props.account === '老师') {
+          if (this.props.account.tag === '老师') {
             window.location.href = '/my-project/published'
           } else {
             window.location.href = '/my-project/learning'
@@ -233,9 +254,20 @@ class ProjectInfo extends React.PureComponent {
       project: project
     })
   }
+  projectState = () => {
+    if (this.state.project.published) {
+      if (this.state.project.closed) {
+        return "( 已结束 )"
+      } else {
+        return "( 进行中 )"
+      }
+    } else {
+      return "( 编辑中 )"
+    }
+  }
 
   render() {
-    const {project, teacher, menu, pid, lastLearn, favBtLoading} = this.state;
+    const {project, teacher, menu, pid, lastLearn, favBtLoading, learnBtLoading, exitBtLoading, closeBtLoading} = this.state;
 
     const teacherBt = (
       <div style={{float: 'right'}}>
@@ -244,7 +276,6 @@ class ProjectInfo extends React.PureComponent {
             title="确定结束项目?"
             placement="topRight"
             onConfirm={this.closeProject}
-            onCancel={this.cancelCloseProject}
             okText="确定"
             cancelText="取消"
           >
@@ -253,6 +284,7 @@ class ProjectInfo extends React.PureComponent {
               size="middle"
               danger
               style={{margin: '5px'}}
+              loading={closeBtLoading}
             >
               结束项目
             </Button>
@@ -345,6 +377,7 @@ class ProjectInfo extends React.PureComponent {
                 shape="round"
                 size="middle"
                 style={{margin: '5px'}}
+                loading={exitBtLoading}
               >退出项目
               </Button>
             </Popconfirm>
@@ -356,6 +389,7 @@ class ProjectInfo extends React.PureComponent {
             size="middle"
             style={{margin: '5px'}}
             onClick={this.learnProject}
+            loading={learnBtLoading}
           >加入学习
           </Button>
         }
@@ -400,7 +434,15 @@ class ProjectInfo extends React.PureComponent {
                     <Col flex="auto">
                       <p style={{fontSize: '20px'}}>
                         {project.projectTitle}&nbsp;&nbsp;
-                        {project.created ? <Tag color="geekblue">我创建的项目</Tag> : null}
+                        {project.created ?
+                          <>
+                            <Tag color="geekblue">我创建的项目</Tag>
+                            <span style={{color: 'gray', fontSize: '15px'}}>
+                              {this.projectState()}
+                            </span>
+                          </>
+                          : null
+                        }
                         {project.learning ? <Tag color="geekblue">正在学习</Tag> : null}
                         <span style={{float: 'right'}}>
                         {project.favourite ?
@@ -452,6 +494,7 @@ class ProjectInfo extends React.PureComponent {
                 >
                   <Menu.Item key="project-introduce">项目信息</Menu.Item>
                   <Menu.Item key="project-outline">项目大纲</Menu.Item>
+                  <Menu.Item key="project-comment">留言沟通</Menu.Item>
                   <Menu.Item key="project-evaluation">评价方案</Menu.Item>
 
                   {project.created ? <Menu.Item key="student-admin">学生管理</Menu.Item>
@@ -466,7 +509,7 @@ class ProjectInfo extends React.PureComponent {
                 >
                   {menu === 'project-introduce' ? <ProjectIntroduce project={project}/> : null}
                   {menu === 'project-outline' ? <ProjectOutline project={project}/> : null}
-                  {menu === 'project-comment' ? <ProjectComment project={project}/> : null}
+                  {menu === 'project-comment' ? <ProjectComment project={project} account={this.props.account}/> : null}
                   {menu === 'project-evaluation' ?
                     <ProjectEvaluation
                       project={project}
