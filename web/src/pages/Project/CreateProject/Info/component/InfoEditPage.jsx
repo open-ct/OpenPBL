@@ -14,6 +14,8 @@ function InfoEditPage(obj) {
   const [subjects, setSubjects] = useState(iniSubjects)
   const [skills, setSkills] = useState(iniSkills)
 
+  const [nextPageLoading, setNextPageLoading] = useState(false)
+
   const [change, setChange] = useState(false)
 
   const [selectedSubjects, setSelectedSubjects] = useState([])
@@ -140,6 +142,7 @@ function InfoEditPage(obj) {
     }
     ProjectApi.updateProject(data, pid)
       .then((res) => {
+        setNextPageLoading(false)
         if (res.data.code === 200) {
           message.success(res.data.msg)
           setTimeout(() => {
@@ -152,10 +155,12 @@ function InfoEditPage(obj) {
       })
   }
   const nextPage = () => {
+    setNextPageLoading(true)
     if (checkInput()) {
       if (change) {
         onFinish();
       } else {
+        setNextPageLoading(false)
         window.location.href = `/project/${pid}/outline/edit`
       }
     }
@@ -272,6 +277,7 @@ function InfoEditPage(obj) {
             size="middle"
             style={{marginRight: '20px'}}
             onClick={nextPage}
+            loading={nextPageLoading}
           >下一页
           </Button>
         </Col>
