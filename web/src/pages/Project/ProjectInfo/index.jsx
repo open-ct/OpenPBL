@@ -13,7 +13,8 @@ import {
   PageHeader,
   Popconfirm,
   Row,
-  Tag, Tooltip
+  Tag,
+  Tooltip
 } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import {Link} from 'react-router-dom';
@@ -221,7 +222,7 @@ class ProjectInfo extends React.PureComponent {
       favBtLoading: true
     })
     ProjectApi.addFavourite(this.state.pid)
-      .then(res=>{
+      .then(res => {
         this.setState({
           favBtLoading: false
         })
@@ -232,14 +233,16 @@ class ProjectInfo extends React.PureComponent {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   removeFavourite = e => {
     this.setState({
       favBtLoading: true
     })
     ProjectApi.removeFavourite(this.state.pid)
-      .then(res=>{
+      .then(res => {
         this.setState({
           favBtLoading: false
         })
@@ -250,7 +253,9 @@ class ProjectInfo extends React.PureComponent {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
 
   setProject = project => {
@@ -274,7 +279,7 @@ class ProjectInfo extends React.PureComponent {
       cloneBtLoading: true
     })
     ProjectApi.cloneProject(this.state.pid)
-      .then(res=>{
+      .then(res => {
         this.setState({
           cloneBtLoading: false
         })
@@ -284,11 +289,25 @@ class ProjectInfo extends React.PureComponent {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
 
   render() {
-    const {project, teacher, menu, pid, lastLearn, favBtLoading, learnBtLoading, exitBtLoading, closeBtLoading, cloneBtLoading, deleteBtLoading} = this.state;
+    const {
+      project,
+      teacher,
+      menu,
+      pid,
+      lastLearn,
+      favBtLoading,
+      learnBtLoading,
+      exitBtLoading,
+      closeBtLoading,
+      cloneBtLoading,
+      deleteBtLoading
+    } = this.state;
 
     const teacherBt = (
       <div style={{float: 'right'}}>
@@ -519,11 +538,13 @@ class ProjectInfo extends React.PureComponent {
                         <span style={{float: 'right'}}>
                         {project.favourite ?
                           <Tooltip title="点击取消收藏">
-                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarFilled/>} onClick={this.removeFavourite}/>
+                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarFilled/>}
+                                    onClick={this.removeFavourite}/>
                           </Tooltip>
                           :
                           <Tooltip title="点击收藏">
-                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarOutlined/>} onClick={this.addFavourite}/>
+                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarOutlined/>}
+                                    onClick={this.addFavourite}/>
                           </Tooltip>
                         }
                         </span>

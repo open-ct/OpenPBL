@@ -339,7 +339,8 @@ function OutlineEditPage(obj) {
         </Link>
       </div>
 
-      <Modal title="" visible={chapterModalVisible} onOk={doChapter} confirmLoading={btLoading} onCancel={cancelDoChapter}>
+      <Modal title="" visible={chapterModalVisible} onOk={doChapter} confirmLoading={btLoading}
+             onCancel={cancelDoChapter}>
         <br/>
         <Row>
           <Col span={3}>

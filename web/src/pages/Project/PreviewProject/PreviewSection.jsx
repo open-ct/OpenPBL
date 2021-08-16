@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {BackTop, Card, PageHeader} from "antd";
 import DocumentTitle from 'react-document-title';
 
@@ -29,10 +29,12 @@ class PreviewSection extends React.Component {
       second: 0,
     }
   }
+
   componentDidMount() {
     this.getSectionDetail()
     this.getTasks()
   }
+
   componentWillUnmount() {
     if (this.state.learning) {
       if (this.state.timer != null) {

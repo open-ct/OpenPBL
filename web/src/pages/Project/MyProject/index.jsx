@@ -1,7 +1,14 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
 import {Link, Redirect, Route, Switch} from 'react-router-dom'
-import {CheckCircleOutlined, CheckOutlined, CopyOutlined, HighlightOutlined, SyncOutlined, StarFilled} from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  CheckOutlined,
+  CopyOutlined,
+  HighlightOutlined,
+  StarFilled,
+  SyncOutlined
+} from "@ant-design/icons";
 
 import PublishedProject from "../PublishedProject";
 import EditingProject from "../EditingProject";
@@ -21,7 +28,7 @@ class MyProject extends React.PureComponent {
   }
 
   changeMenu = (e) => {
-    if (e !== undefined ) {
+    if (e !== undefined) {
       this.setState({menu: e.key})
       return
     }
@@ -68,7 +75,7 @@ class MyProject extends React.PureComponent {
                   defaultSelectedKeys={['published']}
                   className="menu-bar"
                   selectedKeys={[menu]}
-                  onClick={e=>this.changeMenu(e)}
+                  onClick={e => this.changeMenu(e)}
                   mode="inline"
                 >
                   <Menu.Item key="published" icon={<CheckCircleOutlined/>}>
@@ -86,7 +93,7 @@ class MyProject extends React.PureComponent {
                       已结束
                     </Link>
                   </Menu.Item>
-                  <Menu.Item key="favourite" icon={<StarFilled />}>
+                  <Menu.Item key="favourite" icon={<StarFilled/>}>
                     <Link to="/home/my-project/favourite">
                       收藏夹
                     </Link>
@@ -97,7 +104,7 @@ class MyProject extends React.PureComponent {
                   defaultSelectedKeys={['learning']}
                   className="menu-bar"
                   selectedKeys={[menu]}
-                  onClick={e=>this.changeMenu(e)}
+                  onClick={e => this.changeMenu(e)}
                   mode="inline"
                 >
                   <Menu.Item key="learning" icon={<SyncOutlined/>}>
@@ -110,7 +117,7 @@ class MyProject extends React.PureComponent {
                       已完成
                     </Link>
                   </Menu.Item>
-                  <Menu.Item key="favourite" icon={<StarFilled />}>
+                  <Menu.Item key="favourite" icon={<StarFilled/>}>
                     <Link to="/home/my-project/favourite">
                       收藏夹
                     </Link>

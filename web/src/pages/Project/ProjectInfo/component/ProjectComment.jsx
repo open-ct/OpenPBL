@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Avatar, Button, Comment, Form, Input, Pagination, message, Tooltip, Popconfirm, Switch} from 'antd';
+import {Avatar, Button, Comment, Form, Input, message, Pagination, Popconfirm, Switch, Tooltip} from 'antd';
 import {DeleteOutlined} from "@ant-design/icons"
 import QueueAnim from 'rc-queue-anim';
 
 import CommentApi from "../../../../api/CommentApi"
 import util from "../../../component/Util"
+
 const {TextArea} = Input;
 
 
@@ -21,13 +22,13 @@ function ProjectComment(obj) {
 
   const updateCommentList = (p, size, isTeacher) => {
     let query = {
-      from: (p-1)*size,
+      from: (p - 1) * size,
       size: size,
       text: '',
       isTeacher: isTeacher,
     }
     CommentApi.getProjectComments(obj.project.id, query)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           if (res.data.comments !== null) {
             setCommentList(res.data.comments)
@@ -35,7 +36,9 @@ function ProjectComment(obj) {
           }
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
 
     setPage(p);
   };
@@ -50,11 +53,11 @@ function ProjectComment(obj) {
     }
     setSubmitting(true);
     let c = {
-      content:   value,
+      content: value,
       projectId: obj.project.id,
     }
     CommentApi.createComment(obj.project.id, c)
-      .then(res=>{
+      .then(res => {
         setSubmitting(false);
         if (res.data.code === 200) {
           message.success(res.data.msg)
@@ -64,11 +67,13 @@ function ProjectComment(obj) {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   };
   const deleteComment = (item) => {
     CommentApi.deleteComment(obj.project.id, item.id)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           message.success(res.data.msg)
           updateCommentList(page, pageSize, isTeacher)
@@ -76,7 +81,9 @@ function ProjectComment(obj) {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
 
   const onChange = (v) => {
@@ -120,8 +127,8 @@ function ProjectComment(obj) {
                 </>,
                 <>
                   {obj.account.name === item.userId ?
-                    <Popconfirm title="确定删除留言？" onConfirm={e=>deleteComment(item)}>
-                      <Button type="text" shape="circle" icon={<DeleteOutlined />} />
+                    <Popconfirm title="确定删除留言？" onConfirm={e => deleteComment(item)}>
+                      <Button type="text" shape="circle" icon={<DeleteOutlined/>}/>
                     </Popconfirm>
                     : null
                   }

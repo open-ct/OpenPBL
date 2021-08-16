@@ -1,5 +1,5 @@
 import React from "react";
-import {Avatar, Badge, Button, Col, Dropdown, Layout, Menu, Row, Tag, Image, message} from "antd";
+import {Avatar, Badge, Button, Col, Dropdown, Image, Layout, Menu, message, Row, Tag} from "antd";
 import {Link, Redirect, Route, Switch} from "react-router-dom";
 import {BellOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 
@@ -35,13 +35,15 @@ class HeaderLayout extends React.Component {
           account: res.data.data
         })
       })
-      .catch((e) => {console.log(e)})
+      .catch((e) => {
+        console.log(e)
+      })
 
     this.changeMenu()
   }
 
   changeMenu = (e) => {
-    if (e !== undefined ) {
+    if (e !== undefined) {
       this.setState({menu: e.key})
       return
     }
@@ -60,7 +62,7 @@ class HeaderLayout extends React.Component {
 
     if (this.state.account === null) {
       message.warn('请先登录')
-      return <Redirect to={'/home'} />
+      return <Redirect to={'/home'}/>
     } else if (this.state.account === undefined) {
       return null
     } else {
@@ -82,7 +84,9 @@ class HeaderLayout extends React.Component {
             window.location.href = '/'
           }
         })
-        .catch(e => {console.log(e)})
+        .catch(e => {
+          console.log(e)
+        })
     }
   }
 
@@ -146,7 +150,7 @@ class HeaderLayout extends React.Component {
                 style={{border: 0}}
                 defaultSelectedKeys={['home']}
                 selectedKeys={[menu]}
-                onClick={e=>this.changeMenu(e)}
+                onClick={e => this.changeMenu(e)}
               >
                 <Menu.Item key="home">
                   <Link to="/home">
@@ -190,20 +194,34 @@ class HeaderLayout extends React.Component {
         </Layout.Header>
         <Layout.Content>
           <Switch>
-            <Route exact path="/home" render={(props)=><Home account={this.state.account} {...props} />}/>
-            <Route exact path="/home/public-project" render={(props)=>this.renderHomeIfLoggedIn(<Project account={this.state.account} {...props} />)} />
-            <Route path="/home/my-project" render={(props)=>this.renderHomeIfLoggedIn(<MyProject account={this.state.account} {...props} />)} />
-            <Route path="/home/message" render={(props)=>this.renderHomeIfLoggedIn(<Message account={this.state.account} {...props} />)}/>
+            <Route exact path="/home" render={(props) => <Home account={this.state.account} {...props} />}/>
+            <Route exact path="/home/public-project"
+                   render={(props) => this.renderHomeIfLoggedIn(<Project account={this.state.account} {...props} />)}/>
+            <Route path="/home/my-project" render={(props) => this.renderHomeIfLoggedIn(<MyProject
+              account={this.state.account} {...props} />)}/>
+            <Route path="/home/message"
+                   render={(props) => this.renderHomeIfLoggedIn(<Message account={this.state.account} {...props} />)}/>
 
-            <Route exact path="/home/project/:id/info" render={(props)=>this.renderHomeIfLoggedIn(<ProjectInfo account={this.state.account} {...props} />)}/>
-            <Route exact path="/home/project/:id/info/edit" render={(props)=>this.renderHomeIfLoggedIn(<EditInfo account={this.state.account} {...props} />)}/>
-            <Route exact path="/home/project/:id/outline/edit" render={(props)=>this.renderHomeIfLoggedIn(<EditOutlined account={this.state.account} {...props} />)}/>
+            <Route exact path="/home/project/:id/info" render={(props) => this.renderHomeIfLoggedIn(<ProjectInfo
+              account={this.state.account} {...props} />)}/>
+            <Route exact path="/home/project/:id/info/edit"
+                   render={(props) => this.renderHomeIfLoggedIn(<EditInfo account={this.state.account} {...props} />)}/>
+            <Route exact path="/home/project/:id/outline/edit"
+                   render={(props) => this.renderHomeIfLoggedIn(<EditOutlined
+                     account={this.state.account} {...props} />)}/>
 
-            <Route exact path="/home/project/:pid/student/:sid/evidence" render={(props)=>this.renderHomeIfLoggedIn(<Evidence account={this.state.account} {...props} />)}/>
+            <Route exact path="/home/project/:pid/student/:sid/evidence"
+                   render={(props) => this.renderHomeIfLoggedIn(<Evidence account={this.state.account} {...props} />)}/>
 
-            <Route exact path="/home/project/:pid/section/:sid/edit" render={(props)=>this.renderHomeIfLoggedIn(<SectionEditPage account={this.state.account} {...props} />)}/>
-            <Route exact path="/home/project/:pid/section/:sid/task/:tid/survey/edit" render={(props)=>this.renderHomeIfLoggedIn(<SurveyEditPage account={this.state.account} {...props} />)}/>
-            <Route exact path="/home/project/:pid/section/:sid/preview" render={(props)=>this.renderHomeIfLoggedIn(<PreviewSection account={this.state.account} {...props} />)}/>
+            <Route exact path="/home/project/:pid/section/:sid/edit"
+                   render={(props) => this.renderHomeIfLoggedIn(<SectionEditPage
+                     account={this.state.account} {...props} />)}/>
+            <Route exact path="/home/project/:pid/section/:sid/task/:tid/survey/edit"
+                   render={(props) => this.renderHomeIfLoggedIn(<SurveyEditPage
+                     account={this.state.account} {...props} />)}/>
+            <Route exact path="/home/project/:pid/section/:sid/preview"
+                   render={(props) => this.renderHomeIfLoggedIn(<PreviewSection
+                     account={this.state.account} {...props} />)}/>
           </Switch>
         </Layout.Content>
         <Layout.Footer style={{textAlign: 'center'}}>OpenPBL</Layout.Footer>

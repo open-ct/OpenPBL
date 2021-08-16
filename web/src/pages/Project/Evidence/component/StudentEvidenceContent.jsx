@@ -1,27 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {
-  Button,
-  Row,
-  Divider,
-  Input,
-  InputNumber,
-  List,
-  message,
-  Progress,
-  Tooltip,
-  Upload,
-  Radio,
-  Checkbox, Collapse
-} from "antd";
+import {Button, Checkbox, Divider, List, Radio} from "antd";
 
 import TaskApi from "../../../../api/TaskApi";
 import ChapterApi from "../../../../api/ChapterApi";
 import util from "../../../component/Util"
 import htmlDocx from 'html-docx-js/dist/html-docx';
 import saveAs from 'file-saver';
-import {InboxOutlined} from "@ant-design/icons";
-import FillSurvey from "../../PreviewProject/component/FillSurvey";
-import ReactEcharts from "echarts-for-react";
 import Question from "../../CreateProject/Survey/component/Question";
 
 const blank = Question.blank
@@ -41,7 +25,7 @@ function StudentEvidenceContent(obj) {
   useEffect(() => {
     getChapters()
     getTasks()
-    setTimeout(()=>{
+    setTimeout(() => {
       saveFile()
     }, 500)
   }, []);
@@ -107,7 +91,7 @@ function StudentEvidenceContent(obj) {
   }
   const getPercent = (item) => {
     let p = ((item.learnMinute + item.learnSecond / 60) / item.sectionMinute * 100).toFixed(1)
-    if (p > 100){
+    if (p > 100) {
       return 100
     }
     return p
@@ -124,37 +108,37 @@ function StudentEvidenceContent(obj) {
       <div style={{float: 'right'}}><Button onClick={saveFile}>保存</Button></div>
 
       <div id="evidence">
-      <h2>一、章节学习时长</h2>
-      {chapters.map((item, index) => (
-        <div key={index.toString()} style={{textAlign: 'left'}}>
-          <p style={{fontWeight: 'bold', fontSize: '16px'}}>
-            {util.FormatChapterName(item.chapterName, item.chapterNumber)}
-          </p>
-          {(item.sections === null || item.sections === undefined) ?
-            null
-            :
-            <>
-              <List
-                size="large"
-                dataSource={item.sections}
-                locale={{emptyText: '--'}}
-                renderItem={
-                  item => (
-                    <List.Item>
-                      <p>{util.FormatSectionName(item.sectionName, item.chapterNumber, item.sectionNumber)}</p>
-                      要求学习时长：{item.sectionMinute}分钟,&nbsp;
-                      学生学习时长：{item.learnMinute}分{item.learnSecond}秒,&nbsp;
-                      学习进度：{getPercent(item)}%
-                    </List.Item>
-                  )
-                }
-              /><br/>
-            </>
-          }
-        </div>
-      ))}
+        <h2>一、章节学习时长</h2>
+        {chapters.map((item, index) => (
+          <div key={index.toString()} style={{textAlign: 'left'}}>
+            <p style={{fontWeight: 'bold', fontSize: '16px'}}>
+              {util.FormatChapterName(item.chapterName, item.chapterNumber)}
+            </p>
+            {(item.sections === null || item.sections === undefined) ?
+              null
+              :
+              <>
+                <List
+                  size="large"
+                  dataSource={item.sections}
+                  locale={{emptyText: '--'}}
+                  renderItem={
+                    item => (
+                      <List.Item>
+                        <p>{util.FormatSectionName(item.sectionName, item.chapterNumber, item.sectionNumber)}</p>
+                        要求学习时长：{item.sectionMinute}分钟,&nbsp;
+                        学生学习时长：{item.learnMinute}分{item.learnSecond}秒,&nbsp;
+                        学习进度：{getPercent(item)}%
+                      </List.Item>
+                    )
+                  }
+                /><br/>
+              </>
+            }
+          </div>
+        ))}
 
-      <h2>二、学生任务</h2>
+        <h2>二、学生任务</h2>
 
         <List
           size="large"
@@ -165,7 +149,8 @@ function StudentEvidenceContent(obj) {
               <List.Item>
                 <div style={{textAlign: 'left'}}>
                   <div>
-                    <p style={{fontWeight: 'bold'}}>{util.FormatSectionName(item.taskTitle, item.chapterNumber, item.sectionNumber)}</p>
+                    <p
+                      style={{fontWeight: 'bold'}}>{util.FormatSectionName(item.taskTitle, item.chapterNumber, item.sectionNumber)}</p>
                     {item.submitted ?
                       <span style={{color: 'green'}}>已提交</span>
                       :
@@ -268,7 +253,7 @@ function StudentEvidenceContent(obj) {
             )
           }
         />
-    </div>
+      </div>
     </div>
   )
 }
