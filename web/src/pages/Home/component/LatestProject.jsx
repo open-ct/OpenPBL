@@ -40,7 +40,7 @@ function LatestProject(obj) {
         {
           projects.map((item, index) => (
             <Col key={index.toString()} {...topColResponsiveProps}>
-              <Link to={`/project/${item.id}/info`}>
+              <Link to={`/home/project/${item.id}/info`}>
                 <Card
                   hoverable
                   bordered={false}

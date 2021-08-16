@@ -144,9 +144,8 @@ function ProjectComment(obj) {
           />
         ))
         }<br/>
-        <div>
+        <div style={{textAlign: 'right', marginRight: '40px'}}>
           <Pagination
-            hideOnSinglePage
             total={total}
             showTotal={t => `共${total}项内容`}
             current={page}

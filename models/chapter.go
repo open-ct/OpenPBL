@@ -33,9 +33,6 @@ func (p *Chapter) Delete() (err error) {
 	session := adapter.Engine.NewSession()
 	defer session.Close()
 	session.Begin()
-
-	fmt.Println(p.ProjectId, p.ChapterNumber)
-
 	_, err = session.
 		Exec("update chapter set chapter_number = chapter_number - 1 " +
 			"where project_id = ? and chapter_number > ?", p.ProjectId, p.ChapterNumber)
@@ -73,6 +70,33 @@ func GetChaptersByPid(pid string, uid string) (outline []Outline, err error) {
 				Find(&sections)
 		}
 		outline[i].Sections = sections
+	}
+	return
+}
+
+func DeleteProjectChapters(pid int64) (err error) {
+	var chapters []Chapter
+	err = (&Chapter{}).GetEngine().Where("project_id = ?", pid).Find(&chapters)
+	for i:=0; i< len(chapters); i++ {
+		c := chapters[i]
+		cid := c.Id
+		_, err = (&Chapter{}).GetEngine().ID(cid).Delete(&Chapter{})
+		err = DeleteChapterSections(cid)
+	}
+	return
+}
+
+func CloneProjectChapters(pid int64, newPid int64) (err error) {
+	var chapters []Chapter
+	err = (&Chapter{}).GetEngine().Where("project_id = ?", pid).Find(&chapters)
+	for i:=0; i< len(chapters); i++ {
+		c := chapters[i]
+		cid := c.Id
+		c.Id = 0
+		c.ProjectId = newPid
+		_, err = (&Chapter{}).GetEngine().Insert(&c)
+		newCid := c.Id
+		err = CloneChapterSections(newPid, cid, newCid)
 	}
 	return
 }

@@ -165,16 +165,9 @@ func (p *Project) UpdateInfo(subjects []*ProjectSubject, skills []*ProjectSkill)
 }
 
 func (p *Project) Delete() (err error) {
+	pid := p.Id
 	_, err = p.GetEngine().ID(p.Id).Delete(p)
-	return
-}
-
-func GetOutlineByPid(pid string) (c []Outline, err error) {
-	err = adapter.Engine.
-		SQL("select * from chapter left join section s on chapter.id = s.chapter_id where chapter.project_id = 1").
-		// Where("project_id = ?", pid).
-		// Asc("chapter_number").
-		Find(&c)
+	err = DeleteProjectChapters(pid)
 	return
 }
 
@@ -229,5 +222,22 @@ func GetSkills() (skills []string, err error) {
 func ViewProject(pid string) (err error) {
 	_, err = adapter.Engine.
 		Exec("update project set read_num = read_num + 1 where id = ?", pid)
+	return
+}
+
+func CloneProject(uid string, pid int64) (err error) {
+	var project Project
+	_, err = (&Project{}).GetEngine().ID(pid).Get(&project)
+	project.TeacherId = uid
+	project.Id = 0
+	project.Closed = false
+	project.Published = false
+	project.CreateAt = time.Now()
+	project.ReadNum = 0
+	project.JoinNum = 0
+	project.ProjectTitle = project.ProjectTitle + "-副本"
+	_, err = (&Project{}).GetEngine().Insert(&project)
+	newPid := project.Id
+	err = CloneProjectChapters(pid, newPid)
 	return
 }

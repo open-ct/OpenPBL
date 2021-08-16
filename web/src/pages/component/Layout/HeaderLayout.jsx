@@ -46,12 +46,12 @@ class HeaderLayout extends React.Component {
       return
     }
     const p = this.props.location.pathname
-    if (p.startsWith('/home')) {
-      this.setState({menu: 'home'})
-    } else if (p.startsWith("/my-project")) {
+    if (p.startsWith("/home/my-project")) {
       this.setState({menu: 'my-project'})
-    } else if (p.startsWith("/public-project")) {
+    } else if (p.startsWith("/home/public-project")) {
       this.setState({menu: 'public-project'})
+    } else {
+      this.setState({menu: 'home'})
     }
   }
 

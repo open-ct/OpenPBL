@@ -191,3 +191,35 @@ func GetProjectTasks(pid string) (t []TaskEvaluate, err error) {
 		Find(&t)
 	return
 }
+
+func DeleteTasks(sid int64) (err error) {
+	var tasks []Task
+	err = (&Task{}).GetEngine().Where("section_id = ?", sid).Find(&tasks)
+	for i:=0; i<len(tasks); i++ {
+		t := tasks[i]
+		tid := t.Id
+		_, err = (&Task{}).GetEngine().ID(tid).Delete(&Task{})
+		if t.TaskType == "survey" {
+			err = DeleteSurvey(tid)
+		}
+	}
+	return
+}
+
+func CloneTasks(newPid int64, sid int64, newSid int64) (err error) {
+	var tasks []Task
+	err = (&Task{}).GetEngine().Where("section_id = ?", sid).Find(&tasks)
+	for i:=0; i<len(tasks); i++ {
+		t := tasks[i]
+		tid := t.Id
+		t.Id = 0
+		t.ProjectId = newPid
+		t.SectionId = newSid
+		_, err = (&Task{}).GetEngine().Insert(&t)
+		newTid := t.Id
+		if t.TaskType == "survey" {
+			err = CloneSurvey(tid, newTid)
+		}
+	}
+	return
+}

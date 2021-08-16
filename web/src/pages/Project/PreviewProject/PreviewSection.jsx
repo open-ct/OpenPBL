@@ -34,19 +34,21 @@ class PreviewSection extends React.Component {
     this.getTasks()
   }
   componentWillUnmount() {
-    if (this.state.timer != null) {
-      clearTimeout(this.state.timer)
+    if (this.state.learning) {
+      if (this.state.timer != null) {
+        clearTimeout(this.state.timer)
+      }
+      let data = {
+        learnMinute: this.state.minute,
+        learnSecond: this.state.second
+      }
+      StudentApi.updateLearnSection(this.state.pid, this.state.sid, data)
+        .then(res => {
+        })
+        .catch(e => {
+          console.log(e)
+        })
     }
-    let data = {
-      learnMinute: this.state.minute,
-      learnSecond: this.state.second
-    }
-    StudentApi.updateLearnSection(this.state.pid, this.state.sid, data)
-      .then(res => {
-      })
-      .catch(e => {
-        console.log(e)
-      })
   }
 
   getSectionDetail = () => {
