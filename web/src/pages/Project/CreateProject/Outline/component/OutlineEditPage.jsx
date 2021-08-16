@@ -27,6 +27,8 @@ function OutlineEditPage(obj) {
   const [chapterName, setChapterName] = useState('')
   const [sectionName, setSectionName] = useState('')
 
+  const [btLoading, setBtLoading] = useState(false)
+
   useEffect(() => {
     getChapters()
   }, [])
@@ -105,6 +107,7 @@ function OutlineEditPage(obj) {
       return
     }
     if (opt === 'modify') {
+      setBtLoading(true)
       let c = {
         id: chapter.id,
         projectId: chapter.projectId,
@@ -113,6 +116,7 @@ function OutlineEditPage(obj) {
       }
       ChapterApi.updateProjectChapter(c)
         .then((res) => {
+          setBtLoading(false)
           if (res.data.code === 200) {
             setChapterModalVisible(false)
             message.success(res.data.msg)
@@ -126,6 +130,7 @@ function OutlineEditPage(obj) {
           console.log(e)
         })
     } else if (opt === 'add') {
+      setBtLoading(true)
       let len = chapters.length
       let l = 0
       if (len > 0) {
@@ -134,6 +139,7 @@ function OutlineEditPage(obj) {
       let cp = {chapterName: chapterName, chapterNumber: l, projectId: pid}
       ChapterApi.createProjectChapter(cp)
         .then((res) => {
+          setBtLoading(false)
           setChapterModalVisible(false)
           setChapterName('')
           if (res.data.code === 200) {
@@ -153,6 +159,7 @@ function OutlineEditPage(obj) {
       return
     }
     if (opt === 'modify') {
+      setBtLoading(true)
       let s = {
         id: section.id,
         chapterId: section.chapterId,
@@ -162,9 +169,9 @@ function OutlineEditPage(obj) {
       }
       SectionApi.updateChapterSection(pid, s)
         .then((res) => {
+          setBtLoading(false)
           if (res.data.code === 200) {
             setSectionModalVisible(false)
-
             chapters[index].sections[subIndex].sectionName = sectionName
             setChapters([...chapters])
             setSectionName('')
@@ -174,6 +181,7 @@ function OutlineEditPage(obj) {
           console.log(e)
         })
     } else if (opt === 'add') {
+      setBtLoading(true)
       let l = 0
       if (chapters[index].sections !== undefined && chapters[index].sections !== null) {
         let len = chapters[index].sections.length
@@ -189,6 +197,8 @@ function OutlineEditPage(obj) {
       }
       SectionApi.createChapterSection(pid, sec)
         .then((res) => {
+          setBtLoading(false)
+
           setSectionModalVisible(false)
           setSectionName('')
           if (res.data.code === 200) {
@@ -329,7 +339,7 @@ function OutlineEditPage(obj) {
         </Link>
       </div>
 
-      <Modal title="" visible={chapterModalVisible} onOk={doChapter} onCancel={cancelDoChapter}>
+      <Modal title="" visible={chapterModalVisible} onOk={doChapter} confirmLoading={btLoading} onCancel={cancelDoChapter}>
         <br/>
         <Row>
           <Col span={3}>
@@ -341,7 +351,7 @@ function OutlineEditPage(obj) {
         </Row>
       </Modal>
 
-      <Modal visible={sectionModalVisible} onOk={doSection} onCancel={cancelDoSection}>
+      <Modal visible={sectionModalVisible} onOk={doSection} confirmLoading={btLoading} onCancel={cancelDoSection}>
         <br/>
         <Row>
           <Col span={3}>

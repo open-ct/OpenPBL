@@ -12,7 +12,7 @@ type Section struct {
 	SectionNumber      int     `json:"sectionNumber" xorm:"index"`
 	ChapterNumber      int     `json:"chapterNumber" xorm:"index"`
 
-	SectionMinute      int     `json:"sectionMinute" xorm:"default 10"`
+	SectionMinute      int     `json:"sectionMinute" xorm:"default 1"`
 }
 
 type SectionMinute struct {
