@@ -108,9 +108,9 @@ class ProjectInfo extends React.PureComponent {
   }
   back = e => {
     if (this.props.account.tag === '老师') {
-      window.location.href = '/my-project/published'
+      window.location.href = '/home/my-project/published'
     } else {
-      window.location.href = '/my-project/learning'
+      window.location.href = '/home/my-project/learning'
     }
   }
   learnProject = e => {
@@ -183,9 +183,9 @@ class ProjectInfo extends React.PureComponent {
         })
         if (res.data.code === 200) {
           if (this.props.account.tag === '老师') {
-            window.location.href = '/my-project/published'
+            window.location.href = '/home/my-project/published'
           } else {
-            window.location.href = '/my-project/learning'
+            window.location.href = '/home/my-project/learning'
           }
         } else {
           message.error(res.data.msg)
@@ -200,9 +200,9 @@ class ProjectInfo extends React.PureComponent {
       .then(res => {
         if (res.data.code === 200) {
           if (this.props.account.tag === '老师') {
-            window.location.href = '/my-project/published'
+            window.location.href = '/home/my-project/published'
           } else {
-            window.location.href = '/my-project/learning'
+            window.location.href = '/home/my-project/learning'
           }
         } else {
           message.error(res.data.msg)
@@ -307,7 +307,7 @@ class ProjectInfo extends React.PureComponent {
                 发布项目
               </Button>
             </Popconfirm>
-            <Link to={`/project/${pid}/info/edit`} target="_blank">
+            <Link to={`/home/project/${pid}/info/edit`} target="_blank">
               <Button
                 shape="round"
                 size="middle"
@@ -353,7 +353,7 @@ class ProjectInfo extends React.PureComponent {
       <div style={{float: 'right'}}>
         {project.learning ?
           <>
-            <Link to={`/project/${project.id}/section/${lastLearn.id}/preview?back=/project/${project.id}/info`}>
+            <Link to={`/home/project/${project.id}/section/${lastLearn.id}/preview?back=/project/${project.id}/info`}>
 
               {lastLearn.last ?
                 <span>

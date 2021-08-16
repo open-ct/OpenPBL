@@ -18,6 +18,8 @@
     "echarts": "^5.1.2",
     "echarts-for-react": "^3.0.1",
     "enquire-js": "^0.2.1",
+    "file-saver": "^2.0.5",
+    "html-docx-js": "^0.3.1",
     "localStorage": "^1.0.4",
     "lodash": "^4.17.21",
     "prop-types": "^15.7.2",

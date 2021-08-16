@@ -146,7 +146,7 @@ function InfoEditPage(obj) {
         if (res.data.code === 200) {
           message.success(res.data.msg)
           setTimeout(() => {
-            window.location.href = `/project/${pid}/outline/edit`
+            window.location.href = `/home/project/${pid}/outline/edit`
           }, 200)
         }
       })
@@ -161,7 +161,7 @@ function InfoEditPage(obj) {
         onFinish();
       } else {
         setNextPageLoading(false)
-        window.location.href = `/project/${pid}/outline/edit`
+        window.location.href = `/home/project/${pid}/outline/edit`
       }
     }
   }

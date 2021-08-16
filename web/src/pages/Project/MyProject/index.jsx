@@ -43,7 +43,7 @@ class MyProject extends React.PureComponent {
     ProjectApi.createProject()
       .then((res) => {
         if (res.data.code === 200) {
-          window.open(`/project/${res.data.data}/info/edit`)
+          window.open(`/home/project/${res.data.data}/info/edit`)
         }
       })
       .catch((e) => {
@@ -72,22 +72,22 @@ class MyProject extends React.PureComponent {
                   mode="inline"
                 >
                   <Menu.Item key="published" icon={<CheckCircleOutlined/>}>
-                    <Link to="/my-project/published">
+                    <Link to="/home/my-project/published">
                       已发布
                     </Link>
                   </Menu.Item>
                   <Menu.Item key="editing" icon={<HighlightOutlined/>}>
-                    <Link to="/my-project/editing">
+                    <Link to="/home/my-project/editing">
                       未发布
                     </Link>
                   </Menu.Item>
                   <Menu.Item key="finished" icon={<CopyOutlined/>}>
-                    <Link to="/my-project/finished">
+                    <Link to="/home/my-project/finished">
                       已结束
                     </Link>
                   </Menu.Item>
                   <Menu.Item key="favourite" icon={<StarFilled />}>
-                    <Link to="/my-project/favourite">
+                    <Link to="/home/my-project/favourite">
                       收藏夹
                     </Link>
                   </Menu.Item>
@@ -101,17 +101,17 @@ class MyProject extends React.PureComponent {
                   mode="inline"
                 >
                   <Menu.Item key="learning" icon={<SyncOutlined/>}>
-                    <Link to="/my-project/learning">
+                    <Link to="/home/my-project/learning">
                       进行中
                     </Link>
                   </Menu.Item>
                   <Menu.Item key="finished" icon={<CheckOutlined/>}>
-                    <Link to="/my-project/finished">
+                    <Link to="/home/my-project/finished">
                       已完成
                     </Link>
                   </Menu.Item>
                   <Menu.Item key="favourite" icon={<StarFilled />}>
-                    <Link to="/my-project/favourite">
+                    <Link to="/home/my-project/favourite">
                       收藏夹
                     </Link>
                   </Menu.Item>
@@ -137,22 +137,22 @@ class MyProject extends React.PureComponent {
           <Layout.Content style={{marginLeft: '10px'}}>
             {this.props.account.tag === '老师' ?
               <Switch>
-                <Route exact path="/my-project" render={() => (
-                  <Redirect to="/my-project/published"/>
+                <Route exact path="/home/my-project" render={() => (
+                  <Redirect to="/home/my-project/published"/>
                 )}/>
-                <Route exact path="/my-project/published" component={PublishedProject}/>
-                <Route exact path="/my-project/editing" component={EditingProject}/>
-                <Route exact path="/my-project/finished" component={FinishedProject}/>
-                <Route exact path="/my-project/favourite" component={FavouriteProject}/>
+                <Route exact path="/home/my-project/published" component={PublishedProject}/>
+                <Route exact path="/home/my-project/editing" component={EditingProject}/>
+                <Route exact path="/home/my-project/finished" component={FinishedProject}/>
+                <Route exact path="/home/my-project/favourite" component={FavouriteProject}/>
               </Switch>
               :
               <Switch>
-                <Route exact path="/my-project" render={() => (
-                  <Redirect to="/my-project/learning"/>
+                <Route exact path="/home/my-project" render={() => (
+                  <Redirect to="/home/my-project/learning"/>
                 )}/>
-                <Route exact path="/my-project/learning" component={LearningProject}/>
-                <Route exact path="/my-project/finished" component={FinishedProject}/>
-                <Route exact path="/my-project/favourite" component={FavouriteProject}/>
+                <Route exact path="/home/my-project/learning" component={LearningProject}/>
+                <Route exact path="/home/my-project/finished" component={FinishedProject}/>
+                <Route exact path="/home/my-project/favourite" component={FavouriteProject}/>
               </Switch>
             }
           </Layout.Content>

@@ -301,7 +301,7 @@ function OutlineEditPage(obj) {
               <Menu.Item key={index.toString() + subIndex.toString()}>
                 {util.FormatSectionName(subItem.sectionName, subItem.chapterNumber, subItem.sectionNumber)}
                 <span style={{float: 'right', marginRight: '20px'}}>
-                  <Link to={`/project/${pid}/section/${subItem.id}/edit`}>
+                  <Link to={`/home/project/${pid}/section/${subItem.id}/edit`}>
                     <Button type="text">编辑资源</Button>
                   </Link>
 
@@ -331,10 +331,10 @@ function OutlineEditPage(obj) {
         <Button type="round" style={{margin: '5px'}} onClick={addChapter}>添加章节</Button>
       </div>
       <div style={{textAlign: 'right', marginTop: '20px', marginRight: '20px'}}>
-        <Link to={`/project/${pid}/info`}>
+        <Link to={`/home/project/${pid}/info`}>
           <Button type="primary" size="middle" style={{float: 'right'}}>完成</Button>
         </Link>
-        <Link to={`/project/${pid}/info/edit`}>
+        <Link to={`/home/project/${pid}/info/edit`}>
           <Button size="middle" style={{float: 'right', marginRight: '20px'}}>上一页</Button>
         </Link>
       </div>

@@ -18,7 +18,7 @@ class EditInfo extends React.PureComponent {
   }
 
   back = e => {
-    window.location.href = `/project/${this.state.pid}/info`
+    window.location.href = `/home/project/${this.state.pid}/info`
   }
 
   render() {

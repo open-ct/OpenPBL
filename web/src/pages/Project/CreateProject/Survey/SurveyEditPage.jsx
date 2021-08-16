@@ -146,7 +146,7 @@ function SurveyEditPage(obj) {
     setEditing([...editing])
   }
   const back = e => {
-    window.location.href = `/project/${pid}/section/${sid}/edit`
+    window.location.href = `/home/project/${pid}/section/${sid}/edit`
   }
 
   const getType = t => {

@@ -119,7 +119,7 @@ function ProjectList(obj) {
         .catch(e => {
         })
     }
-    window.location.href = `/project/${item.id}/info`
+    window.location.href = `/home/project/${item.id}/info`
   }
 
   const onSearch = (v) => {
@@ -210,8 +210,7 @@ function ProjectList(obj) {
                       }
                       description={
                         <div>
-                          <span className="des-text">{item.subjects === '' ? '--' : item.subjects}</span><br/>
-                          <span className="des-text">{item.skills === '' ? '--' : item.skills}</span>
+                          <span className="des-text">{item.subjects === '' ? '--' : item.subjects}</span>
                           {item.learning ?
                             <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>学习中</Tag> : null}
                           {item.teacherId === uid && type === 'teacher' ?
