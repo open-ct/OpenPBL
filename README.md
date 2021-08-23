@@ -48,7 +48,7 @@ copyrequestbody = true
 httpport = 5000
 driverName = mysql
 dataSourceName = root:123@tcp(localhost:3306)/
-dbName = openpbl_db
+dbName = openpbl
 
 redisEndpoint = 
 jwtSecret = CasdoorSecret
