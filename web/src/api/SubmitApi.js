@@ -16,6 +16,32 @@ const SubmitApi = {
       data: qs.stringify(data)
     })
   },
+  getSubmitFiles(pid, tid, sid) {
+    return request({
+      url: `/project/${pid}/task/${tid}/submit/${sid}/files`,
+      method: 'get',
+    })
+  },
+  uploadSubmitFile(pid, tid, sid, data) {
+    return request({
+      url: `/project/${pid}/task/${tid}/submit/${sid}/file`,
+      method: 'post',
+      data: qs.stringify(data)
+    })
+  },
+  updateSubmitFile(pid, tid, sid, file) {
+    return request({
+      url: `/project/${pid}/task/${tid}/submit/${sid}/file/${file.id}/update`,
+      method: 'post',
+      data: qs.stringify(file)
+    })
+  },
+  deleteSubmitFile(pid, tid, sid, fid) {
+    return request({
+      url: `/project/${pid}/task/${tid}/submit/${sid}/file/${fid}/delete`,
+      method: 'post'
+    })
+  }
 }
 
 export default SubmitApi

@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 
 import SectionApi from "../../../../api/SectionApi";
 import RichWords from "./component/RichWords";
-import FileResource from "../component/FileResource";
+import FileResource from "./component/FileResource";
 import StudentTask from "./component/StudentTask";
 
 function SectionEditPage(obj) {
@@ -44,9 +44,9 @@ function SectionEditPage(obj) {
           <Card>
             <h2 style={{fontWeight: 'bold'}}>{section.sectionName}</h2>
           </Card>
-          <RichWords section={section}/>
-          <FileResource section={section}/>
-          <StudentTask section={section} pid={pid}/>
+          <RichWords section={section} pid={pid} sid={sid}/>
+          <FileResource section={section} pid={pid} sid={sid}/>
+          <StudentTask section={section} pid={pid} sid={sid}/>
         </div>
         <div style={{textAlign: 'center'}}>
           <Link to={`/home/project/${pid}/section/${sid}/preview?back=/project/${pid}/section/${sid}/edit`}>

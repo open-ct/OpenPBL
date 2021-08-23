@@ -8,7 +8,7 @@ import "./section-edit.less"
 
 function StudentTask(obj) {
   const pid = obj.pid
-  const sid = obj.section.id
+  const sid = obj.sid
   const [tasks, setTasks] = useState([])
   useEffect(() => {
     if (sid !== undefined) {
