@@ -20,11 +20,18 @@ type Submit struct {
 	SubmitIntroduce string    `json:"submitIntroduce" xorm:"text"`
 	SubmitContent   string    `json:"submitContent" xorm:"text"`
 
-	FilePath        string    `json:"filePath"`
 	CreateAt        time.Time `json:"createAt"`
 
 	Score           int       `json:"score" xorm:"default 0"`
 	Scored          bool      `json:"scored" xorm:"default false"`
+}
+
+type SubmitFile struct {
+	Id        int64    `json:"id" xorm:"not null pk autoincr"`
+	SubmitId  int64    `json:"submitId" xorm:"not null index"`
+	FilePath  string   `json:"filePath"`
+	Name      string   `json:"name"`
+	Url       string   `json:"url"`
 }
 
 type Choice struct {
@@ -44,6 +51,31 @@ type SubmitDetail struct {
 func (p *Submit) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(p)
 }
+func (p *SubmitFile) GetEngine() *xorm.Session {
+	return adapter.Engine.Table(p)
+}
+func (p *SubmitFile) Create() (err error) {
+	_, err = p.GetEngine().Insert(p)
+	return
+}
+
+func (p *SubmitFile) Update() (err error) {
+	_, err = p.GetEngine().ID(p.Id).Update(p)
+	return
+}
+
+func GetSubmitFiles(sid string) (files []SectionFile, err error) {
+	err = (&SubmitFile{}).GetEngine().
+		Where("submit_id = ?", sid).
+		Find(&files)
+	return
+}
+
+func DeleteSubmitFile(fid string) (err error) {
+	_, err = (&SubmitFile{}).GetEngine().ID(fid).Delete(&SubmitFile{})
+	return
+}
+
 func (c *Choice) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(c)
 }

@@ -91,6 +91,9 @@ func (a *Adapter) createTable() {
 		new(Chapter),
 		new(Section),
 
+		new(SectionFile),
+		new(SubmitFile),
+
 		new(Resource),
 		new(Task),
 		new(Survey),

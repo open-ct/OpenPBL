@@ -13,7 +13,6 @@ func apiFilter(ctx *context.Context) {
 	if strings.HasPrefix(urlPath, "/api/project-list") ||
 		strings.HasPrefix(urlPath, "/api/project") ||
 		strings.HasPrefix(urlPath, "/api/message") ||
-		strings.HasPrefix(urlPath, "/api/resource") ||
 		strings.HasPrefix(urlPath, "/api/student") {
 		user := ctx.Input.Session("user")
 		if user == nil {

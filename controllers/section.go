@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"OpenPBL/models"
+	"OpenPBL/util"
 	"encoding/json"
 	"strconv"
 )
@@ -36,6 +37,31 @@ func (p *ProjectController) GetSectionDetail() {
 			Response: Response{
 				Code: 200,
 			},
+		}
+	}
+	p.ServeJSON()
+}
+
+// GetSectionFiles
+// @Title
+// @Description
+// @Param sectionId path string true ""
+// @Param projectId path string true ""
+// @Success 200 {object}
+// @Failure 403 body is empty
+// @router /:projectId/section/:sectionId/files [get]
+func (p *ProjectController) GetSectionFiles() {
+	sid := p.GetString(":sectionId")
+	files, err := models.GetSectionFiles(sid)
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg: err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Data: files,
 		}
 	}
 	p.ServeJSON()
@@ -222,3 +248,124 @@ func (p *ProjectController) UpdateSectionsMinute() {
 	p.ServeJSON()
 }
 
+// UploadSectionFile
+// @Title
+// @Description
+// @Param filePath body string true ""
+// @Success 200 {object} models.TeacherProject
+// @Failure 400
+// @router /:projectId/section/:sectionId/file [post]
+func (p *ProjectController) UploadSectionFile() {
+	user := p.GetSessionUser()
+	if !util.IsTeacher(user) {
+		p.Data["json"] = Response{
+			Code: 403,
+			Msg:  "非法用户",
+		}
+		p.ServeJSON()
+		return
+	}
+	sid, err := p.GetInt64(":sectionId")
+	name := p.GetString("name")
+	url := p.GetString("url")
+	filePath := p.GetString("filePath")
+	r := &models.SectionFile{
+		SectionId:  sid,
+		Name:       name,
+		FilePath:   filePath,
+		Url:        url,
+	}
+	err = r.Create()
+
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Msg:  "上传成功",
+			Data: r,
+		}
+	}
+	p.ServeJSON()
+}
+
+// UpdateSectionFile
+// @Title
+// @Description
+// @Param filePath body string true ""
+// @Success 200 {object} models.TeacherProject
+// @Failure 400
+// @router /:projectId/section/:sectionId/file/:fileId/update [post]
+func (p *ProjectController) UpdateSectionFile() {
+	user := p.GetSessionUser()
+	if !util.IsTeacher(user) {
+		p.Data["json"] = Response{
+			Code: 403,
+			Msg:  "非法用户",
+		}
+		p.ServeJSON()
+		return
+	}
+	sid, err := p.GetInt64(":sectionId")
+	fileId, err := p.GetInt64(":fileId")
+	name := p.GetString("name")
+	url := p.GetString("url")
+	filePath := p.GetString("filePath")
+	r := &models.SectionFile{
+		Id:         fileId,
+		SectionId:  sid,
+		Name:       name,
+		FilePath:   filePath,
+		Url:        url,
+	}
+	err = r.Update()
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Msg:  "上传成功",
+			Data: r,
+		}
+	}
+	p.ServeJSON()
+}
+
+// DeleteSectionFile
+// @Title
+// @Description
+// @Param filePath body string true ""
+// @Success 200 {object} models.TeacherProject
+// @Failure 400
+// @router /:projectId/section/:sectionId/file/:fileId/delete [post]
+func (p *ProjectController) DeleteSectionFile() {
+	user := p.GetSessionUser()
+	if !util.IsTeacher(user) {
+		p.Data["json"] = Response{
+			Code: 403,
+			Msg:  "非法用户",
+		}
+		p.ServeJSON()
+		return
+	}
+	fid := p.GetString(":fileId")
+	err := models.DeleteSectionFile(fid)
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Msg:  "删除成功",
+		}
+	}
+	p.ServeJSON()
+}
