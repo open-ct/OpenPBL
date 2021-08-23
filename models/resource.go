@@ -7,12 +7,7 @@ import (
 type Resource struct {
 	Id                int64   `json:"id" xorm:"not null pk autoincr"`
 	SectionId         int64   `json:"sectionId" xorm:"not null index unique"`
-
 	Content           string  `json:"content" xorm:"longtext"`
-
-	FileTitle         string  `json:"fileTitle"`
-	FileIntroduce     string  `json:"fileIntroduce"`
-	FilePath          string  `json:"filePath"`
 }
 
 func (p *Resource) GetEngine() *xorm.Session {
