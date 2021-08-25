@@ -157,7 +157,7 @@ func UpdateWeight(p Project, t[]Task) (err error) {
 }
 
 func (p *Project) UpdateInfo(subjects []*ProjectSubject, skills []*ProjectSkill) (err error) {
-	_, err = p.GetEngine().ID(p.Id).Update(p)
+	_, err = p.GetEngine().ID(p.Id).MustCols("timed_end").Update(p)
 	n1 := len(subjects)
 	for i:=0; i<n1; i++ {
 		_ = subjects[i].Create()
