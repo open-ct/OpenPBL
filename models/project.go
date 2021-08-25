@@ -19,14 +19,19 @@ type Project struct {
 	Subjects           string    `json:"subjects" xorm:"default ''"`
 	Skills             string    `json:"skills" xorm:"default ''"`
 
-	Closed             bool      `json:"closed" xorm:"default false index"`
 	CreateAt           time.Time `json:"createAt" xorm:"created"`
-	PublishedAt        time.Time `json:"publishedAt"`
+
+	Closed             bool      `json:"closed" xorm:"default false index"`
 	ClosedAt           time.Time `json:"closedAt"`
-	ReadNum            int64     `json:"readNum" xorm:"default 0"`
-	JoinNum            int64     `json:"joinNum" xorm:"default 0"`
 
 	Published          bool      `json:"published" xorm:"default false index"`
+	PublishedAt        time.Time `json:"publishedAt"`
+
+	TimedEnd           bool      `json:"timedEnd"`
+	EndTime            time.Time `json:"endTime"`
+
+	ReadNum            int64     `json:"readNum" xorm:"default 0"`
+	JoinNum            int64     `json:"joinNum" xorm:"default 0"`
 
 	LearnMinuteWeight  int       `json:"learnMinuteWeight" xorm:"default 100"`
 }
