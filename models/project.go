@@ -179,7 +179,7 @@ func (p *Project) Delete() (err error) {
 func UpdatePublished(p Project) (err error) {
 	_, err = (&Project{}).GetEngine().
 		Where("id = ?", p.Id).
-		Cols("published", "publish_at").
+		Cols("published", "published_at").
 		Update(p)
 	return
 }
