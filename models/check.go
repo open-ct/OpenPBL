@@ -6,7 +6,7 @@ import (
 )
 
 func StartTask() {
-	spec := "0 0 24 * * *"
+	spec := "0 0 0 * * *"
 	t := toolbox.NewTask("check_project", spec, checkProject)
 	err := t.Run()
 	if err != nil {
