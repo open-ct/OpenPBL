@@ -2,29 +2,29 @@ import request from "./request";
 import qs from 'qs'
 
 const ResourceApi = {
-  getResource(id) {
+  getResource(pid, id) {
     return request({
-      url: `/resource/${id}`,
+      url: `project/${pid}/resource/${id}`,
       method: 'get',
     })
   },
-  createResource(q) {
+  createResource(pid, q) {
     return request({
-      url: '/resource',
+      url: `/project/${pid}/resource`,
       method: 'post',
       data: qs.stringify(q)
     })
   },
-  updateResource(q) {
+  updateResource(pid, q) {
     return request({
-      url: `/${q.id}/resource`,
+      url: `/project/${pid}/resource/${q.id}`,
       method: 'post',
       data: qs.stringify(q)
     })
   },
-  updateResourceContent(id, content) {
+  updateResourceContent(pid, id, content) {
     return request({
-      url: `/resource/${id}`,
+      url: `/project/${pid}/resource/${id}/content`,
       method: 'post',
       data: qs.stringify({content: content})
     })

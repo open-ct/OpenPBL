@@ -9,11 +9,6 @@ System of PBL.
 `web/.env`
 
 ```dotenv
-REACT_APP_OSS_REGION='oss-cn-hangzhou'
-REACT_APP_OSS_ACCESSKEYID=
-REACT_APP_OSS_ACCESSKEYSECRET=
-REACT_APP_OSS_BUCKET=
-
 REACT_APP_CASDOOR_ENDPOINT=
 
 REACT_APP_CLIENT_ID=
@@ -53,7 +48,7 @@ copyrequestbody = true
 httpport = 5000
 driverName = mysql
 dataSourceName = root:123@tcp(localhost:3306)/
-dbName = openpbl_db
+dbName = openpbl
 
 redisEndpoint = 
 jwtSecret = CasdoorSecret

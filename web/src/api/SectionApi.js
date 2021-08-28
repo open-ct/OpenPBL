@@ -47,12 +47,38 @@ const SectionApi = {
       })
     })
   },
-  getSectionDetail(id, pid) {
+  getSectionDetail(sid, pid) {
     return request({
-      url: `/project/${pid}/section/${id}`,
+      url: `/project/${pid}/section/${sid}`,
       method: 'get',
     })
   },
+  getSectionFiles(sid, pid) {
+    return request({
+      url: `/project/${pid}/section/${sid}/files`,
+      method: 'get',
+    })
+  },
+  uploadSectionFile(sid, pid, data) {
+    return request({
+      url: `/project/${pid}/section/${sid}/file`,
+      method: 'post',
+      data: qs.stringify(data)
+    })
+  },
+  updateSectionFile(sid, pid, f) {
+    return request({
+      url: `/project/${pid}/section/${sid}/file/${f.id}/update`,
+      method: 'post',
+      data: qs.stringify(f)
+    })
+  },
+  deleteSectionFile(sid, pid, fid) {
+    return request({
+      url: `/project/${pid}/section/${sid}/file/${fid}/delete`,
+      method: 'post'
+    })
+  }
 }
 
 export default SectionApi

@@ -58,8 +58,6 @@ class HeaderLayout extends React.Component {
   }
 
   renderHomeIfLoggedIn(component) {
-    console.log(this.state.account)
-
     if (this.state.account === null) {
       message.warn('请先登录')
       return <Redirect to={'/home'}/>

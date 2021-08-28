@@ -207,6 +207,7 @@ function StudentEvidence(obj) {
 
             <TaskCard
               pid={pid}
+              studentId={obj.studentId}
               item={item}
               index={index}
               learning={learning}

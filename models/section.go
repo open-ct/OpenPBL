@@ -15,6 +15,14 @@ type Section struct {
 	SectionMinute      int     `json:"sectionMinute" xorm:"default 1"`
 }
 
+type SectionFile struct {
+	Id        int64    `json:"id" xorm:"not null pk autoincr"`
+	SectionId int64    `json:"sectionId" xorm:"not null index"`
+	FilePath  string   `json:"filePath"`
+	Name      string   `json:"name"`
+	Url       string   `json:"url"`
+}
+
 type SectionMinute struct {
 	Section                `xorm:"extends"`
 	LearnSection           `xorm:"extends"`
@@ -32,6 +40,31 @@ type SectionOutline struct {
 
 func (p *Section) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(p)
+}
+func (p *SectionFile) GetEngine() *xorm.Session {
+	return adapter.Engine.Table(p)
+}
+
+func (p *SectionFile) Create() (err error) {
+	_, err = p.GetEngine().Insert(p)
+	return
+}
+
+func (p *SectionFile) Update() (err error) {
+	_, err = p.GetEngine().ID(p.Id).Update(p)
+	return
+}
+
+func GetSectionFiles(sid string) (files []SectionFile, err error) {
+	err = (&SectionFile{}).GetEngine().
+		Where("section_id = ?", sid).
+		Find(&files)
+	return
+}
+
+func DeleteSectionFile(fid string) (err error) {
+	_, err = (&SectionFile{}).GetEngine().ID(fid).Delete(&SectionFile{})
+	return
 }
 
 func (p *Section) Create() (err error) {

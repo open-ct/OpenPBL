@@ -2,22 +2,16 @@ package controllers
 
 import (
 	"OpenPBL/models"
-	"github.com/astaxie/beego"
 )
 
-// ResourceController
-// Operations about Projects
-type ResourceController struct {
-	beego.Controller
-}
 
 // GetResource
 // @Title
 // @Description
 // @Param id path string true ""
 // @Success 200 {object} models.Resource
-// @router /:id [get]
-func (p *ResourceController) GetResource() {
+// @router /:projectId/resource/:resourceId [get]
+func (p *ProjectController) GetResource() {
 	var err error
 	rid := p.GetString(":id")
 	resource, err := models.GetResourceById(rid)
@@ -35,14 +29,11 @@ func (p *ResourceController) GetResource() {
 // @Param body body models.Resource true ""
 // @Success 200 {object} models.TeacherProject
 // @Failure 400
-// @router / [post]
-func (p *ResourceController) CreateResource() {
-	s, err := p.GetInt64("SectionId")
+// @router /:projectId/resource [post]
+func (p *ProjectController) CreateResource() {
+	s, err := p.GetInt64("sectionId")
 	resource := &models.Resource{
 		SectionId:         s,
-		FileTitle:         p.GetString("fileTitle"),
-		FileIntroduce:     p.GetString("fileIntroduce"),
-		FilePath:          p.GetString("FilePath"),
 		Content:           p.GetString("Content"),
 	}
 	err = resource.Create()
@@ -67,16 +58,13 @@ func (p *ResourceController) CreateResource() {
 // @Param body body models.Resource true ""
 // @Success 200 {object} models.TeacherProject
 // @Failure 400
-// @router /:id [post]
-func (p *ResourceController) UpdateResource() {
+// @router /:projectId/resource/:resourceId [post]
+func (p *ProjectController) UpdateResource() {
 	s, err := p.GetInt64("sectionId")
-	id, err := p.GetInt64(":id")
+	id, err := p.GetInt64(":resourceId")
 	resource := &models.Resource{
 		Id:                id,
 		SectionId:         s,
-		FileTitle:         p.GetString("fileTitle"),
-		FileIntroduce:     p.GetString("fileIntroduce"),
-		FilePath:          p.GetString("filePath"),
 		Content:           p.GetString("content"),
 	}
 	err = resource.Update()
@@ -101,9 +89,9 @@ func (p *ResourceController) UpdateResource() {
 // @Param content body string true ""
 // @Success 200 {object} models.TeacherProject
 // @Failure 400
-// @router /:id/content [post]
-func (p *ResourceController) UpdateResourceContent() {
-	id, err := p.GetInt64(":id")
+// @router /:projectId/resource/:resourceId/content [post]
+func (p *ProjectController) UpdateResourceContent() {
+	id, err := p.GetInt64(":resourceId")
 	resource := &models.Resource{
 		Id:      id,
 		Content: p.GetString("content"),

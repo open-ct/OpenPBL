@@ -20,6 +20,7 @@ class PreviewSection extends React.Component {
       sid: this.props.match.params.sid,
       pid: this.props.match.params.pid,
       section: {resource: {}},
+      sectionFiles: [],
       tasks: [],
       learning: false,
       editable: false,
@@ -33,6 +34,7 @@ class PreviewSection extends React.Component {
   componentDidMount() {
     this.getSectionDetail()
     this.getTasks()
+    this.getSectionFiles()
   }
 
   componentWillUnmount() {
@@ -157,9 +159,22 @@ class PreviewSection extends React.Component {
       tasks: [...this.state.tasks]
     })
   }
+  getSectionFiles = () => {
+    SectionApi.getSectionFiles(this.state.sid, this.state.pid)
+      .then(res=>{
+        if (res.data.code === 200) {
+          if (res.data.data !== null) {
+            this.setState({
+              sectionFiles: res.data.data
+            })
+          }
+        }
+      })
+      .catch(e=>{console.log(e)})
+  }
 
   render() {
-    const {section, tasks, learning, pid, editable, showCount, minute, second} = this.state
+    const {section, tasks, learning, pid, editable, showCount, minute, second, sectionFiles} = this.state
     return (
       <DocumentTitle title="Project">
         <div style={{backgroundColor: '#f2f4f5', minHeight: '100vh'}}>
@@ -184,8 +199,13 @@ class PreviewSection extends React.Component {
             </Card>
             <Card className="resource-card">
               <p className="card-title">文件资源</p>
-              <p>{section.resource.fileTitle}</p>
-              <p>{section.resource.fileIntroduce}</p>
+              {sectionFiles.map((item, index)=>(
+                <div>
+                  <a href={item.url}>
+                  {item.name}
+                  </a>
+                </div>
+              ))}
             </Card>
             {tasks.map((item, index) => (
               <Card className="resource-card" key={index.toString()}>
@@ -203,6 +223,7 @@ class PreviewSection extends React.Component {
 
                 <TaskCard
                   pid={pid}
+                  studentId={this.props.account.name}
                   item={item}
                   index={index}
                   learning={learning}
