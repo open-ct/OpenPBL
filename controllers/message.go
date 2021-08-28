@@ -153,14 +153,3 @@ func (m *MessageController) ReadAllUserMessage() {
 	}
 	m.ServeJSON()
 }
-
-
-
-
-func CreateMessage(msg *models.Message) bool {
-	err := msg.Create()
-	if err != nil {
-		return false
-	}
-	return true
-}

@@ -8,6 +8,10 @@ function FilterTime(time) {
   return moment(time).format('YYYY-MM-DD HH:mm:ss')
 }
 
+function GetMoment(time) {
+  return moment(time)
+}
+
 function FilterMoment(time) {
   return moment(time).fromNow()
 }
@@ -24,5 +28,6 @@ export default {
   FilterTime,
   FilterMoment,
   FormatSectionName,
-  FormatChapterName
+  FormatChapterName,
+  GetMoment
 }

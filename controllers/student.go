@@ -75,7 +75,7 @@ func (u *StudentController) LearnProject() {
 	project, err := models.GetProjectById(pid)
 	if err == nil {
 		content := fmt.Sprintf("成功加入课程 \"%v\" ", project.ProjectTitle)
-		CreateMessage(&models.Message{
+		models.CreateMessage(&models.Message{
 			ReceiverId:   uid,
 			MessageType:  "info",
 			MessageTitle: "加入课程",
@@ -131,7 +131,7 @@ func (u *StudentController) ExitProject() {
 	project, err := models.GetProjectById(pid)
 	if err == nil {
 		content := fmt.Sprintf("成功退出课程 \"%v\" ", project.ProjectTitle)
-		CreateMessage(&models.Message{
+		models.CreateMessage(&models.Message{
 			ReceiverId:   uid,
 			MessageType:  "info",
 			MessageTitle: "退出课程",

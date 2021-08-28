@@ -138,6 +138,13 @@ func (p *ProjectController) UpdateProject() {
 		p.ServeJSON()
 		return
 	}
+
+	var timeLayoutStr = "2006-01-02 15:04:05 -0700 MST"
+	endTime, err := time.Parse(timeLayoutStr, p.GetString("endTime"))
+	b := true
+	if err != nil {
+		b = false
+	}
 	project := &models.Project{
 		Id:               pid,
 		Image:            p.GetString("image"),
@@ -147,6 +154,8 @@ func (p *ProjectController) UpdateProject() {
 		TeacherId:        uid,
 		Subjects:         p.GetString("subjects"),
 		Skills:           p.GetString("skills"),
+		EndTime:          endTime,
+		TimedEnd:         b,
 	}
 	projectSubjects, projectSkills, err := getProjectSubjectsAndSkills(pid, project.Subjects, project.Skills)
 	err = project.UpdateInfo(projectSubjects, projectSkills)

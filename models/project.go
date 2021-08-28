@@ -19,14 +19,19 @@ type Project struct {
 	Subjects           string    `json:"subjects" xorm:"default ''"`
 	Skills             string    `json:"skills" xorm:"default ''"`
 
-	Closed             bool      `json:"closed" xorm:"default false index"`
 	CreateAt           time.Time `json:"createAt" xorm:"created"`
-	PublishedAt        time.Time `json:"publishedAt"`
+
+	Closed             bool      `json:"closed" xorm:"default false index"`
 	ClosedAt           time.Time `json:"closedAt"`
-	ReadNum            int64     `json:"readNum" xorm:"default 0"`
-	JoinNum            int64     `json:"joinNum" xorm:"default 0"`
 
 	Published          bool      `json:"published" xorm:"default false index"`
+	PublishedAt        time.Time `json:"publishedAt"`
+
+	TimedEnd           bool      `json:"timedEnd"`
+	EndTime            time.Time `json:"endTime"`
+
+	ReadNum            int64     `json:"readNum" xorm:"default 0"`
+	JoinNum            int64     `json:"joinNum" xorm:"default 0"`
 
 	LearnMinuteWeight  int       `json:"learnMinuteWeight" xorm:"default 100"`
 }
@@ -152,7 +157,7 @@ func UpdateWeight(p Project, t[]Task) (err error) {
 }
 
 func (p *Project) UpdateInfo(subjects []*ProjectSubject, skills []*ProjectSkill) (err error) {
-	_, err = p.GetEngine().ID(p.Id).Update(p)
+	_, err = p.GetEngine().ID(p.Id).MustCols("timed_end").Update(p)
 	n1 := len(subjects)
 	for i:=0; i<n1; i++ {
 		_ = subjects[i].Create()
@@ -174,7 +179,7 @@ func (p *Project) Delete() (err error) {
 func UpdatePublished(p Project) (err error) {
 	_, err = (&Project{}).GetEngine().
 		Where("id = ?", p.Id).
-		Cols("published", "publish_at").
+		Cols("published", "published_at").
 		Update(p)
 	return
 }

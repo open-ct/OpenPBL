@@ -126,11 +126,7 @@ class ProjectInfo extends React.PureComponent {
           learnBtLoading: true
         })
         if (res.data.code === 200) {
-          let p = Object.assign({}, this.state.project)
-          p.learning = true
-          this.setState({
-            project: p
-          })
+          this.loadProjectDetail()
         }
       })
       .catch((e) => {
@@ -141,11 +137,7 @@ class ProjectInfo extends React.PureComponent {
     ProjectApi.publishProject(this.state.pid)
       .then((res) => {
         if (res.data.code === 200) {
-          let p = Object.assign({}, this.state.project)
-          p.published = true
-          this.setState({
-            project: p
-          })
+          this.loadProjectDetail()
         }
       })
       .catch((e) => {
@@ -162,11 +154,7 @@ class ProjectInfo extends React.PureComponent {
           closeBtLoading: false
         })
         if (res.data.code === 200) {
-          let p = Object.assign({}, this.state.project)
-          p.closed = true
-          this.setState({
-            project: p
-          })
+          this.loadProjectDetail()
         } else {
           message.error(res.data.msg)
         }
@@ -551,7 +539,17 @@ class ProjectInfo extends React.PureComponent {
                       </p>
                       <p
                         style={{fontSize: '14px', color: 'gray'}}
-                      >发布时间：{util.FilterTime(project.createAt)}
+                      >
+                        创建时间：{util.FilterTime(project.createAt)}&nbsp;&nbsp;&nbsp;&nbsp;
+                        发布时间：{project.published ? util.FilterTime(project.publishedAt) : "未发布"}&nbsp;&nbsp;&nbsp;&nbsp;
+                        结束时间：
+                        {project.closed ?
+                          util.FilterTime(project.closedAt)
+                          :
+                          <>
+                            {project.timedEnd ? util.FilterTime(project.endTime) : "永久"}
+                          </>
+                        }
                       </p>
                       <div>
                         <span>{project.readNum}&nbsp;人看过</span>

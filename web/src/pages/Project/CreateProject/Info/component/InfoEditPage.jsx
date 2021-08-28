@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Button, Col, Input, message, Row, Select, Upload} from "antd";
+import {Button, Col, DatePicker, Input, message, Row, Select, Upload} from "antd";
 import ImgCrop from 'antd-img-crop';
-import '../../Outline/index.less'
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
-import ProjectApi from "../../../../../api/ProjectApi";
 
+import '../../Outline/index.less'
+import ProjectApi from "../../../../../api/ProjectApi";
+import util from "../../../../component/Util"
 
 function InfoEditPage(obj) {
   const pid = obj.pid
@@ -26,6 +27,9 @@ function InfoEditPage(obj) {
   const [projectIntroduce, setProjectIntroduce] = useState('')
   const [projectGoal, setProjectGoal] = useState('')
 
+  const [endTimeStr, setEndTimestr] = useState('')
+  const [endTime, setEndTime] = useState()
+
   const stringToList = str => {
     if (str === '') {
       return []
@@ -43,6 +47,9 @@ function InfoEditPage(obj) {
           setProjectGoal(res.data.project.projectGoal)
           setSelectedSkills(stringToList(res.data.project.skills))
           setSelectedSubjects(stringToList(res.data.project.subjects))
+          if (res.data.project.timedEnd) {
+            setEndTime(util.GetMoment(res.data.project.endTime.slice(0, 10)))
+          }
         }
       })
       .catch((e) => {
@@ -114,7 +121,6 @@ function InfoEditPage(obj) {
   const upload = (file) => {
     setImageUrl(file)
     setLoading(true)
-
   }
 
   const onPreview = file => {
@@ -141,6 +147,7 @@ function InfoEditPage(obj) {
       projectGoal: projectGoal,
       subjects: selectedSubjects.toString(),
       skills: selectedSkills.toString(),
+      endTime: endTimeStr + " 23:59:59 +0800 CST",
     }
     ProjectApi.updateProject(data, pid)
       .then((res) => {
@@ -190,6 +197,14 @@ function InfoEditPage(obj) {
   const handleSkillsChange = selected => {
     setChange(true)
     setSelectedSkills(selected)
+  }
+
+  const chooseEndTime = (date, dateString) => {
+    setChange(true)
+    setEndTimestr(dateString)
+    setEndTime(date)
+
+    console.log(date)
   }
 
   return (
@@ -271,6 +286,12 @@ function InfoEditPage(obj) {
               </Select.Option>
             ))}
           </Select>
+        </Col>
+      </Row>
+      <Row style={{marginTop: '20px'}}>
+        <Col span={4} offset={2}>结束时间：</Col>
+        <Col span={16}>
+          <DatePicker value={endTime} onChange={chooseEndTime} placeholder="选择结束日期"/>
         </Col>
       </Row>
       <Row style={{marginTop: '20px'}}>

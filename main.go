@@ -28,6 +28,7 @@ func main() {
 	log.Println("Load config file: " + configPath)
 	models.InitAdapter()
 	controllers.InitCasdoor()
+	models.StartTask()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},

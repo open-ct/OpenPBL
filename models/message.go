@@ -76,3 +76,11 @@ func GetMessages(uid string, orderType string, messageType string, readType stri
 	err = s.Desc("create_at").Limit(size, from).Find(&m)
 	return
 }
+
+func CreateMessage(msg *Message) bool {
+	err := msg.Create()
+	if err != nil {
+		return false
+	}
+	return true
+}
