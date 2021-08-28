@@ -34,3 +34,17 @@ func GetResourceById(id string) (r Resource, err error) {
 		Get(&r)
 	return
 }
+
+func DeleteSectionResource(sid int64) (err error) {
+	_, err = (&Resource{}).GetEngine().Where("section_id = ?", sid).Delete(&Resource{})
+	return
+}
+
+func CloneSectionResource(sid int64, newSid int64) (err error) {
+	var resource Resource
+	_, err = (&Resource{}).GetEngine().Where("section_id = ?", sid).Get(&resource)
+	resource.SectionId = newSid
+	resource.Id = 0
+	_, err = (&Resource{}).GetEngine().Insert(&resource)
+	return
+}

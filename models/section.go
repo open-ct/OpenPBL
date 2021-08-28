@@ -12,7 +12,7 @@ type Section struct {
 	SectionNumber      int     `json:"sectionNumber" xorm:"index"`
 	ChapterNumber      int     `json:"chapterNumber" xorm:"index"`
 
-	SectionMinute      int     `json:"sectionMinute" xorm:"default 10"`
+	SectionMinute      int     `json:"sectionMinute" xorm:"default 1"`
 }
 
 type SectionMinute struct {
@@ -90,5 +90,34 @@ func GetSectionDetailById(sid string) (s SectionDetail, err error) {
 		Where("section.id = ?", sid).
 		Join("INNER", "resource", "resource.section_id = section.id").
 		Get(&s)
+	return
+}
+
+func DeleteChapterSections(cid int64) (err error) {
+	var sections []Section
+	err = (&Section{}).GetEngine().Where("chapter_id = ?", cid).Find(&sections)
+	for i:=0; i< len(sections); i++ {
+		s := sections[i]
+		sid := s.Id
+		_, err = (&Section{}).GetEngine().ID(sid).Delete(&Section{})
+		err = DeleteSectionResource(sid)
+		err = DeleteTasks(sid)
+	}
+	return
+}
+
+func CloneChapterSections(newPid int64, cid int64, newCid int64) (err error) {
+	var sections []Section
+	err = (&Section{}).GetEngine().Where("chapter_id = ?", cid).Find(&sections)
+	for i:=0; i< len(sections); i++ {
+		s := sections[i]
+		sid := s.Id
+		s.Id = 0
+		s.ChapterId = newCid
+		_, err = (&Section{}).GetEngine().Insert(&s)
+		newSid := s.Id
+		err = CloneSectionResource(sid, newSid)
+		err = CloneTasks(newPid, sid, newSid)
+	}
 	return
 }

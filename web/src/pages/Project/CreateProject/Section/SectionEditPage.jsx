@@ -27,7 +27,7 @@ function SectionEditPage(obj) {
 
 
   const back = e => {
-    window.location.href = `/project/${pid}/outline/edit`
+    window.location.href = `/home/project/${pid}/outline/edit`
   }
 
 
@@ -49,7 +49,7 @@ function SectionEditPage(obj) {
           <StudentTask section={section} pid={pid}/>
         </div>
         <div style={{textAlign: 'center'}}>
-          <Link to={`/project/${pid}/section/${sid}/preview?back=/project/${pid}/section/${sid}/edit`}>
+          <Link to={`/home/project/${pid}/section/${sid}/preview?back=/project/${pid}/section/${sid}/edit`}>
             <Button style={{marginBottom: '20px'}}>预览</Button>
           </Link>
         </div>

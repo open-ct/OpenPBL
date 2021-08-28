@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Card, Col, Divider, Empty, Image, Input, Pagination, Row, Select, Spin, Tag} from 'antd';
+import {Card, Col, Divider, Image, Input, Pagination, Row, Select, Spin, Tag} from 'antd';
 import {EyeOutlined, TeamOutlined} from '@ant-design/icons';
 
 import './project-list.less';
@@ -47,7 +47,7 @@ function ProjectList(obj) {
   const updateProjectList = (p, size, subject, skill, text) => {
     setLoadProjects(true)
     let q = {
-      from: (p - 1)*size,
+      from: (p - 1) * size,
       size: size,
       orderBy: 'create_at',
       orderType: 'desc',
@@ -78,11 +78,11 @@ function ProjectList(obj) {
 
   const loadSubjectsAndSkills = () => {
     ProjectApi.getSubjectsAndSkills(obj.pid)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           if (res.data.subjects !== null) {
             let s = res.data.subjects
-            for (let i=0; i<iniSubjects.length; i++) {
+            for (let i = 0; i < iniSubjects.length; i++) {
               if (s.indexOf(iniSubjects[i]) < 0) {
                 s.push(iniSubjects[i])
               }
@@ -91,7 +91,7 @@ function ProjectList(obj) {
           }
           if (res.data.skills !== null) {
             let s = res.data.skills
-            for (let i=0; i<iniSkills.length; i++) {
+            for (let i = 0; i < iniSkills.length; i++) {
               if (s.indexOf(iniSkills[i]) < 0) {
                 s.push(iniSkills[i])
               }
@@ -100,7 +100,9 @@ function ProjectList(obj) {
           }
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
 
   const handleSubjectsChange = selected => {
@@ -119,7 +121,7 @@ function ProjectList(obj) {
         .catch(e => {
         })
     }
-    window.location.href = `/project/${item.id}/info`
+    window.location.href = `/home/project/${item.id}/info`
   }
 
   const onSearch = (v) => {
@@ -180,75 +182,74 @@ function ProjectList(obj) {
       </Card>
 
       <div style={{marginTop: '10px', textAlign: 'center'}}>
-        <Spin spinning={loadProjects} />
+        <Spin spinning={loadProjects}/>
         <Row gutter={[20, 20]} style={{textAlign: 'left'}}>
           {
             learningProjectList.map((item, index) => (
               <Col key={index.toString()} {...topColResponsiveProps}>
-                  <Card
-                    hoverable
-                    bordered={false}
-                    onClick={e=>viewProject(item)}
-                    style={{
-                      borderRadius: '10px',
-                    }}
-                    cover={
-                      <Image
-                        src={item.image}
-                        preview={false}
-                        style={{
-                          borderTopLeftRadius: '10px',
-                          borderTopRightRadius: '10px',
-                        }}
-                        fallback={"https://cdn.open-ct.com/task-resources//openpbl-empty-project.png"}
-                      />
-                    }
-                  >
-                    <Meta
-                      title={
-                        item.projectTitle === '' ? "无": item.projectTitle
-                      }
-                      description={
-                        <div>
-                          <span className="des-text">{item.subjects === '' ? '--' : item.subjects}</span><br/>
-                          <span className="des-text">{item.skills === '' ? '--' : item.skills}</span>
-                          {item.learning ?
-                            <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>学习中</Tag> : null}
-                          {item.teacherId === uid && type === 'teacher' ?
-                            <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>我的项目</Tag> : null}
-                        </div>
-                      }
+                <Card
+                  hoverable
+                  bordered={false}
+                  onClick={e => viewProject(item)}
+                  style={{
+                    borderRadius: '10px',
+                  }}
+                  cover={
+                    <Image
+                      src={item.image}
+                      preview={false}
+                      style={{
+                        borderTopLeftRadius: '10px',
+                        borderTopRightRadius: '10px',
+                      }}
+                      fallback={"https://cdn.open-ct.com/task-resources//openpbl-empty-project.png"}
                     />
+                  }
+                >
+                  <Meta
+                    title={
+                      item.projectTitle === '' ? "无" : item.projectTitle
+                    }
+                    description={
+                      <div>
+                        <span className="des-text">{item.subjects === '' ? '--' : item.subjects}</span>
+                        {item.learning ?
+                          <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>学习中</Tag> : null}
+                        {item.teacherId === uid && type === 'teacher' ?
+                          <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>我的项目</Tag> : null}
+                      </div>
+                    }
+                  />
 
-                    <span
-                      style={{
-                        color: 'gray',
-                        fontSize: 'small',
-                      }}
-                    >
+                  <span
+                    style={{
+                      color: 'gray',
+                      fontSize: 'small',
+                    }}
+                  >
                       <EyeOutlined/>&nbsp;
-                      {item.readNum}
+                    {item.readNum}
                     </span>
-                    <Divider type="vertical"/>
-                    <span
-                      style={{
-                        color: 'gray',
-                        fontSize: 'small',
-                      }}
-                    >
+                  <Divider type="vertical"/>
+                  <span
+                    style={{
+                      color: 'gray',
+                      fontSize: 'small',
+                    }}
+                  >
                       <TeamOutlined/>&nbsp;
-                      {item.joinNum}
+                    {item.joinNum}
                     </span>
-                    <span
-                      style={{
-                        color: 'gray',
-                        fontSize: 'small',
-                        float: 'right',
-                      }}
-                    >
+                  <span
+                    style={{
+                      color: 'gray',
+                      fontSize: 'small',
+                      float: 'right',
+                    }}
+                  >
                       {util.FilterMoment(item.createAt)}
                     </span>
-                  </Card>
+                </Card>
               </Col>
             ))
           }

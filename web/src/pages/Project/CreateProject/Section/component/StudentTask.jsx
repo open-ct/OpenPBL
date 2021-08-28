@@ -102,7 +102,7 @@ function StudentTask(obj) {
   }
   const gotoSurvey = (item, index) => {
     saveContent(item, index)
-    window.location.href = `/project/${pid}/section/${obj.section.id}/task/${item.id}/survey/edit`
+    window.location.href = `/home/project/${pid}/section/${obj.section.id}/task/${item.id}/survey/edit`
   }
 
   return (

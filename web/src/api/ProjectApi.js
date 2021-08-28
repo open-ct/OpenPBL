@@ -97,6 +97,12 @@ const ProjectApi = {
       url: `/project/${pid}/view`,
       method: 'post'
     })
+  },
+  cloneProject(pid) {
+    return request({
+      url: `/project/${pid}/clone`,
+      method: 'post'
+    })
   }
 }
 

@@ -77,6 +77,7 @@ func (p *ProjectController) CreateChapterSection() {
 		SectionName:      p.GetString("sectionName"),
 		SectionNumber:    sectionNumber,
 		ChapterNumber:    chapterNumber,
+		SectionMinute:    1,
 	}
 	if err != nil {
 		p.Data["json"] = Response{

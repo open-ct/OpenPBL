@@ -19,7 +19,7 @@ class EditOutline extends React.PureComponent {
   }
 
   back = e => {
-    this.props.history.push(`/project/${this.state.pid}/info/`)
+    this.props.history.push(`/home/project/${this.state.pid}/info/`)
   }
 
   render() {

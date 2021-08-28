@@ -13,7 +13,8 @@ import {
   PageHeader,
   Popconfirm,
   Row,
-  Tag, Tooltip
+  Tag,
+  Tooltip
 } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import {Link} from 'react-router-dom';
@@ -49,7 +50,9 @@ class ProjectInfo extends React.PureComponent {
       favBtLoading: false,
       learnBtLoading: false,
       exitBtLoading: false,
-      closeBtLoading: false
+      closeBtLoading: false,
+      cloneBtLoading: false,
+      deleteBtLoading: false
     };
   }
 
@@ -108,9 +111,9 @@ class ProjectInfo extends React.PureComponent {
   }
   back = e => {
     if (this.props.account.tag === '老师') {
-      window.location.href = '/my-project/published'
+      window.location.href = '/home/my-project/published'
     } else {
-      window.location.href = '/my-project/learning'
+      window.location.href = '/home/my-project/learning'
     }
   }
   learnProject = e => {
@@ -183,9 +186,9 @@ class ProjectInfo extends React.PureComponent {
         })
         if (res.data.code === 200) {
           if (this.props.account.tag === '老师') {
-            window.location.href = '/my-project/published'
+            window.location.href = '/home/my-project/published'
           } else {
-            window.location.href = '/my-project/learning'
+            window.location.href = '/home/my-project/learning'
           }
         } else {
           message.error(res.data.msg)
@@ -196,13 +199,15 @@ class ProjectInfo extends React.PureComponent {
       })
   }
   deleteProject = e => {
+    this.setState({deleteBtLoading: true})
     ProjectApi.deleteProject(this.state.pid)
       .then(res => {
+        this.setState({deleteBtLoading: false})
         if (res.data.code === 200) {
           if (this.props.account.tag === '老师') {
-            window.location.href = '/my-project/published'
+            window.location.href = '/home/my-project/published'
           } else {
-            window.location.href = '/my-project/learning'
+            window.location.href = '/home/my-project/learning'
           }
         } else {
           message.error(res.data.msg)
@@ -217,7 +222,7 @@ class ProjectInfo extends React.PureComponent {
       favBtLoading: true
     })
     ProjectApi.addFavourite(this.state.pid)
-      .then(res=>{
+      .then(res => {
         this.setState({
           favBtLoading: false
         })
@@ -228,14 +233,16 @@ class ProjectInfo extends React.PureComponent {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
   removeFavourite = e => {
     this.setState({
       favBtLoading: true
     })
     ProjectApi.removeFavourite(this.state.pid)
-      .then(res=>{
+      .then(res => {
         this.setState({
           favBtLoading: false
         })
@@ -246,7 +253,9 @@ class ProjectInfo extends React.PureComponent {
           message.error(res.data.msg)
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
 
   setProject = project => {
@@ -265,30 +274,79 @@ class ProjectInfo extends React.PureComponent {
       return "( 编辑中 )"
     }
   }
+  cloneProject = () => {
+    this.setState({
+      cloneBtLoading: true
+    })
+    ProjectApi.cloneProject(this.state.pid)
+      .then(res => {
+        this.setState({
+          cloneBtLoading: false
+        })
+        if (res.data.code === 200) {
+          message.success(res.data.msg)
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  }
 
   render() {
-    const {project, teacher, menu, pid, lastLearn, favBtLoading, learnBtLoading, exitBtLoading, closeBtLoading} = this.state;
+    const {
+      project,
+      teacher,
+      menu,
+      pid,
+      lastLearn,
+      favBtLoading,
+      learnBtLoading,
+      exitBtLoading,
+      closeBtLoading,
+      cloneBtLoading,
+      deleteBtLoading
+    } = this.state;
 
     const teacherBt = (
       <div style={{float: 'right'}}>
         {project.published && !project.closed ?
-          <Popconfirm
-            title="确定结束项目?"
-            placement="topRight"
-            onConfirm={this.closeProject}
-            okText="确定"
-            cancelText="取消"
-          >
-            <Button
-              shape="round"
-              size="middle"
-              danger
-              style={{margin: '5px'}}
-              loading={closeBtLoading}
+          <>
+            <Popconfirm
+              title="确定结束项目?"
+              placement="topRight"
+              onConfirm={this.closeProject}
+              okText="确定"
+              cancelText="取消"
             >
-              结束项目
-            </Button>
-          </Popconfirm>
+              <Button
+                shape="round"
+                size="middle"
+                danger
+                style={{margin: '5px'}}
+                loading={closeBtLoading}
+              >
+                结束项目
+              </Button>
+            </Popconfirm>
+            <Popconfirm
+              title="确定复制项目?"
+              placement="topRight"
+              onConfirm={this.cloneProject}
+              okText="确定"
+              cancelText="取消"
+            >
+              <Button
+                shape="round"
+                size="middle"
+                style={{margin: '5px'}}
+                loading={cloneBtLoading}
+              >
+                复制项目
+              </Button>
+            </Popconfirm>
+          </>
           : null}
         {!project.published ?
           <div>
@@ -307,7 +365,7 @@ class ProjectInfo extends React.PureComponent {
                 发布项目
               </Button>
             </Popconfirm>
-            <Link to={`/project/${pid}/info/edit`} target="_blank">
+            <Link to={`/home/project/${pid}/info/edit`} target="_blank">
               <Button
                 shape="round"
                 size="middle"
@@ -317,6 +375,22 @@ class ProjectInfo extends React.PureComponent {
               </Button>
             </Link>
             <Popconfirm
+              title="确定复制项目?"
+              placement="topRight"
+              onConfirm={this.cloneProject}
+              okText="确定"
+              cancelText="取消"
+            >
+              <Button
+                shape="round"
+                size="middle"
+                style={{margin: '5px'}}
+                loading={cloneBtLoading}
+              >
+                复制项目
+              </Button>
+            </Popconfirm>
+            <Popconfirm
               title="确定删除项目？删除后不能恢复"
               onConfirm={this.deleteProject}
               placement="topRight"
@@ -325,6 +399,7 @@ class ProjectInfo extends React.PureComponent {
                 shape="circle"
                 size="middle"
                 type="danger"
+                loading={deleteBtLoading}
                 style={{marginTop: '5px', marginLeft: '20px', marginBottom: '5px', marginRight: '5px'}}
                 icon={<DeleteOutlined/>}
               />
@@ -332,6 +407,22 @@ class ProjectInfo extends React.PureComponent {
           </div> : null}
         {project.closed ?
           <div>
+            <Popconfirm
+              title="确定复制项目?"
+              placement="topRight"
+              onConfirm={this.cloneProject}
+              okText="确定"
+              cancelText="取消"
+            >
+              <Button
+                shape="round"
+                size="middle"
+                style={{margin: '5px'}}
+                loading={cloneBtLoading}
+              >
+                复制项目
+              </Button>
+            </Popconfirm>
             <Popconfirm
               title="确定删除项目？删除后不能恢复"
               onConfirm={this.deleteProject}
@@ -353,7 +444,7 @@ class ProjectInfo extends React.PureComponent {
       <div style={{float: 'right'}}>
         {project.learning ?
           <>
-            <Link to={`/project/${project.id}/section/${lastLearn.id}/preview?back=/project/${project.id}/info`}>
+            <Link to={`/home/project/${project.id}/section/${lastLearn.id}/preview?back=/project/${project.id}/info`}>
 
               {lastLearn.last ?
                 <span>
@@ -447,11 +538,13 @@ class ProjectInfo extends React.PureComponent {
                         <span style={{float: 'right'}}>
                         {project.favourite ?
                           <Tooltip title="点击取消收藏">
-                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarFilled/>} onClick={this.removeFavourite}/>
+                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarFilled/>}
+                                    onClick={this.removeFavourite}/>
                           </Tooltip>
                           :
                           <Tooltip title="点击收藏">
-                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarOutlined/>} onClick={this.addFavourite}/>
+                            <Button shape="circle" type="text" loading={favBtLoading} icon={<StarOutlined/>}
+                                    onClick={this.addFavourite}/>
                           </Tooltip>
                         }
                         </span>

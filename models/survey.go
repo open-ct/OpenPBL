@@ -74,3 +74,32 @@ func ExchangeQuestion(id1 string, id2 string) (err error) {
 			"set t1.question_order = t2.question_order, t2.question_order = t1.question_order", id1, id2)
 	return
 }
+
+func DeleteSurvey(tid int64) (err error) {
+	var survey Survey
+	_, err = (&Survey{}).GetEngine().Where("task_id = ?", tid).Get(&survey)
+	suid := survey.Id
+	_, err = (&Survey{}).GetEngine().ID(suid).Delete(&Survey{})
+	_, err = (&Question{}).GetEngine().Where("survey_id = ?", suid).Delete(&Question{})
+	return
+}
+
+func CloneSurvey(tid int64, newTid int64) (err error) {
+	var survey Survey
+	_, err = (&Survey{}).GetEngine().Where("task_id = ?", tid).Get(&survey)
+	suid := survey.Id
+	survey.Id = 0
+	survey.TaskId = newTid
+	_, err = (&Survey{}).GetEngine().Insert(&survey)
+	newSuid := survey.Id
+	var questions []Question
+	err = (&Question{}).GetEngine().Where("survey_id = ?", suid).Find(&questions)
+	for i:=0; i< len(questions); i++ {
+		q := questions[i]
+		q.Id = 0
+		q.SurveyId = newSuid
+		q.QuestionCount = ""
+		_, err = (&Question{}).GetEngine().Insert(&q)
+	}
+	return
+}

@@ -562,3 +562,29 @@ func (p *ProjectController) ViewProject() {
 	}
 	p.ServeJSON()
 }
+
+// CloneProject
+// @Title
+// @Description create project
+// @Success 200 {object} Response
+// @Failure 401
+// @Failure 400
+// @Failure 403
+// @router /:id/clone [post]
+func (p *ProjectController) CloneProject() {
+	pid, err := p.GetInt64(":id")
+	uid := util.GetUserId(p.GetSessionUser())
+	err = models.CloneProject(uid, pid)
+	if err != nil {
+		p.Data["json"] = Response{
+			Code: 400,
+			Msg:  err.Error(),
+		}
+	} else {
+		p.Data["json"] = Response{
+			Code: 200,
+			Msg: "复制成功，请到未发布项目中查看",
+		}
+	}
+	p.ServeJSON()
+}

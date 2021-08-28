@@ -52,11 +52,11 @@ function InfoEditPage(obj) {
 
   const loadSubjectsAndSkills = () => {
     ProjectApi.getSubjectsAndSkills(pid)
-      .then(res=>{
+      .then(res => {
         if (res.data.code === 200) {
           if (res.data.subjects !== null) {
             let s = res.data.subjects
-            for (let i=0; i<iniSubjects.length; i++) {
+            for (let i = 0; i < iniSubjects.length; i++) {
               if (s.indexOf(iniSubjects[i]) < 0) {
                 s.push(iniSubjects[i])
               }
@@ -65,7 +65,7 @@ function InfoEditPage(obj) {
           }
           if (res.data.skills !== null) {
             let s = res.data.skills
-            for (let i=0; i<iniSkills.length; i++) {
+            for (let i = 0; i < iniSkills.length; i++) {
               if (s.indexOf(iniSkills[i]) < 0) {
                 s.push(iniSkills[i])
               }
@@ -74,7 +74,9 @@ function InfoEditPage(obj) {
           }
         }
       })
-      .catch(e=>{console.log(e)})
+      .catch(e => {
+        console.log(e)
+      })
   }
 
   const changeTitle = value => {
@@ -146,7 +148,7 @@ function InfoEditPage(obj) {
         if (res.data.code === 200) {
           message.success(res.data.msg)
           setTimeout(() => {
-            window.location.href = `/project/${pid}/outline/edit`
+            window.location.href = `/home/project/${pid}/outline/edit`
           }, 200)
         }
       })
@@ -161,7 +163,7 @@ function InfoEditPage(obj) {
         onFinish();
       } else {
         setNextPageLoading(false)
-        window.location.href = `/project/${pid}/outline/edit`
+        window.location.href = `/home/project/${pid}/outline/edit`
       }
     }
   }

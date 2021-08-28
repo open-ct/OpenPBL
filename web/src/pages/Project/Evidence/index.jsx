@@ -1,7 +1,8 @@
 import React, {useEffect} from "react";
-import {Card, PageHeader} from "antd";
+import {Button, Card, PageHeader} from "antd";
 import DocumentTitle from 'react-document-title';
 import StudentEvidence from "./component/StudentEvidence";
+
 
 function Evidence(obj) {
   const pid = obj.match.params.pid
@@ -11,9 +12,12 @@ function Evidence(obj) {
   }, [])
 
   const back = e => {
-    window.location.href = `/project/${pid}/info?menu=student-admin`
+    window.location.href = `/home/project/${pid}/info?menu=student-admin`
   }
 
+  const exportFile = e => {
+    window.open(`/export/project/${pid}/student/${sid}/evidence`)
+  }
   return (
     <DocumentTitle title="Project">
       <div style={{backgroundColor: '#f2f4f5', minHeight: '100vh'}}>
@@ -41,12 +45,17 @@ function Evidence(obj) {
               maxWidth: '1200px',
             }}
           >
-            <Card>
-              <StudentEvidence
-                pid={pid}
-                studentId={sid}
-              />
-            </Card>
+            <div style={{padding: '10px', textAlign: 'center'}}>
+              <Button onClick={exportFile}>导出</Button>
+            </div>
+            <div>
+              <Card>
+                <StudentEvidence
+                  pid={pid}
+                  studentId={sid}
+                />
+              </Card>
+            </div>
           </div>
         </div>
       </div>

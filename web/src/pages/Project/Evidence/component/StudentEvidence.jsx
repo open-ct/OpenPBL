@@ -121,6 +121,7 @@ function StudentEvidence(obj) {
               <List
                 size="large"
                 dataSource={item.sections}
+                locale={{emptyText: '--'}}
                 renderItem={
                   item => (
                     <List.Item>

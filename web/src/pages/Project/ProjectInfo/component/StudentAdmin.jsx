@@ -82,7 +82,7 @@ function StudentAdmin(obj) {
               title: '',
               dataIndex: 'showEvidence',
               render: (text, item, index) => (
-                <Link to={`/project/${pid}/student/${item.studentId}/evidence`}>
+                <Link to={`/home/project/${pid}/student/${item.studentId}/evidence`}>
                   <Button type="text">查看学习证据</Button>
                 </Link>
               )
