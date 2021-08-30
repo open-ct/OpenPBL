@@ -1,5 +1,5 @@
 import React from "react";
-import {BackTop, Card, PageHeader} from "antd";
+import {BackTop, Card, PageHeader, Divider} from "antd";
 import DocumentTitle from 'react-document-title';
 
 import SectionApi from "../../../api/SectionApi";
@@ -199,11 +199,11 @@ class PreviewSection extends React.Component {
             </Card>
             <Card className="resource-card">
               <p className="card-title">文件资源</p>
+              <Divider />
               {sectionFiles.map((item, index)=>(
                 <div>
-                  <a href={item.url}>
-                  {item.name}
-                  </a>
+                  <a target="_blank" href={item.url}>{item.name}</a>
+                  <Divider />
                 </div>
               ))}
             </Card>

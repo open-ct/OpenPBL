@@ -68,16 +68,19 @@ function TaskCard(obj) {
     let data = {
       objectKey: file.filePath,
     }
-    FileApi.deleteFile(JSON.stringify(data))
+    SubmitApi.deleteSubmitFile(obj.pid, obj.item.id, obj.item.submit.id, file.id)
       .then(res=>{
-        if (res.data.status === 'ok') {
-          SubmitApi.deleteSubmitFile(obj.pid, obj.item.id, obj.item.submit.id, file.id)
+        if (res.data.code === 200) {
+          message.success(res.data.msg)
+          getSubmitFiles()
+          FileApi.deleteFile(JSON.stringify(data))
             .then(res=>{
-              if (res.data.code === 200) {
-                getSubmitFiles()
+              if (res.data.status === 'ok') {
               }
             })
             .catch(e=>{console.log(e)})
+        } else {
+          message.error(res.data.msg)
         }
       })
       .catch(e=>{console.log(e)})
@@ -93,7 +96,7 @@ function TaskCard(obj) {
       message.error('文件不能大于1GB');
       return
     }
-    let filePath = `/openpbl/project/${obj.pid}/task/${obj.item.id}/${obj.studentId}/${file.name}`
+    let filePath = `/openpbl/project${obj.pid}/task${obj.item.id}/${obj.studentId}/${file.name}`
     FileApi.uploadFile("admin", "openpbl", obj.studentId, filePath, file)
       .then(res=>{
         if (res.data.status === 'ok') {

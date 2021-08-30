@@ -66,26 +66,15 @@ function RichWords(obj) {
     if (index === -1) {
       return onError('不能识别文件类型');
     }
-    if (file.size > 1024 * 1024 * 6) {
-      return onError('文件不能大于6MB');
+    if (file.size > 1024 * 1024) {
+      return onError('文件不能大于1MB');
     }
-
     const postfix = file.name.substr(index);
-    const r = new FileReader();
-    r.addEventListener('load', () => upload(r.result, onSuccess, onError));
-    r.readAsDataURL(file);
-
-    // OSSUploaderFile(file, `/openpbl/${obj.pid}/`, onSuccess, onError);
-  };
-  const upload = (file, onSuccess, onError) => {
-    let data = new FormData()
     let fileName = new Date().getTime()
-    data.append("fileName", fileName)
-    data.append("filePath", `/openpbl/project/${obj.pid}/resource/${fileName}`)
-    data.append("file", file)
-    FileApi.uploadFile(data)
+    let filePath = `/openpbl/project${obj.pid}/section${obj.sid}/${fileName}${postfix}`
+    FileApi.uploadFile("admin", "openpbl", obj.account.name, filePath, file)
       .then(res=>{
-        if (res.data.code === 200) {
+        if (res.data.status === 'ok') {
           let url = res.data.data
           onSuccess({url: url}, file);
         } else {
@@ -96,7 +85,7 @@ function RichWords(obj) {
       .catch(e=>{
         onError(e)
       })
-  }
+  };
 
   const uploadProps = {
     onChange: handleChange,

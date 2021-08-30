@@ -44,12 +44,12 @@ function SectionEditPage(obj) {
           <Card>
             <h2 style={{fontWeight: 'bold'}}>{section.sectionName}</h2>
           </Card>
-          <RichWords section={section} pid={pid} sid={sid}/>
-          <FileResource section={section} pid={pid} sid={sid}/>
+          <RichWords section={section} pid={pid} sid={sid} account={obj.account}/>
+          <FileResource section={section} pid={pid} sid={sid} account={obj.account}/>
           <StudentTask section={section} pid={pid} sid={sid}/>
         </div>
         <div style={{textAlign: 'center'}}>
-          <Link to={`/home/project/${pid}/section/${sid}/preview?back=/project/${pid}/section/${sid}/edit`}>
+          <Link to={`/home/project/${pid}/section/${sid}/preview?back=/home/project/${pid}/section/${sid}/edit`}>
             <Button style={{marginBottom: '20px'}}>预览</Button>
           </Link>
         </div>
