@@ -353,7 +353,7 @@ class ProjectInfo extends React.PureComponent {
                 发布项目
               </Button>
             </Popconfirm>
-            <Link to={`/home/project/${pid}/info/edit`} target="_blank">
+            <Link to={`/home/project/${pid}/info/edit`}>
               <Button
                 shape="round"
                 size="middle"

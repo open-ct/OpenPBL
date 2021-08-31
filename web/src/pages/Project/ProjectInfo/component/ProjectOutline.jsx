@@ -35,7 +35,7 @@ function ProjectOutline(obj) {
       message.warn("请先加入学习")
       return
     }
-    window.open(`/home/project/${pid}/section/${subItem.id}/preview?back=/project/${pid}/info?menu=project-outline`)
+    window.open(`/home/project/${pid}/section/${subItem.id}/preview?back=/home/project/${pid}/info?menu=project-outline`)
   }
 
   return (
