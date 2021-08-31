@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Card, Col, Divider, Image, Input, Pagination, Row, Select, Spin, Tag} from 'antd';
 import {EyeOutlined, TeamOutlined} from '@ant-design/icons';
+import {Link} from "react-router-dom"
 
 import './project-list.less';
 import ProjectListApi from '../../../api/ProjectListApi'
@@ -121,7 +122,6 @@ function ProjectList(obj) {
         .catch(e => {
         })
     }
-    window.location.href = `/home/project/${item.id}/info`
   }
 
   const onSearch = (v) => {
@@ -187,6 +187,7 @@ function ProjectList(obj) {
           {
             learningProjectList.map((item, index) => (
               <Col key={index.toString()} {...topColResponsiveProps}>
+                <Link to={`/home/project/${item.id}/info`}>
                 <Card
                   hoverable
                   bordered={false}
@@ -250,6 +251,7 @@ function ProjectList(obj) {
                       {util.FilterMoment(item.createAt)}
                     </span>
                 </Card>
+                </Link>
               </Col>
             ))
           }
