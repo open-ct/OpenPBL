@@ -432,23 +432,25 @@ class ProjectInfo extends React.PureComponent {
       <div style={{float: 'right'}}>
         {project.learning ?
           <>
-            <Link to={`/home/project/${project.id}/section/${lastLearn.id}/preview?back=/project/${project.id}/info`}>
+            <Link to={`/home/project/${project.id}/section/${lastLearn.id}/preview?back=/home/project/${project.id}/info`}>
 
               {lastLearn.last ?
-                <span>
-                  上次学到：{util.FormatSectionName(lastLearn.sectionName, lastLearn.chapterNumber, lastLearn.sectionNumber)}&nbsp;&nbsp;
-                  <span style={{color: 'gray'}}>
-                    {util.FilterMoment(lastLearn.exitAt)}&nbsp;&nbsp;
+                <>
+                  <span>
+                    上次学到：{util.FormatSectionName(lastLearn.sectionName, lastLearn.chapterNumber, lastLearn.sectionNumber)}&nbsp;&nbsp;
+                    <span style={{color: 'gray'}}>
+                      {util.FilterMoment(lastLearn.exitAt)}&nbsp;&nbsp;
+                    </span>
                   </span>
-                </span>
+                  <Button
+                    shape="round"
+                    size="middle"
+                    style={{margin: '5px'}}
+                  >继续学习
+                  </Button>
+                  </>
                 : null
               }
-              <Button
-                shape="round"
-                size="middle"
-                style={{margin: '5px'}}
-              >继续学习
-              </Button>
             </Link>
             <Popconfirm title="确认退出项目？" onConfirm={this.exitProject} placement="topRight">
               <Button
@@ -599,7 +601,7 @@ class ProjectInfo extends React.PureComponent {
                 }}
                 >
                   {menu === 'project-introduce' ? <ProjectIntroduce project={project}/> : null}
-                  {menu === 'project-outline' ? <ProjectOutline project={project}/> : null}
+                  {menu === 'project-outline' ? <ProjectOutline project={project} account={this.props.account}/> : null}
                   {menu === 'project-comment' ? <ProjectComment project={project} account={this.props.account}/> : null}
                   {menu === 'project-evaluation' ?
                     <ProjectEvaluation

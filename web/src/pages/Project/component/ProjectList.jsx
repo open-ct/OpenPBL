@@ -78,7 +78,7 @@ function ProjectList(obj) {
   }, []);
 
   const loadSubjectsAndSkills = () => {
-    ProjectApi.getSubjectsAndSkills(obj.pid)
+    ProjectApi.getSubjectsAndSkills(0)
       .then(res => {
         if (res.data.code === 200) {
           if (res.data.subjects !== null) {

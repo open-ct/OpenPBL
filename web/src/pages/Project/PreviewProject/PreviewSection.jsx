@@ -148,7 +148,7 @@ class PreviewSection extends React.Component {
   }
   back = e => {
     if (this.state.backUrl === undefined || this.state.backUrl === null) {
-      this.props.history.push(`/project/${this.state.pid}/section/${this.state.sid}/edit`)
+      this.props.history.push(`/home/project/${this.state.pid}/section/${this.state.sid}/edit`)
     } else {
       this.props.history.push(this.state.backUrl)
     }
@@ -185,7 +185,7 @@ class PreviewSection extends React.Component {
             title="返回"
             subTitle="我的项目"
           />
-          <div style={{padding: '20px', margin: 'auto'}}>
+          <div style={{padding: '20px', margin: 'auto', maxWidth: '1400px'}}>
             <Card>
               <h2 style={{fontWeight: 'bold'}}>
                 {util.FormatSectionName(section.sectionName, section.chapterNumber, section.sectionNumber)}
