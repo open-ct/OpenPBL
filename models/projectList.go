@@ -7,14 +7,13 @@ import (
 // ============= student ===================
 
 func GetMyProjectListBySid(sid string, from int, size int,
-	subject string, skill string, text string, orderBy string, orderType string, learning bool) (p []ProjectDetail, rows int64, err error) {
+	subject string, skill string, text string, orderBy string, orderType string, closed bool) (p []ProjectDetail, rows int64, err error) {
 	const baseSql = `
 		select %s from (
     		select * from project
         		inner join learn_project on (
             		learn_project.student_id = '%s' and
-            		learn_project.learning = %v and
-					project.closed = false and
+					project.closed = %v and
             		project.id = learn_project.project_id
         		)
 		) as project where true
@@ -25,9 +24,9 @@ func GetMyProjectListBySid(sid string, from int, size int,
 	e2 := getSkillExistSql(skill)
 	e3 := getTextSql(text)
 
-	sql1 := fmt.Sprintf(baseSql, "*", sid, learning, e1, e2, e3) +
+	sql1 := fmt.Sprintf(baseSql, "*", sid, closed, e1, e2, e3) +
 		fmt.Sprintf(pageSql, orderBy, orderType, from, size)
-	sql2 := fmt.Sprintf(baseSql, "count(*)", sid, learning, e1, e2, e3)
+	sql2 := fmt.Sprintf(baseSql, "count(*)", sid, closed, e1, e2, e3)
 	err = adapter.Engine.
 		SQL(sql1).
 		Find(&p)

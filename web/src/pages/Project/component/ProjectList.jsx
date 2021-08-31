@@ -214,7 +214,7 @@ function ProjectList(obj) {
                     description={
                       <div>
                         <span className="des-text">{item.subjects === '' ? '--' : item.subjects}</span>
-                        {item.learning ?
+                        {item.learning && !item.closed ?
                           <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>学习中</Tag> : null}
                         {item.teacherId === uid && type === 'teacher' ?
                           <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>我的项目</Tag> : null}

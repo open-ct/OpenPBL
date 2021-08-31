@@ -311,7 +311,7 @@ func (u *ProjectController) CloseProject() {
 	} else {
 		resp = Response{
 			Code: 200,
-			Msg:  "发布成功",
+			Msg:  "结束成功",
 		}
 	}
 	u.Data["json"] = resp

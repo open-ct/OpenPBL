@@ -38,7 +38,7 @@ class PreviewSection extends React.Component {
   }
 
   componentWillUnmount() {
-    if (this.state.learning) {
+    if (this.state.learning && this.state.editable) {
       if (this.state.timer != null) {
         clearTimeout(this.state.timer)
       }
@@ -105,7 +105,7 @@ class PreviewSection extends React.Component {
           showCount: res.data.showCount
         })
 
-        if (res.data.learning && this.state.timer === null) {
+        if (res.data.learning && res.data.editable && this.state.timer === null) {
           this.setTimer()
         }
       })
@@ -190,7 +190,7 @@ class PreviewSection extends React.Component {
               <h2 style={{fontWeight: 'bold'}}>
                 {util.FormatSectionName(section.sectionName, section.chapterNumber, section.sectionNumber)}
               </h2>
-              {learning ?
+              {learning && editable ?
                 <span style={{float: 'right'}}>{minute}&nbsp;:&nbsp;{second}</span>
                 : null}
             </Card>

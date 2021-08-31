@@ -50,6 +50,7 @@ class ProjectInfo extends React.PureComponent {
       favBtLoading: false,
       learnBtLoading: false,
       exitBtLoading: false,
+      publishBtLoading: false,
       closeBtLoading: false,
       cloneBtLoading: false,
       deleteBtLoading: false
@@ -134,10 +135,19 @@ class ProjectInfo extends React.PureComponent {
       })
   }
   publishProject = e => {
+    this.setState({
+      publishBtLoading: true
+    })
     ProjectApi.publishProject(this.state.pid)
       .then((res) => {
+        this.setState({
+          publishBtLoading: false
+        })
         if (res.data.code === 200) {
           this.loadProjectDetail()
+          message.success(res.data.msg)
+        } else {
+          message.error(res.data.msg)
         }
       })
       .catch((e) => {
@@ -155,6 +165,7 @@ class ProjectInfo extends React.PureComponent {
         })
         if (res.data.code === 200) {
           this.loadProjectDetail()
+          message.success(res.data.msg)
         } else {
           message.error(res.data.msg)
         }
@@ -294,7 +305,8 @@ class ProjectInfo extends React.PureComponent {
       exitBtLoading,
       closeBtLoading,
       cloneBtLoading,
-      deleteBtLoading
+      deleteBtLoading,
+      publishBtLoading
     } = this.state;
 
     const teacherBt = (
@@ -349,6 +361,7 @@ class ProjectInfo extends React.PureComponent {
                 shape="round"
                 size="middle"
                 style={{margin: '5px'}}
+                loading={publishBtLoading}
               >
                 发布项目
               </Button>
@@ -524,7 +537,8 @@ class ProjectInfo extends React.PureComponent {
                           </>
                           : null
                         }
-                        {project.learning ? <Tag color="geekblue">正在学习</Tag> : null}
+                        {project.learning ?
+                          <>{project.closed ? <Tag color="gray">已结束</Tag> : <Tag color="geekblue">正在学习</Tag>}</> : null}
                         <span style={{float: 'right'}}>
                         {project.favourite ?
                           <Tooltip title="点击取消收藏">
