@@ -44,7 +44,7 @@ function SectionEditPage(obj) {
           <Card>
             <h2 style={{fontWeight: 'bold'}}>{section.sectionName}</h2>
           </Card>
-          <RichWords section={section} pid={pid} sid={sid} account={obj.account}/>
+          <RichWords section={section} pid={pid} sid={sid} account={obj.account} content={section.resource.content}/>
           <FileResource section={section} pid={pid} sid={sid} account={obj.account}/>
           <StudentTask section={section} pid={pid} sid={sid}/>
         </div>

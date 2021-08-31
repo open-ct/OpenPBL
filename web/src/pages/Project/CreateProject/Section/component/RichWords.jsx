@@ -1,22 +1,38 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, Divider, message} from "antd";
-import LzEditor from "react-lz-editor"
-import uniqBy from 'lodash/uniqBy';
-import findIndex from 'lodash/findIndex';
+import {Button, Card, Divider, message, Upload} from "antd";
+import {FileImageOutlined, VideoCameraAddOutlined, AudioOutlined} from "@ant-design/icons"
+import BraftEditor from 'braft-editor'
+import { ContentUtils } from 'braft-utils'
 
+import 'braft-editor/dist/index.css'
+import './rich-words.less'
 import ResourceApi from "../../../../../api/ResourceApi";
 import "./section-edit.less"
 import FileApi from "../../../../../api/FileApi";
-import SectionApi from "../../../../../api/SectionApi";
 
 function RichWords(obj) {
   const [fileList, setFileList] = useState([])
-  const [content, setContent] = useState(obj.content)
+  const [editorState, setEditorState] = useState()
+  const [content, setContent] = useState('')
 
   useEffect(() => {
-  }, [])
+    if (obj.content !== undefined) {
+      initEditor()
+    }
+  }, [obj.content])
+
+  const initEditor = () => {
+    setEditorState(BraftEditor.createEditorState(obj.content))
+    setContent(obj.content)
+  }
+
   const receiveHtml = (content) => {
     setContent(content)
+  }
+
+  const changeContent = (e) => {
+    setEditorState(e)
+    setContent(e.toHTML())
   }
 
   const saveContent = () => {
@@ -34,40 +50,16 @@ function RichWords(obj) {
       })
   }
 
-  const handleChange = (changedValue) => {
-    let currFileList = changedValue.fileList;
-    console.error(JSON.stringify(changedValue));
-    currFileList = currFileList.filter(f => (!f.length));
-    currFileList = currFileList.map((file) => {
-      if (file.response) {
-        file.url = file.response.url;
-      }
-      if (!file.length) {
-        return file;
-      }
-    });
-    currFileList = currFileList.filter((file) => {
-      const hasNoExistCurrFileInUploadedList = !~findIndex(
-        fileList, item => item.name === file.name,
-      );
-      if (hasNoExistCurrFileInUploadedList) {
-        fileList.push(file);
-      }
-      return !!file.response || (!!file.url && file.status === 'done') || file.status === 'uploading';
-    });
-    currFileList = uniqBy(currFileList, 'name');
-    if (!!currFileList && currFileList.length !== 0) {
-      setFileList(currFileList);
-    }
-  };
-
-  const customRequest = ({file, onError, onSuccess}) => {
+  const uploadFile = (param, type, size) => {
+    let file = param.file
     const index = file.name.lastIndexOf('.');
     if (index === -1) {
-      return onError('不能识别文件类型');
+      message.error("不能识别文件类型")
+      return
     }
-    if (file.size > 1024 * 1024) {
-      return onError('文件不能大于1MB');
+    if (file.size > 1024 * 1024 * size) {
+      message.error(`文件不能大于${size}MB`)
+      return
     }
     const postfix = file.name.substr(index);
     let fileName = new Date().getTime()
@@ -75,38 +67,85 @@ function RichWords(obj) {
     FileApi.uploadFile("admin", "openpbl", obj.account.name, filePath, file)
       .then(res=>{
         if (res.data.status === 'ok') {
+          message.success(res.data.msg)
           let url = res.data.data
-          onSuccess({url: url}, file);
+          setEditorState(ContentUtils.insertMedias(editorState, [{
+            type: type,
+            url: url
+          }]))
         } else {
           message.error(res.data.msg)
-          onError(res.data.msg)
         }
       })
-      .catch(e=>{
-        onError(e)
-      })
+      .catch(e=>{console.log(e)})
   };
 
-  const uploadProps = {
-    onChange: handleChange,
-    listType: 'picture',
-    fileList: fileList,
-    customRequest: customRequest,
-    multiple: true,
-    showUploadList: true
-  }
+  const controls = [
+    'undo', 'redo', 'separator',
+    'font-size', 'line-height', 'letter-spacing', 'separator',
+    'text-color', 'bold', 'italic', 'underline', 'strike-through', 'separator',
+    'superscript', 'subscript', 'remove-styles', 'emoji',  'separator', 'text-indent', 'text-align', 'separator',
+    'headings', 'list-ul', 'list-ol', 'blockquote', 'code', 'separator',
+    'link', 'separator', 'hr', 'separator',
+    'separator', 'clear'
+  ]
+  const extendControls = [
+    'separator',
+    {
+      key: 'insert-image',
+      type: 'component',
+      component: (
+        <div style={{float: 'left'}}>
+          <Upload
+            accept="image/*"
+            showUploadList={false}
+            customRequest={param=>uploadFile(param, 'IMAGE', '5')}
+          >
+            <Button size="large" type="text" icon={<FileImageOutlined />} data-title="插入图片"/>
+          </Upload>
+        </div>
+      )
+    }, {
+      key: 'insert-audio',
+      type: 'component',
+      component: (
+        <div style={{float: 'left'}}>
+          <Upload
+            accept="audio/*"
+            showUploadList={false}
+            customRequest={param=>uploadFile(param, 'AUDIO', '10')}
+          >
+            <Button size="large" type="text" icon={<AudioOutlined />} data-title="插入音频"/>
+          </Upload>
+        </div>
+      )
+    }, {
+      key: 'insert-video',
+      type: 'component',
+      component: (
+        <div style={{float: 'left'}}>
+          <Upload
+            accept="video/*"
+            showUploadList={false}
+            customRequest={param=>uploadFile(param, 'VIDEO', '1024')}
+          >
+            <Button size="large" type="text" icon={<VideoCameraAddOutlined />} data-title="插入视频"/>
+          </Upload>
+        </div>
+      )
+    }
+  ]
 
   return (
     <Card className="resource-card">
       <p className="card-title">文本内容</p>
       <Divider/>
-      <div style={{textAlign: 'left'}}>
-        <LzEditor
-          readOnly={true}
-          active={true}
-          importContent={obj.section.resource.content}
-          cbReceiver={receiveHtml}
-          uploadProps={uploadProps}
+      <div>
+        <BraftEditor
+          value={editorState}
+          onChange={changeContent}
+          controls={controls}
+          extendControls={extendControls}
         />
       </div>
       <div style={{marginTop: '10px'}}>
