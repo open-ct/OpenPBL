@@ -11,9 +11,9 @@ import "./section-edit.less"
 import FileApi from "../../../../../api/FileApi";
 
 function RichWords(obj) {
-  const [fileList, setFileList] = useState([])
   const [editorState, setEditorState] = useState()
   const [content, setContent] = useState('')
+  const [saveBtLoading, setSaveBtLoading] = useState(false)
 
   useEffect(() => {
     if (obj.content !== undefined) {
@@ -36,8 +36,10 @@ function RichWords(obj) {
   }
 
   const saveContent = () => {
+    setSaveBtLoading(true)
     ResourceApi.updateResourceContent(obj.pid, obj.section.resource.id, content)
       .then(res => {
+        setSaveBtLoading(false)
         if (res.data.code === 200) {
           obj.section.resource.content = content
           message.success(res.data.msg)
@@ -142,6 +144,7 @@ function RichWords(obj) {
       <Divider/>
       <div>
         <BraftEditor
+          style={{height: '100%'}}
           value={editorState}
           onChange={changeContent}
           controls={controls}
@@ -150,7 +153,7 @@ function RichWords(obj) {
       </div>
       <div style={{marginTop: '10px'}}>
         <span style={{float: 'right'}}>
-          <Button type="primary" onClick={saveContent}>保存</Button>
+          <Button type="primary" onClick={saveContent} loading={saveBtLoading}>保存</Button>
         </span>
       </div>
     </Card>

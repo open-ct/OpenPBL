@@ -65,20 +65,11 @@ function TaskCard(obj) {
   }
 
   const removeFile = file => {
-    let data = {
-      objectKey: file.filePath,
-    }
     SubmitApi.deleteSubmitFile(obj.pid, obj.item.id, obj.item.submit.id, file.id)
       .then(res=>{
         if (res.data.code === 200) {
           message.success(res.data.msg)
           getSubmitFiles()
-          FileApi.deleteFile(JSON.stringify(data))
-            .then(res=>{
-              if (res.data.status === 'ok') {
-              }
-            })
-            .catch(e=>{console.log(e)})
         } else {
           message.error(res.data.msg)
         }

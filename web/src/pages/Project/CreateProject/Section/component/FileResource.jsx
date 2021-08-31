@@ -29,20 +29,11 @@ function FileResource(obj) {
       .catch(e=>{console.log(e)})
   }
   const removeFile = file => {
-    let data = {
-      objectKey: file.filePath,
-    }
     SectionApi.deleteSectionFile(obj.sid, obj.pid, file.id)
       .then(res=>{
         if (res.data.code === 200) {
           message.success(res.data.msg)
           getSectionFiles()
-          FileApi.deleteFile(JSON.stringify(data))
-            .then(res=>{
-              if (res.data.status === 'ok') {
-              }
-            })
-            .catch(e=>{console.log(e)})
         } else {
           message.error(res.data.msg)
         }
