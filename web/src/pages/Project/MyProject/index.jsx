@@ -114,7 +114,7 @@ class MyProject extends React.PureComponent {
                   </Menu.Item>
                   <Menu.Item key="finished" icon={<CheckOutlined/>}>
                     <Link to="/home/my-project/finished">
-                      已完成
+                      已结束
                     </Link>
                   </Menu.Item>
                   <Menu.Item key="favourite" icon={<StarFilled/>}>

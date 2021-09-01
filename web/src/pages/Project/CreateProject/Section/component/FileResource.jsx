@@ -29,19 +29,13 @@ function FileResource(obj) {
       .catch(e=>{console.log(e)})
   }
   const removeFile = file => {
-    let data = {
-      objectKey: file.filePath,
-    }
-    FileApi.deleteFile(JSON.stringify(data))
+    SectionApi.deleteSectionFile(obj.sid, obj.pid, file.id)
       .then(res=>{
-        if (res.data.status === 'ok') {
-          SectionApi.deleteSectionFile(obj.sid, obj.pid, file.id)
-            .then(res=>{
-              if (res.data.code === 200) {
-                getSectionFiles()
-              }
-            })
-            .catch(e=>{console.log(e)})
+        if (res.data.code === 200) {
+          message.success(res.data.msg)
+          getSectionFiles()
+        } else {
+          message.error(res.data.msg)
         }
       })
       .catch(e=>{console.log(e)})
@@ -57,8 +51,8 @@ function FileResource(obj) {
       message.error('文件不能大于1GB');
       return
     }
-    let filePath = `/openpbl/project/${obj.pid}/section/${obj.sid}/${file.name}`
-    FileApi.uploadFile("admin", "openpbl", "admin", filePath, file)
+    let filePath = `/openpbl/project${obj.pid}/section${obj.sid}/${file.name}`
+    FileApi.uploadFile("admin", "openpbl", obj.account.name, filePath, file)
       .then(res=>{
         if (res.data.status === 'ok') {
           let e = false

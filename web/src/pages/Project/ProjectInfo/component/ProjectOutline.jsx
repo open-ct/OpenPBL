@@ -9,7 +9,6 @@ const {SubMenu} = Menu;
 
 function ProjectOutline(obj) {
   const pid = obj.project.id
-  const type = localStorage.getItem("type")
   const [chapters, setChapters] = useState([])
 
   useEffect(() => {
@@ -31,11 +30,11 @@ function ProjectOutline(obj) {
       })
   }
   const gotoLearning = (item, subItem) => {
-    if (!obj.project.learning && type === 'student') {
+    if (!obj.project.learning && obj.account.tag === '学生') {
       message.warn("请先加入学习")
       return
     }
-    window.open(`/home/project/${pid}/section/${subItem.id}/preview?back=/project/${pid}/info?menu=project-outline`)
+    window.location.href = (`/home/project/${pid}/section/${subItem.id}/preview?back=/home/project/${pid}/info`)
   }
 
   return (

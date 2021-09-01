@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Card, Col, Divider, Image, Input, Pagination, Row, Select, Spin, Tag} from 'antd';
 import {EyeOutlined, TeamOutlined} from '@ant-design/icons';
+import {Link} from "react-router-dom"
 
 import './project-list.less';
 import ProjectListApi from '../../../api/ProjectListApi'
@@ -77,7 +78,7 @@ function ProjectList(obj) {
   }, []);
 
   const loadSubjectsAndSkills = () => {
-    ProjectApi.getSubjectsAndSkills(obj.pid)
+    ProjectApi.getSubjectsAndSkills(0)
       .then(res => {
         if (res.data.code === 200) {
           if (res.data.subjects !== null) {
@@ -121,7 +122,6 @@ function ProjectList(obj) {
         .catch(e => {
         })
     }
-    window.location.href = `/home/project/${item.id}/info`
   }
 
   const onSearch = (v) => {
@@ -187,6 +187,7 @@ function ProjectList(obj) {
           {
             learningProjectList.map((item, index) => (
               <Col key={index.toString()} {...topColResponsiveProps}>
+                <Link to={`/home/project/${item.id}/info`}>
                 <Card
                   hoverable
                   bordered={false}
@@ -213,7 +214,7 @@ function ProjectList(obj) {
                     description={
                       <div>
                         <span className="des-text">{item.subjects === '' ? '--' : item.subjects}</span>
-                        {item.learning ?
+                        {item.learning && !item.closed ?
                           <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>学习中</Tag> : null}
                         {item.teacherId === uid && type === 'teacher' ?
                           <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>我的项目</Tag> : null}
@@ -250,6 +251,7 @@ function ProjectList(obj) {
                       {util.FilterMoment(item.createAt)}
                     </span>
                 </Card>
+                </Link>
               </Col>
             ))
           }
