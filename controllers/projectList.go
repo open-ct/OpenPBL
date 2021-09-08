@@ -79,9 +79,9 @@ func (pl *ProjectListController) GetUserProjectList() {
 
 	if util.IsStudent(user) {
 		if t == "learning" {
-			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, true)
-		} else if t == "finished" {
 			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, false)
+		} else if t == "finished" {
+			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, true)
 		} else if t == "public" {
 			projects, count, err = models.GetPublicProjectListForStudent(uid, from, size, subject, skill, text, orderBy, orderType, false)
 		} else if t == "favourite" {

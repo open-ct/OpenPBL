@@ -50,6 +50,7 @@ class ProjectInfo extends React.PureComponent {
       favBtLoading: false,
       learnBtLoading: false,
       exitBtLoading: false,
+      publishBtLoading: false,
       closeBtLoading: false,
       cloneBtLoading: false,
       deleteBtLoading: false
@@ -134,10 +135,19 @@ class ProjectInfo extends React.PureComponent {
       })
   }
   publishProject = e => {
+    this.setState({
+      publishBtLoading: true
+    })
     ProjectApi.publishProject(this.state.pid)
       .then((res) => {
+        this.setState({
+          publishBtLoading: false
+        })
         if (res.data.code === 200) {
           this.loadProjectDetail()
+          message.success(res.data.msg)
+        } else {
+          message.error(res.data.msg)
         }
       })
       .catch((e) => {
@@ -155,6 +165,7 @@ class ProjectInfo extends React.PureComponent {
         })
         if (res.data.code === 200) {
           this.loadProjectDetail()
+          message.success(res.data.msg)
         } else {
           message.error(res.data.msg)
         }
@@ -294,7 +305,8 @@ class ProjectInfo extends React.PureComponent {
       exitBtLoading,
       closeBtLoading,
       cloneBtLoading,
-      deleteBtLoading
+      deleteBtLoading,
+      publishBtLoading
     } = this.state;
 
     const teacherBt = (
@@ -349,11 +361,12 @@ class ProjectInfo extends React.PureComponent {
                 shape="round"
                 size="middle"
                 style={{margin: '5px'}}
+                loading={publishBtLoading}
               >
                 发布项目
               </Button>
             </Popconfirm>
-            <Link to={`/home/project/${pid}/info/edit`} target="_blank">
+            <Link to={`/home/project/${pid}/info/edit`}>
               <Button
                 shape="round"
                 size="middle"
@@ -432,23 +445,25 @@ class ProjectInfo extends React.PureComponent {
       <div style={{float: 'right'}}>
         {project.learning ?
           <>
-            <Link to={`/home/project/${project.id}/section/${lastLearn.id}/preview?back=/project/${project.id}/info`}>
+            <Link to={`/home/project/${project.id}/section/${lastLearn.id}/preview?back=/home/project/${project.id}/info`}>
 
               {lastLearn.last ?
-                <span>
-                  上次学到：{util.FormatSectionName(lastLearn.sectionName, lastLearn.chapterNumber, lastLearn.sectionNumber)}&nbsp;&nbsp;
-                  <span style={{color: 'gray'}}>
-                    {util.FilterMoment(lastLearn.exitAt)}&nbsp;&nbsp;
+                <>
+                  <span>
+                    上次学到：{util.FormatSectionName(lastLearn.sectionName, lastLearn.chapterNumber, lastLearn.sectionNumber)}&nbsp;&nbsp;
+                    <span style={{color: 'gray'}}>
+                      {util.FilterMoment(lastLearn.exitAt)}&nbsp;&nbsp;
+                    </span>
                   </span>
-                </span>
+                  <Button
+                    shape="round"
+                    size="middle"
+                    style={{margin: '5px'}}
+                  >继续学习
+                  </Button>
+                  </>
                 : null
               }
-              <Button
-                shape="round"
-                size="middle"
-                style={{margin: '5px'}}
-              >继续学习
-              </Button>
             </Link>
             <Popconfirm title="确认退出项目？" onConfirm={this.exitProject} placement="topRight">
               <Button
@@ -522,7 +537,8 @@ class ProjectInfo extends React.PureComponent {
                           </>
                           : null
                         }
-                        {project.learning ? <Tag color="geekblue">正在学习</Tag> : null}
+                        {project.learning ?
+                          <>{project.closed ? <Tag color="gray">已结束</Tag> : <Tag color="geekblue">正在学习</Tag>}</> : null}
                         <span style={{float: 'right'}}>
                         {project.favourite ?
                           <Tooltip title="点击取消收藏">
@@ -599,7 +615,7 @@ class ProjectInfo extends React.PureComponent {
                 }}
                 >
                   {menu === 'project-introduce' ? <ProjectIntroduce project={project}/> : null}
-                  {menu === 'project-outline' ? <ProjectOutline project={project}/> : null}
+                  {menu === 'project-outline' ? <ProjectOutline project={project} account={this.props.account}/> : null}
                   {menu === 'project-comment' ? <ProjectComment project={project} account={this.props.account}/> : null}
                   {menu === 'project-evaluation' ?
                     <ProjectEvaluation

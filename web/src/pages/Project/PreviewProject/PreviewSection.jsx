@@ -1,5 +1,5 @@
 import React from "react";
-import {BackTop, Card, PageHeader} from "antd";
+import {BackTop, Card, PageHeader, Divider} from "antd";
 import DocumentTitle from 'react-document-title';
 
 import SectionApi from "../../../api/SectionApi";
@@ -38,7 +38,7 @@ class PreviewSection extends React.Component {
   }
 
   componentWillUnmount() {
-    if (this.state.learning) {
+    if (this.state.learning && this.state.editable) {
       if (this.state.timer != null) {
         clearTimeout(this.state.timer)
       }
@@ -105,7 +105,7 @@ class PreviewSection extends React.Component {
           showCount: res.data.showCount
         })
 
-        if (res.data.learning && this.state.timer === null) {
+        if (res.data.learning && res.data.editable && this.state.timer === null) {
           this.setTimer()
         }
       })
@@ -148,7 +148,7 @@ class PreviewSection extends React.Component {
   }
   back = e => {
     if (this.state.backUrl === undefined || this.state.backUrl === null) {
-      this.props.history.push(`/project/${this.state.pid}/section/${this.state.sid}/edit`)
+      this.props.history.push(`/home/project/${this.state.pid}/section/${this.state.sid}/edit`)
     } else {
       this.props.history.push(this.state.backUrl)
     }
@@ -185,12 +185,12 @@ class PreviewSection extends React.Component {
             title="返回"
             subTitle="我的项目"
           />
-          <div style={{padding: '20px', margin: 'auto'}}>
+          <div style={{padding: '20px', margin: 'auto', maxWidth: '1400px'}}>
             <Card>
               <h2 style={{fontWeight: 'bold'}}>
                 {util.FormatSectionName(section.sectionName, section.chapterNumber, section.sectionNumber)}
               </h2>
-              {learning ?
+              {learning && editable ?
                 <span style={{float: 'right'}}>{minute}&nbsp;:&nbsp;{second}</span>
                 : null}
             </Card>
@@ -199,11 +199,11 @@ class PreviewSection extends React.Component {
             </Card>
             <Card className="resource-card">
               <p className="card-title">文件资源</p>
+              <Divider />
               {sectionFiles.map((item, index)=>(
                 <div>
-                  <a href={item.url}>
-                  {item.name}
-                  </a>
+                  <a target="_blank" href={item.url}>{item.name}</a>
+                  <Divider />
                 </div>
               ))}
             </Card>
