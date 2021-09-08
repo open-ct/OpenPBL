@@ -246,3 +246,15 @@ func CloneProject(uid string, pid int64) (err error) {
 	err = CloneProjectChapters(pid, newPid)
 	return
 }
+
+func IsEditableProject(pid string) (e bool) {
+	var p Project
+	var b bool
+	b, _ = (&Project{}).GetEngine().ID(pid).Get(&p)
+	if b {
+		e = p.Closed == false
+	} else {
+		e = false
+	}
+	return
+}
