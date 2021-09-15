@@ -94,12 +94,12 @@ func UpdateSectionsMinute(sections []Section) (err error) {
 func (p *Section) Delete() (err error) {
 	session := adapter.Engine.NewSession()
 	defer session.Close()
-	session.Begin()
+	_ = session.Begin()
 	_, err = session.Engine().
 		Exec("update section set section_number = section_number - 1 " +
 			"where chapter_id = ? and section_number > ?", p.ChapterId, p.SectionNumber)
 	_, err = session.Table(&Section{}).ID(p.Id).Delete(p)
-	session.Commit()
+	_ = session.Commit()
 	return
 }
 func ExchangeSections(id1 string, id2 string) (err error) {
@@ -134,8 +134,14 @@ func DeleteChapterSections(cid int64) (err error) {
 		sid := s.Id
 		_, err = (&Section{}).GetEngine().ID(sid).Delete(&Section{})
 		err = DeleteSectionResource(sid)
+		err = DeleteSectionFiles(sid)
 		err = DeleteTasks(sid)
 	}
+	return
+}
+
+func DeleteSectionFiles(sid int64) (err error) {
+	_, err = (&SectionFile{}).GetEngine().Where("section_id = ?", sid).Delete(&SectionFile{})
 	return
 }
 
@@ -150,7 +156,20 @@ func CloneChapterSections(newPid int64, cid int64, newCid int64) (err error) {
 		_, err = (&Section{}).GetEngine().Insert(&s)
 		newSid := s.Id
 		err = CloneSectionResource(sid, newSid)
+		err = CloneSectionFiles(sid, newSid)
 		err = CloneTasks(newPid, sid, newSid)
+	}
+	return
+}
+
+func CloneSectionFiles(sid int64, newSid int64) (err error) {
+	var files []SectionFile
+	err = (&SectionFile{}).GetEngine().Where("section_id = ?", sid).Find(&files)
+	for i:=0; i<len(files); i++ {
+		f := files[i]
+		f.Id = 0
+		f.SectionId = newSid
+		err = f.Create()
 	}
 	return
 }

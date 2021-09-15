@@ -24,18 +24,18 @@ type TaskResponse struct {
 // @router /:projectId/section/:sectionId/tasks [get]
 func (p *ProjectController) GetSectionTasksDetail() {
 	sid := p.GetString(":sectionId")
-	var learning bool
 	user := p.GetSessionUser()
-	showCount := false
-	if !util.IsStudent(user) {
-		learning = false
-	}
-	if util.IsTeacher(user) {
-		showCount = true
-	}
 	uid := util.GetUserId(user)
 	pid := p.GetString(":projectId")
-	learning = models.IsLearningProject(pid, uid)
+	showCount := false
+	learning := false
+	editable := false
+	if util.IsTeacher(user) {
+		showCount = true
+	} else {
+		editable = models.IsEditableProject(pid)
+		learning = models.IsLearningProject(pid, uid)
+	}
 	tasks, err := models.GetSectionTasks(sid, uid, learning)
 	if err != nil {
 		p.Data["json"] = TaskResponse{
@@ -53,7 +53,7 @@ func (p *ProjectController) GetSectionTasksDetail() {
 			},
 			Tasks:    tasks,
 			Learning: learning,
-			Editable: learning,
+			Editable: editable,
 			ShowCount: showCount,
 		}
 	}

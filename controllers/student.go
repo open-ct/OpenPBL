@@ -190,7 +190,7 @@ func (u *StudentController) GetLearnSection() {
 	uid := util.GetUserId(user)
 	sid, err := u.GetInt64(":sectionId")
 	projectId, err := u.GetInt64(":projectId")
-	l, err := models.GetLearnSection(sid, uid, projectId)
+	l, _ := models.GetLearnSection(sid, uid, projectId)
 	if err != nil {
 		u.Data["json"] = Response{
 			Code: 400,

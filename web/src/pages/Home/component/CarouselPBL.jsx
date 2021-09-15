@@ -14,19 +14,25 @@ class CarouselPBL extends React.Component {
     super(props);
     this.imgArray = [
       {
-        img: 'https://cdn.open-ct.com/task-resources//carousel-top-1.png',
-        title: '',
-        text: '',
+        img: 'https://cdn.open-ct.com/task-resources/lbaf23/carousel-top-1.jpg',
+        title: 'O p e n P B L',
+        text: 'Project Based Learning',
+        titleStyle: {color: 'white', fontSize: '60px', fontWeight: 'bold', fontFamily: 'Times New Roman'},
+        textStyle: {color: 'white', fontSize: '30px', marginTop: '50px'}
       },
       {
-        img: 'https://cdn.open-ct.com/task-resources//carousel-top-2.png',
-        title: '',
-        text: '',
+        img: 'https://cdn.open-ct.com/task-resources/lbaf23/carousel-top-2.jpg',
+        title: 'O p e n P B L',
+        text: 'Propose - Plan - Execute - Judge',
+        titleStyle: {color: 'lightblue', fontSize: '60px', fontWeight: 'bold', fontFamily: 'Times New Roman'},
+        textStyle: {color: 'lightblue', fontSize: '30px', marginTop: '50px'}
       },
       {
-        img: 'https://cdn.open-ct.com/task-resources//carousel-top-3.png',
-        title: '',
-        text: '',
+        img: 'https://cdn.open-ct.com/task-resources/lbaf23/carousel-top-3.jpg',
+        title: 'O p e n P B L',
+        text: 'explore real-world problems',
+        titleStyle: {color: 'black', fontSize: '60px', fontWeight: 'bold', fontFamily: 'Times New Roman'},
+        textStyle: {color: 'black', fontSize: '30px', marginTop: '50px'}
       },
     ];
     this.state = {
@@ -126,15 +132,16 @@ class CarouselPBL extends React.Component {
               className="bg"
               style={{
                 backgroundImage: `url(${item.img})`,
+
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }}
             />
             <TweenOne className="banner-user-title" animation={{y: 30, opacity: 0, type: 'from'}}>
-              <div style={{fontSize: '100px'}}>{item.title}</div>
+              <div style={item.titleStyle}>{item.title}</div>
             </TweenOne>
             <TweenOne className="banner-user-text" animation={{y: 30, opacity: 0, type: 'from', delay: 100}}>
-              <div style={{fontSize: '30px'}}>{item.text}</div>
+              <div style={item.textStyle}>{item.text}</div>
             </TweenOne>
           </Element>
         ))}
