@@ -152,7 +152,7 @@ function RichWords(obj) {
         />
       </div>
       <div style={{marginTop: '10px'}}>
-        <span style={{float: 'right'}}>
+        <span style={{float: 'left'}}>
           <Button type="primary" onClick={saveContent} loading={saveBtLoading}>保存</Button>
         </span>
       </div>

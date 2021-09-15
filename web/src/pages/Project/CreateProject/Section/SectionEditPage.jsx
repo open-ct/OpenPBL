@@ -40,7 +40,7 @@ function SectionEditPage(obj) {
           title="返回"
           subTitle="我的项目"
         />
-        <div style={{padding: '20px', margin: 'auto'}}>
+        <div style={{padding: '20px', margin: 'auto', maxWidth: '1400px'}}>
           <Card>
             <h2 style={{fontWeight: 'bold'}}>{section.sectionName}</h2>
           </Card>
