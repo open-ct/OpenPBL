@@ -69,7 +69,6 @@ function RichWords(obj) {
     FileApi.uploadFile("admin", "openpbl", obj.account.name, filePath, file)
       .then(res=>{
         if (res.data.status === 'ok') {
-          message.success(res.data.msg)
           let url = res.data.data
           setEditorState(ContentUtils.insertMedias(editorState, [{
             type: type,

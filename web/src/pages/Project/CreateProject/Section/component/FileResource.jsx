@@ -42,6 +42,11 @@ function FileResource(obj) {
   }
   const onUploadFile = file => {
     file = file.file
+
+    let f = fileList
+    f.push({name: file.name, status: 'uploading'})
+    setFileList([...f])
+
     const index = file.name.lastIndexOf('.');
     if (index === -1) {
       message.error('不能识别文件类型');
@@ -55,18 +60,10 @@ function FileResource(obj) {
     FileApi.uploadFile("admin", "openpbl", obj.account.name, filePath, file)
       .then(res=>{
         if (res.data.status === 'ok') {
-          let e = false
-          for (let i=0; i<fileList.length; i++) {
-            if (fileList[i].name === file.name) {
-              let f = fileList[i]
-              f.url = res.data.data
-              updateFile(f)
-              e = true
-            }
-          }
-          if (!e) {
-            uploadFile(filePath, file.name, res.data.data)
-          }
+          uploadFile(filePath, file.name, res.data.data)
+        } else {
+          message.error('文件名过长，上传失败')
+          getSectionFiles()
         }
       })
       .catch(e=>{console.log(e)})
