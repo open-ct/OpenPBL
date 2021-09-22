@@ -148,6 +148,7 @@ function RichWords(obj) {
           onChange={changeContent}
           controls={controls}
           extendControls={extendControls}
+          onBlur={saveContent}
         />
       </div>
       <div style={{marginTop: '10px'}}>
