@@ -136,12 +136,12 @@ class HeaderLayout extends React.Component {
       <Layout style={{minHeight: '100vh', textAlign: 'left'}}>
         <Layout.Header style={{backgroundColor: 'white', paddingLeft: '4px', paddingRight: '4px'}}>
           <Row>
-            <Col xxl={14} xl={10} lg={8} md={6} sm={6} xs={10}>
+            <Col xxl={16} xl={14} lg={10} md={6} sm={8} xs={0}>
               <Link to="/home">
-                <Image height={50} width={200} style={{margin: '7px'}} src={logo} preview={false}/>
+                <Image height={50} width={165} style={{margin: '7px'}} src={logo} preview={false}/>
               </Link>
             </Col>
-            <Col xxl={6} xl={10} lg={10} md={10} sm={10} xs={3}>
+            <Col xxl={4} xl={6} lg={8} md={10} sm={8} xs={6}>
               <Menu
                 theme="light"
                 mode="horizontal"
@@ -167,7 +167,7 @@ class HeaderLayout extends React.Component {
                 </Menu.Item>
               </Menu>
             </Col>
-            <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={11}>
+            <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={18}>
               {
                 <>
                   <span style={{float: 'left', marginRight: '20px'}}>

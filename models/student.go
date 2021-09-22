@@ -108,8 +108,12 @@ func GetLearnSection(sectionId int64, studentId string, projectId int64) (l Lear
 		Where("student_id = ?", studentId).
 		Get(&l)
 	if !b {
-		l.SectionId = sectionId
-		l.StudentId = studentId
+		l = LearnSection{
+			StudentId:   studentId,
+			SectionId:   sectionId,
+			LearnMinute: 0,
+			LearnSecond: 0,
+		}
 		err = (&l).Create(projectId)
 	}
 	return

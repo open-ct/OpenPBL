@@ -65,25 +65,23 @@ function TaskCard(obj) {
   }
 
   const removeFile = file => {
-    let data = {
-      objectKey: file.filePath,
-    }
-    FileApi.deleteFile(JSON.stringify(data))
+    SubmitApi.deleteSubmitFile(obj.pid, obj.item.id, obj.item.submit.id, file.id)
       .then(res=>{
-        if (res.data.status === 'ok') {
-          SubmitApi.deleteSubmitFile(obj.pid, obj.item.id, obj.item.submit.id, file.id)
-            .then(res=>{
-              if (res.data.code === 200) {
-                getSubmitFiles()
-              }
-            })
-            .catch(e=>{console.log(e)})
+        if (res.data.code === 200) {
+          message.success(res.data.msg)
+          getSubmitFiles()
+        } else {
+          message.error(res.data.msg)
         }
       })
       .catch(e=>{console.log(e)})
   }
   const onUploadFile = file => {
     file = file.file
+
+    let f = fileList
+    f.push({name: file.name, status: 'uploading'})
+    setFileList([...f])
     const index = file.name.lastIndexOf('.');
     if (index === -1) {
       message.error('不能识别文件类型');
@@ -93,22 +91,14 @@ function TaskCard(obj) {
       message.error('文件不能大于1GB');
       return
     }
-    let filePath = `/openpbl/project/${obj.pid}/task/${obj.item.id}/${obj.studentId}/${file.name}`
+    let filePath = `/openpbl/project${obj.pid}/task${obj.item.id}/${obj.studentId}/${file.name}`
     FileApi.uploadFile("admin", "openpbl", obj.studentId, filePath, file)
       .then(res=>{
         if (res.data.status === 'ok') {
-          let e = false
-          for (let i=0; i<fileList.length; i++) {
-            if (fileList[i].name === file.name) {
-              let f = fileList[i]
-              f.url = res.data.data
-              updateFile(f)
-              e = true
-            }
-          }
-          if (!e) {
-            uploadFile(filePath, file.name, res.data.data)
-          }
+          uploadFile(filePath, file.name, res.data.data)
+        } else {
+          message.error('文件名过长，上传失败')
+          getSubmitFiles()
         }
       })
       .catch(e=>{console.log(e)})
