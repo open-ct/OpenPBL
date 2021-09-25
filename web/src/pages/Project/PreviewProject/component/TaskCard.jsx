@@ -11,10 +11,10 @@ function TaskCard(obj) {
   const [fileList, setFileList] = useState([])
 
   useEffect(()=>{
-    if (obj.learning && obj.item.taskType === "file") {
+    if (obj.item.taskType === "file") {
       getSubmitFiles()
     }
-  }, [obj.learning, obj.item])
+  }, [obj.item])
 
   const getSubmitFiles = () => {
     SubmitApi.getSubmitFiles(obj.pid, obj.item.id, obj.item.submit.id)
