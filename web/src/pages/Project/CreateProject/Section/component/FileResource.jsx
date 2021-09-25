@@ -64,7 +64,7 @@ function FileResource(obj) {
         if (res.data.status === 'ok') {
           uploadFile(filePath, file.name, res.data.data)
         } else {
-          message.error('文件名过长，上传失败')
+          message.error(res.data.msg)
           getSectionFiles()
         }
       })

@@ -28,6 +28,14 @@ export function getUser(teacherId) {
   })
 }
 
+export function getAccount(account) {
+  let request = getCasdoorService()
+  return request({
+    url: getMyProfileUrl(account),
+    method: 'get',
+  })
+}
+
 export function getAuthorizeUrl() {
   const redirectUri = `${window.location.origin}/callback/`;
   const scope = "read";

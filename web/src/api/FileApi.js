@@ -1,4 +1,3 @@
-import qs from 'qs'
 import {getCasdoorService} from "../pages/User/Auth/Auth";
 
 const FileApi = {

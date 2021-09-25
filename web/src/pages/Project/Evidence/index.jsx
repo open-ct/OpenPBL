@@ -51,6 +51,7 @@ function Evidence(obj) {
             <div>
               <Card>
                 <StudentEvidence
+                  account={obj.account}
                   pid={pid}
                   studentId={sid}
                 />

@@ -627,7 +627,7 @@ class ProjectInfo extends React.PureComponent {
                   }
 
                   {menu === 'student-admin' ? <StudentAdmin project={project}/> : null}
-                  {menu === 'student-evidence' ? <StudentEvidence project={project}/> : null}
+                  {menu === 'student-evidence' ? <StudentEvidence project={project} account={this.props.account}/> : null}
 
                 </div>
               </div>
