@@ -50,7 +50,7 @@ function ProjectList(obj) {
     let q = {
       from: (p - 1) * size,
       size: size,
-      orderBy: 'create_at',
+      orderBy: 'update_at',
       orderType: 'desc',
       subject: subject,
       skill: skill,
@@ -248,7 +248,7 @@ function ProjectList(obj) {
                       float: 'right',
                     }}
                   >
-                      {util.FilterMoment(item.createAt)}
+                      {util.FilterMoment(item.updateAt)}
                     </span>
                 </Card>
                 </Link>

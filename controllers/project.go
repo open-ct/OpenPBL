@@ -87,6 +87,7 @@ func (p *ProjectController) CreateProject() {
 		Id:                util.NewId(),
 		TeacherId:         uid,
 		LearnMinuteWeight: 100,
+		UpdateAt:          time.Now(),
 	}
 	err := project.Create()
 	if err != nil {
@@ -107,7 +108,7 @@ func (p *ProjectController) CreateProject() {
 
 // UpdateProject
 // @Title UpdateProject
-// @Description create project
+// @Description Update project
 // @Param projectId path string true "project id"
 // @Success 200 {object} Response
 // @router /:projectId [post]
@@ -143,6 +144,7 @@ func (p *ProjectController) UpdateProject() {
 		Skills:           p.GetString("skills"),
 		EndTime:          endTime,
 		TimedEnd:         b,
+		UpdateAt:          time.Now(),
 	}
 	projectSubjects, projectSkills, err := getProjectSubjectsAndSkills(pid, project.Subjects, project.Skills)
 	err = project.UpdateInfo(projectSubjects, projectSkills)
@@ -195,6 +197,7 @@ func (p *ProjectController) UpdateProjectWeight() {
 	project := models.Project{
 		Id:                pid,
 		LearnMinuteWeight: learnMinuteWeight,
+		UpdateAt:          time.Now(),
 	}
 	tasks := make([]models.Task, 0)
 	err = json.Unmarshal([]byte(p.GetString("tasks")), &tasks)
@@ -240,6 +243,7 @@ func (p *ProjectController) PublishProject() {
 		Id:               pid,
 		PublishedAt:      time.Now(),
 		Published:        true,
+		UpdateAt:          time.Now(),
 	}
 	err := models.UpdatePublished(project)
 	if err != nil {
@@ -281,6 +285,7 @@ func (p *ProjectController) CloseProject() {
 		Id:            pid,
 		ClosedAt:      time.Now(),
 		Closed:        true,
+		UpdateAt:          time.Now(),
 	}
 	err := models.UpdateClosed(project)
 	if err != nil {

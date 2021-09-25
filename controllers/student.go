@@ -71,13 +71,21 @@ func (u *StudentController) LearnProject() {
 
 	project, err := models.GetProjectById(pid)
 	if err == nil {
-		content := fmt.Sprintf("成功加入课程 \"%v\" ", project.ProjectTitle)
 		models.CreateMessage(&models.Message{
 			Id:           util.NewId(),
 			ReceiverId:   uid,
 			MessageType:  "info",
 			MessageTitle: "加入课程",
-			Content:      content,
+			Content:      fmt.Sprintf("成功加入课程 \"%v\" ", project.ProjectTitle),
+			ReadMessage:  false,
+			CreateAt:     time.Time{},
+		})
+		models.CreateMessage(&models.Message{
+			Id:           util.NewId(),
+			ReceiverId:   project.TeacherId,
+			MessageType:  "info",
+			MessageTitle: "加入课程",
+			Content:      fmt.Sprintf("学生 %v 加入课程 \"%v\" ", user.DisplayName, project.ProjectTitle),
 			ReadMessage:  false,
 			CreateAt:     time.Time{},
 		})
@@ -126,13 +134,21 @@ func (u *StudentController) ExitProject() {
 
 	project, err := models.GetProjectById(pid)
 	if err == nil {
-		content := fmt.Sprintf("成功退出课程 \"%v\" ", project.ProjectTitle)
 		models.CreateMessage(&models.Message{
 			Id:           util.NewId(),
 			ReceiverId:   uid,
 			MessageType:  "info",
 			MessageTitle: "退出课程",
-			Content:      content,
+			Content:      fmt.Sprintf("成功退出课程 \"%v\" ", project.ProjectTitle),
+			ReadMessage:  false,
+			CreateAt:     time.Time{},
+		})
+		models.CreateMessage(&models.Message{
+			Id:           util.NewId(),
+			ReceiverId:   project.TeacherId,
+			MessageType:  "info",
+			MessageTitle: "退出课程",
+			Content:      fmt.Sprintf("学生 %v 退出课程 \"%v\" ", user.DisplayName, project.ProjectTitle),
 			ReadMessage:  false,
 			CreateAt:     time.Time{},
 		})

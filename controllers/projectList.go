@@ -49,7 +49,7 @@ func (pl *ProjectListController) GetSessionUser() *auth.Claims {
 func (pl *ProjectListController) GetUserProjectList() {
 	orderBy := pl.GetString("orderBy")
 	if orderBy == "" {
-		orderBy = "create_at"
+		orderBy = "update_at"
 	}
 	orderType := pl.GetString("orderType")
 	if orderType == "" {

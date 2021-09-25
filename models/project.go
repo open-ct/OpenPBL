@@ -1,8 +1,8 @@
 package models
 
 import (
+	"OpenPBL/util"
 	"errors"
-	uuid "github.com/satori/go.uuid"
 	"time"
 	"xorm.io/xorm"
 )
@@ -21,6 +21,7 @@ type Project struct {
 	Skills             string    `json:"skills" xorm:"default ''"`
 
 	CreateAt           time.Time `json:"createAt" xorm:"created"`
+	UpdateAt           time.Time `json:"UpdateAt"`
 
 	Closed             bool      `json:"closed" xorm:"default false index"`
 	ClosedAt           time.Time `json:"closedAt"`
@@ -235,7 +236,7 @@ func CloneProject(uid string, pid string) (err error) {
 	var project Project
 	_, err = (&Project{}).GetEngine().ID(pid).Get(&project)
 	project.TeacherId = uid
-	project.Id = uuid.NewV4().String()
+	project.Id = util.NewId()
 	project.Closed = false
 	project.Published = false
 	project.CreateAt = time.Now()
