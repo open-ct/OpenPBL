@@ -35,9 +35,14 @@ class PreviewSection extends React.Component {
     this.getSectionDetail()
     this.getTasks()
     this.getSectionFiles()
+    window.addEventListener("beforeunload", this.saveTime)
   }
 
   componentWillUnmount() {
+    this.saveTime()
+  }
+
+  saveTime = () => {
     if (this.state.learning && this.state.editable) {
       if (this.state.timer != null) {
         clearTimeout(this.state.timer)
@@ -134,7 +139,7 @@ class PreviewSection extends React.Component {
       })
   }
   count = () => {
-    if (this.state.second >= 60) {
+    if (this.state.second >= 59) {
       this.setState({
         second: 0,
         minute: ++this.state.minute

@@ -46,7 +46,7 @@ class EditInfo extends React.PureComponent {
               <Step title="添加章节" style={{marginRight: '20px'}}/>
             </Steps>
             <Divider/>
-            <InfoEditPage pid={pid}/>
+            <InfoEditPage pid={pid} account={this.props.account}/>
           </Card>
         </div>
       </DocumentTitle>

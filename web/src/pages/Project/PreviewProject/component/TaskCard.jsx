@@ -14,7 +14,7 @@ function TaskCard(obj) {
     if (obj.learning && obj.item.taskType === "file") {
       getSubmitFiles()
     }
-  }, [obj.learning])
+  }, [obj.learning, obj.item])
 
   const getSubmitFiles = () => {
     SubmitApi.getSubmitFiles(obj.pid, obj.item.id, obj.item.submit.id)
@@ -116,9 +116,9 @@ function TaskCard(obj) {
         if (res.data.code === 200) {
           message.success(res.data.msg)
           obj.getTasks()
-          getSubmitFiles()
         } else {
           message.error(res.data.msg)
+          getSubmitFiles()
         }
       })
       .catch(e=>{console.log(e)})

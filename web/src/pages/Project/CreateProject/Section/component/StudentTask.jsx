@@ -145,9 +145,9 @@ function StudentTask(obj) {
                   </Popconfirm>
                 </span>
             </p>
-            <Input placeholder="任务标题" value={item.taskTitle} onChange={e => changeTitle(e, index)}/>
+            <Input placeholder="任务标题" value={item.taskTitle} onChange={e => changeTitle(e, index)} onBlur={e=>saveContent(item, index)} />
             <Input.TextArea placeholder="任务描述" value={item.taskIntroduce} onChange={e => changeIntroduce(e, index)}
-                            style={{marginTop: '20px'}}/>
+                            style={{marginTop: '20px'}} onBlur={e=>saveContent(item, index)}/>
             {item.taskType === 'survey' ?
               <Button style={{marginTop: '10px'}} onClick={e => gotoSurvey(item, index)}>查看问卷</Button>
               : null

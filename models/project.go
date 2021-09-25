@@ -10,10 +10,10 @@ import (
 
 type Project struct {
 	Id                 string    `json:"id" xorm:"not null pk"`
-	Image              string    `json:"image" xorm:"longtext"`
+	Image              string    `json:"image"`
 	ProjectTitle       string    `json:"projectTitle"`
-	ProjectIntroduce   string    `json:"projectIntroduce"`
-	ProjectGoal        string    `json:"projectGoal"`
+	ProjectIntroduce   string    `json:"projectIntroduce" xorm:"text"`
+	ProjectGoal        string    `json:"projectGoal" xorm:"text"`
 
 	TeacherId          string    `json:"teacherId" xorm:"index"`
 

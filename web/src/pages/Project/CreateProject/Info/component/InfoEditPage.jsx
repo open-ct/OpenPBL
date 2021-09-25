@@ -6,6 +6,7 @@ import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
 import '../../Outline/index.less'
 import ProjectApi from "../../../../../api/ProjectApi";
 import util from "../../../../component/Util"
+import FileApi from "../../../../../api/FileApi";
 
 function InfoEditPage(obj) {
   const pid = obj.pid
@@ -101,9 +102,9 @@ function InfoEditPage(obj) {
 
   const onUploadImage = (file) => {
     setChange(true)
-
     setLoading(true)
     file = file.file;
+    const index = file.name.lastIndexOf('.');
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
       message.error('只能上传 JPG/PNG 格式文件');
@@ -112,15 +113,17 @@ function InfoEditPage(obj) {
     if (!isLt2M) {
       message.error('图片应当小于 2MB');
     }
-
-    const r = new FileReader();
-    r.addEventListener('load', () => upload(r.result));
-    r.readAsDataURL(file);
-  }
-
-  const upload = (file) => {
-    setImageUrl(file)
-    setLoading(true)
+    const postfix = file.name.substr(index);
+    let filePath = `/openpbl/project/${pid}${postfix}`
+    FileApi.uploadFile("admin", "openpbl", obj.account.name, filePath, file)
+      .then(res=>{
+        if (res.data.status === 'ok') {
+          setImageUrl(res.data.data)
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
   }
 
   const onPreview = file => {
@@ -157,6 +160,8 @@ function InfoEditPage(obj) {
           setTimeout(() => {
             window.location.href = `/home/project/${pid}/outline/edit`
           }, 200)
+        } else {
+          message.error(res.data.msg)
         }
       })
       .catch((e) => {
