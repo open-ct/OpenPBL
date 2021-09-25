@@ -1,6 +1,7 @@
 package models
 
 import (
+	"OpenPBL/util"
 	"github.com/astaxie/beego/toolbox"
 	"time"
 )
@@ -46,6 +47,7 @@ func checkProject() error {
 		Find(&p)
 	for i:=0; i<len(p); i++ {
 		CreateMessage(&Message{
+			Id:           util.NewId(),
 			ReceiverId:   p[i].StudentId,
 			MessageType:  "warn",
 			MessageTitle: "您参加的课程 “" + p[i].ProjectTitle + "” 将于 " +

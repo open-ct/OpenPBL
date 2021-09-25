@@ -5,8 +5,7 @@ import (
 	"github.com/astaxie/beego"
 )
 
-// HomeController
-// Operations about Projects
+
 type HomeController struct {
 	beego.Controller
 }
@@ -17,11 +16,10 @@ type HomeProjectResponse struct {
 }
 
 // GetLatestProjects
-// @Title
-// @Description
-// @Param num path int true ""
+// @Title GetLatestProjects
+// @Description Get latest projects
+// @Param num params int true "Number of items"
 // @Success 200 {object} HomeProjectResponse
-// @Failure 400
 // @router /projects/latest [get]
 func (h *HomeController) GetLatestProjects() {
 	num, err := h.GetInt("num")

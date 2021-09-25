@@ -6,6 +6,7 @@ require (
 	github.com/astaxie/beego v1.12.3
 	github.com/casdoor/casdoor-go-sdk v0.0.9
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/stretchr/testify v1.6.1 // indirect
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect

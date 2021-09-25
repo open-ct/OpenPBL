@@ -53,12 +53,11 @@ type Response struct {
 }
 
 // Login
-// @Title
-// @Description
+// @Title Login
+// @Description User login
 // @Param code body string true	"code"
-// @Param state body string true	"state"
-// @Success 200 {int} models.Teacher.Id
-// @Failure 403 body is empty
+// @Param state body string true "state"
+// @Success 200 {object} Response
 // @router /login [post]
 func (c *AuthController) Login() {
 	code := c.Input().Get("code")
@@ -95,8 +94,8 @@ func (c *AuthController) Login() {
 }
 
 // Logout
-// @Title
-// @Description
+// @Title Logout
+// @Description User logout
 // @Success 200 {object} Response
 // @router /logout [post]
 func (c *AuthController) Logout() {
@@ -111,10 +110,9 @@ func (c *AuthController) Logout() {
 }
 
 // GetAccount
-// @Title
-// @Description
+// @Title GetAccount
+// @Description Get user account
 // @Success 200 {object} Response
-// @Failure 401 {object} Response
 // @router /account [get]
 func (c *AuthController) GetAccount() {
 	var resp Response

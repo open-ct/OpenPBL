@@ -42,7 +42,6 @@ function FileResource(obj) {
   }
   const onUploadFile = file => {
     file = file.file
-
     let f = fileList
     f.push({name: file.name, status: 'uploading'})
     setFileList([...f])
@@ -52,11 +51,14 @@ function FileResource(obj) {
       message.error('不能识别文件类型');
       return
     }
-    if (file.size > 1024 * 1024 * 1024) {
-      message.error('文件不能大于1GB');
+    if (file.size > 1024 * 1024 * 1024 * 10) {
+      message.error('文件不能大于10GB');
       return
     }
-    let filePath = `/openpbl/project${obj.pid}/section${obj.sid}/${file.name}`
+    let name = file.name.substr(0, index)
+    const postfix = file.name.substr(index);
+    let ts = new Date().getTime()
+    let filePath = `/openpbl/resources/${name}${ts}${postfix}`
     FileApi.uploadFile("admin", "openpbl", obj.account.name, filePath, file)
       .then(res=>{
         if (res.data.status === 'ok') {

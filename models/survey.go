@@ -1,19 +1,20 @@
 package models
 
 import (
+	"OpenPBL/util"
 	"xorm.io/xorm"
 )
 
 type Survey struct {
-	Id              int64     `json:"id" xorm:"not null pk autoincr"`
-	TaskId          int64     `json:"taskId" xorm:"not null index"`
+	Id              string     `json:"id" xorm:"not null pk"`
+	TaskId          string     `json:"taskId" xorm:"not null index"`
 
 	SurveyTitle     string    `json:"surveyTitle"`
 	SurveyIntroduce string    `json:"surveyIntroduce"`
 }
 type Question struct {
-	Id              int64     `json:"id" xorm:"not null pk autoincr"`
-	SurveyId        int64     `json:"surveyId" xorm:"not null index"`
+	Id              string     `json:"id" xorm:"not null pk"`
+	SurveyId        string     `json:"surveyId" xorm:"not null index"`
 	QuestionOrder   int       `json:"questionOrder" xorm:"not null index"`
 	QuestionTitle   string    `json:"questionTitle"`
 	QuestionType    string    `json:"questionType"`
@@ -75,7 +76,7 @@ func ExchangeQuestion(id1 string, id2 string) (err error) {
 	return
 }
 
-func DeleteSurvey(tid int64) (err error) {
+func DeleteSurvey(tid string) (err error) {
 	var survey Survey
 	_, err = (&Survey{}).GetEngine().Where("task_id = ?", tid).Get(&survey)
 	suid := survey.Id
@@ -84,11 +85,11 @@ func DeleteSurvey(tid int64) (err error) {
 	return
 }
 
-func CloneSurvey(tid int64, newTid int64) (err error) {
+func CloneSurvey(tid string, newTid string) (err error) {
 	var survey Survey
 	_, err = (&Survey{}).GetEngine().Where("task_id = ?", tid).Get(&survey)
 	suid := survey.Id
-	survey.Id = 0
+	survey.Id = util.NewId()
 	survey.TaskId = newTid
 	_, err = (&Survey{}).GetEngine().Insert(&survey)
 	newSuid := survey.Id
@@ -96,7 +97,7 @@ func CloneSurvey(tid int64, newTid int64) (err error) {
 	err = (&Question{}).GetEngine().Where("survey_id = ?", suid).Find(&questions)
 	for i:=0; i< len(questions); i++ {
 		q := questions[i]
-		q.Id = 0
+		q.Id = util.NewId()
 		q.SurveyId = newSuid
 		q.QuestionCount = ""
 		_, err = (&Question{}).GetEngine().Insert(&q)

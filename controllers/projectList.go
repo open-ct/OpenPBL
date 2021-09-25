@@ -8,8 +8,7 @@ import (
 	"strconv"
 )
 
-// ProjectListController
-// Operations about Projects
+
 type ProjectListController struct {
 	beego.Controller
 }
@@ -35,18 +34,17 @@ func (pl *ProjectListController) GetSessionUser() *auth.Claims {
 }
 
 // GetUserProjectList
-// @Title
-// @Description
-// @Param projectType path string true "editing published closed // learning finished"
-// @Param from query string false "from"
-// @Param size query string false "size"
-// @Param orderBy query string false "orderBy"
-// @Param orderType query string false "orderType"
-// @Param subject query string false ""
-// @Param skill query string false ""
-// @Param text query string false ""
+// @Title GetUserProjectList
+// @Description Get project list
+// @Param projectType path string true "For teacher: editing/published/finished, for student: learning/finished"
+// @Param from query string false "Page number"
+// @Param size query string false "Page size"
+// @Param orderBy query string false "Order by , default UpdateAt"
+// @Param orderType query string false "Order type desc/asc, default desc"
+// @Param subject query string false "Project subjects"
+// @Param skill query string false "Project skills"
+// @Param text query string false "Search key-words"
 // @Success 200 {object} ProjectList
-// @Failure 401
 // @router /:projectType [get]
 func (pl *ProjectListController) GetUserProjectList() {
 	orderBy := pl.GetString("orderBy")
@@ -106,6 +104,5 @@ func (pl *ProjectListController) GetUserProjectList() {
 		Projects: projects,
 	}
 	pl.Data["json"] = data
-
 	pl.ServeJSON()
 }

@@ -1,13 +1,14 @@
 package models
 
 import (
+	"OpenPBL/util"
 	"fmt"
 	"xorm.io/xorm"
 )
 
 type Chapter struct {
-	Id                 int64   `json:"id" xorm:"not null pk autoincr"`
-	ProjectId          int64   `json:"projectId" xorm:"index"`
+	Id                 string   `json:"id" xorm:"not null pk"`
+	ProjectId          string   `json:"projectId" xorm:"index"`
 	ChapterName        string  `json:"chapterName"`
 	ChapterNumber      int     `json:"chapterNumber" xorm:"index"`
 }
@@ -74,7 +75,7 @@ func GetChaptersByPid(pid string, uid string) (outline []Outline, err error) {
 	return
 }
 
-func DeleteProjectChapters(pid int64) (err error) {
+func DeleteProjectChapters(pid string) (err error) {
 	var chapters []Chapter
 	err = (&Chapter{}).GetEngine().Where("project_id = ?", pid).Find(&chapters)
 	for i:=0; i< len(chapters); i++ {
@@ -86,13 +87,13 @@ func DeleteProjectChapters(pid int64) (err error) {
 	return
 }
 
-func CloneProjectChapters(pid int64, newPid int64) (err error) {
+func CloneProjectChapters(pid string, newPid string) (err error) {
 	var chapters []Chapter
 	err = (&Chapter{}).GetEngine().Where("project_id = ?", pid).Find(&chapters)
 	for i:=0; i< len(chapters); i++ {
 		c := chapters[i]
 		cid := c.Id
-		c.Id = 0
+		c.Id = util.NewId()
 		c.ProjectId = newPid
 		_, err = (&Chapter{}).GetEngine().Insert(&c)
 		newCid := c.Id

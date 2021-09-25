@@ -6,7 +6,7 @@ import (
 )
 
 type Message struct {
-	Id            int64    	`json:"id" xorm:"not null pk autoincr"`
+	Id            string    `json:"id" xorm:"not null pk"`
 	ReceiverId    string   	`json:"receiverId" xorm:"index"`
 
 	MessageType   string    `json:"messageType" xorm:"not null index"`  // warn error info
@@ -33,7 +33,7 @@ func (m *Message) Delete() (err error) {
 	return
 }
 
-func ReadMessage(messageId int64, uid string) (err error) {
+func ReadMessage(messageId string, uid string) (err error) {
 	_, err = (&Message{}).GetEngine().
 		ID(messageId).
 		MustCols("read_message").

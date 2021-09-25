@@ -1,12 +1,13 @@
 package models
 
 import (
+	uuid "github.com/satori/go.uuid"
 	"xorm.io/xorm"
 )
 
 type Resource struct {
-	Id                int64   `json:"id" xorm:"not null pk autoincr"`
-	SectionId         int64   `json:"sectionId" xorm:"not null index unique"`
+	Id                string   `json:"id" xorm:"not null pk"`
+	SectionId         string   `json:"sectionId" xorm:"not null index unique"`
 	Content           string  `json:"content" xorm:"longtext"`
 }
 
@@ -30,16 +31,16 @@ func GetResourceById(id string) (r Resource, err error) {
 	return
 }
 
-func DeleteSectionResource(sid int64) (err error) {
+func DeleteSectionResource(sid string) (err error) {
 	_, err = (&Resource{}).GetEngine().Where("section_id = ?", sid).Delete(&Resource{})
 	return
 }
 
-func CloneSectionResource(sid int64, newSid int64) (err error) {
+func CloneSectionResource(sid string, newSid string) (err error) {
 	var resource Resource
 	_, err = (&Resource{}).GetEngine().Where("section_id = ?", sid).Get(&resource)
 	resource.SectionId = newSid
-	resource.Id = 0
+	resource.Id = uuid.NewV4().String()
 	_, err = (&Resource{}).GetEngine().Insert(&resource)
 	return
 }

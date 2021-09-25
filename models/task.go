@@ -1,13 +1,15 @@
 package models
 
 import (
+	"OpenPBL/util"
+	uuid "github.com/satori/go.uuid"
 	"xorm.io/xorm"
 )
 
 type Task struct {
-	Id            int64     `json:"id" xorm:"not null pk autoincr"`
-	SectionId     int64     `json:"sectionId" xorm:"not null index"`
-	ProjectId     int64     `json:"projectId" xorm:"not null index"`
+	Id            string     `json:"id" xorm:"not null pk"`
+	SectionId     string     `json:"sectionId" xorm:"not null index"`
+	ProjectId     string     `json:"projectId" xorm:"not null index"`
 
 	SectionNumber int       `json:"sectionNumber" xorm:"index"`
 	ChapterNumber int       `json:"chapterNumber" xorm:"index"`
@@ -45,6 +47,7 @@ func (t *Task) Create() (err error) {
 	_, err = session.Insert(t)
 	if t.TaskType == "survey" {
 		_, err = session.Insert(Survey{
+			Id:              util.NewId(),
 			TaskId:          t.Id,
 		})
 	}
@@ -192,7 +195,7 @@ func GetProjectTasks(pid string) (t []TaskEvaluate, err error) {
 	return
 }
 
-func DeleteTasks(sid int64) (err error) {
+func DeleteTasks(sid string) (err error) {
 	var tasks []Task
 	err = (&Task{}).GetEngine().Where("section_id = ?", sid).Find(&tasks)
 	for i:=0; i<len(tasks); i++ {
@@ -206,13 +209,13 @@ func DeleteTasks(sid int64) (err error) {
 	return
 }
 
-func CloneTasks(newPid int64, sid int64, newSid int64) (err error) {
+func CloneTasks(newPid string, sid string, newSid string) (err error) {
 	var tasks []Task
 	err = (&Task{}).GetEngine().Where("section_id = ?", sid).Find(&tasks)
 	for i:=0; i<len(tasks); i++ {
 		t := tasks[i]
 		tid := t.Id
-		t.Id = 0
+		t.Id = uuid.NewV4().String()
 		t.ProjectId = newPid
 		t.SectionId = newSid
 		_, err = (&Task{}).GetEngine().Insert(&t)

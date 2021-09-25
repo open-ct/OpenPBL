@@ -10,8 +10,7 @@ import (
 	"time"
 )
 
-// ProjectController
-// Operations about Projects
+
 type ProjectController struct {
 	beego.Controller
 }
@@ -36,17 +35,17 @@ type ProjectResponse struct {
 }
 
 // GetProjectDetail
-// @Title
-// @Description
-// @Param id path string true "project id"
-// @Success 200 {object} models.TeacherProject
-// @Failure 400
-// @router /:id [get]
+// @Title GetProjectDetail
+// @Description Get project detail information
+// @Param projectId path string true "project id"
+// @Success 200 {object} ProjectResponse
+// @router /:projectId [get]
 func (p *ProjectController) GetProjectDetail() {
-	pid, err := p.GetInt64(":id")
+	pid := p.GetString(":projectId")
 	user := p.GetSessionUser()
 	uid := util.GetUserId(user)
 	var project models.ProjectDetail
+	var err error
 	if util.IsStudent(user) {
 		project, err = models.GetProjectByPidForStudent(pid, uid)
 	} else if util.IsTeacher(user) {
@@ -67,12 +66,9 @@ func (p *ProjectController) GetProjectDetail() {
 }
 
 // CreateProject
-// @Title
-// @Description create project
+// @Title CreateProject
+// @Description Create a new project
 // @Success 200 {object} Response
-// @Failure 401
-// @Failure 400
-// @Failure 403
 // @router / [post]
 func (p *ProjectController) CreateProject() {
 	user := p.GetSessionUser()
@@ -88,7 +84,8 @@ func (p *ProjectController) CreateProject() {
 	}
 	uid := util.GetUserId(user)
 	project := &models.Project{
-		TeacherId:        uid,
+		Id:                util.NewId(),
+		TeacherId:         uid,
 		LearnMinuteWeight: 100,
 	}
 	err := project.Create()
@@ -109,12 +106,11 @@ func (p *ProjectController) CreateProject() {
 }
 
 // UpdateProject
-// @Title
+// @Title UpdateProject
 // @Description create project
-// @Param body body models.Project true	""
-// @Success 200 {int} models.Project.Id
-// @Failure 403 body is empty
-// @router /:id [post]
+// @Param projectId path string true "project id"
+// @Success 200 {object} Response
+// @router /:projectId [post]
 func (p *ProjectController) UpdateProject() {
 	user := p.GetSessionUser()
 	var resp Response
@@ -128,16 +124,7 @@ func (p *ProjectController) UpdateProject() {
 		return
 	}
 	uid := util.GetUserId(user)
-	pid, err := p.GetInt64(":id")
-	if err != nil {
-		resp = Response{
-			Code: 400,
-			Msg: err.Error(),
-		}
-		p.Data["json"] = resp
-		p.ServeJSON()
-		return
-	}
+	pid := p.GetString(":projectId")
 
 	var timeLayoutStr = "2006-01-02 15:04:05 -0700 MST"
 	endTime, err := time.Parse(timeLayoutStr, p.GetString("endTime"))
@@ -176,12 +163,11 @@ func (p *ProjectController) UpdateProject() {
 }
 
 // UpdateProjectWeight
-// @Title
-// @Description create project
-// @Param body body models.Project true	""
-// @Success 200 {int} models.Project.Id
-// @Failure 403 body is empty
-// @router /:id/weight [post]
+// @Title UpdateProjectWeight
+// @Description Update project weight
+// @Param projectId path string true "project id"
+// @Success 200 {object} Response
+// @router /:projectId/weight [post]
 func (p *ProjectController) UpdateProjectWeight() {
 	user := p.GetSessionUser()
 	var resp Response
@@ -194,7 +180,7 @@ func (p *ProjectController) UpdateProjectWeight() {
 		p.ServeJSON()
 		return
 	}
-	pid, err := p.GetInt64(":id")
+	pid := p.GetString(":projectId")
 	learnMinuteWeight, err := p.GetInt("learnMinuteWeight")
 
 	if err != nil {
@@ -231,34 +217,31 @@ func (p *ProjectController) UpdateProjectWeight() {
 
 
 // PublishProject
-// @Title
+// @Title PublishProject
 // @Description
-// @Param pid path int true ""
+// @Param projectId path string true "The id of the project"
 // @Success 200 {Response}
-// @Failure 400
-// @Failure 401
-// @Failure 403
-// @router /:id/publish [post]
-func (u *ProjectController) PublishProject() {
-	pid, err := u.GetInt64(":id")
+// @router /:projectId/publish [post]
+func (p *ProjectController) PublishProject() {
+	pid := p.GetString(":projectId")
 	var resp Response
-	user := u.GetSessionUser()
+	user := p.GetSessionUser()
 	if !util.IsTeacher(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法的用户",
 		}
-		u.Data["json"] = resp
-		u.ServeJSON()
+		p.Data["json"] = resp
+		p.ServeJSON()
 		return
 	}
 
-	p := models.Project{
+	project := models.Project{
 		Id:               pid,
 		PublishedAt:      time.Now(),
 		Published:        true,
 	}
-	err = models.UpdatePublished(p)
+	err := models.UpdatePublished(project)
 	if err != nil {
 		resp = Response{
 			Code: 400,
@@ -270,8 +253,8 @@ func (u *ProjectController) PublishProject() {
 			Msg:  "发布成功",
 		}
 	}
-	u.Data["json"] = resp
-	u.ServeJSON()
+	p.Data["json"] = resp
+	p.ServeJSON()
 }
 
 // CloseProject
@@ -279,30 +262,27 @@ func (u *ProjectController) PublishProject() {
 // @Description
 // @Param pid path int true ""
 // @Success 200 {object} Response
-// @Failure 400
-// @Failure 401
-// @Failure 403
-// @router /:id/close [post]
-func (u *ProjectController) CloseProject() {
-	pid, err := u.GetInt64(":id")
+// @router /:projectId/close [post]
+func (p *ProjectController) CloseProject() {
+	pid := p.GetString(":projectId")
 	var resp Response
-	user := u.GetSessionUser()
+	user := p.GetSessionUser()
 	if !util.IsTeacher(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法的用户",
 		}
-		u.Data["json"] = resp
-		u.ServeJSON()
+		p.Data["json"] = resp
+		p.ServeJSON()
 		return
 	}
 
-	p := models.Project{
+	project := models.Project{
 		Id:            pid,
 		ClosedAt:      time.Now(),
 		Closed:        true,
 	}
-	err = models.UpdateClosed(p)
+	err := models.UpdateClosed(project)
 	if err != nil {
 		resp = Response{
 			Code: 400,
@@ -314,8 +294,8 @@ func (u *ProjectController) CloseProject() {
 			Msg:  "结束成功",
 		}
 	}
-	u.Data["json"] = resp
-	u.ServeJSON()
+	p.Data["json"] = resp
+	p.ServeJSON()
 }
 
 // DeleteProject
@@ -326,25 +306,25 @@ func (u *ProjectController) CloseProject() {
 // @Failure 400
 // @Failure 401
 // @Failure 403
-// @router /:id/delete [post]
-func (u *ProjectController) DeleteProject() {
-	pid, err := u.GetInt64(":id")
+// @router /:projectId/delete [post]
+func (p *ProjectController) DeleteProject() {
+	pid := p.GetString(":projectId")
 	var resp Response
-	user := u.GetSessionUser()
+	user := p.GetSessionUser()
 	if !util.IsTeacher(user) {
 		resp = Response{
 			Code: 403,
 			Msg:  "非法的用户",
 		}
-		u.Data["json"] = resp
-		u.ServeJSON()
+		p.Data["json"] = resp
+		p.ServeJSON()
 		return
 	}
 
-	p := models.Project{
+	project := models.Project{
 		Id:            pid,
 	}
-	err = p.Delete()
+	err := project.Delete()
 	if err != nil {
 		resp = Response{
 			Code: 400,
@@ -356,8 +336,8 @@ func (u *ProjectController) DeleteProject() {
 			Msg:  "删除成功",
 		}
 	}
-	u.Data["json"] = resp
-	u.ServeJSON()
+	p.Data["json"] = resp
+	p.ServeJSON()
 }
 
 // RemoveStudent
@@ -367,33 +347,33 @@ func (u *ProjectController) DeleteProject() {
 // @Success 200 {object} Response
 // @Failure 401
 // @router /:projectId/remove/:studentId [post]
-func (u *ProjectController) RemoveStudent() {
-	pid, err := u.GetInt64(":projectId")
-	sid := u.GetString(":studentId")
+func (p *ProjectController) RemoveStudent() {
+	pid := p.GetString(":projectId")
+	sid := p.GetString(":studentId")
 	var resp Response
 	l := &models.LearnProject{
 		StudentId: sid,
 		ProjectId: pid,
 	}
-	err = l.Delete()
+	err := l.Delete()
 	if err != nil {
 		resp = Response{
 			Code: 400,
 			Msg:  err.Error(),
 		}
-		u.Data["json"] = resp
+		p.Data["json"] = resp
 	} else {
 		resp = Response{
 			Code: 200,
 			Msg:  "移除成功",
 		}
 	}
-	u.Data["json"] = resp
-	u.ServeJSON()
+	p.Data["json"] = resp
+	p.ServeJSON()
 }
 
 
-func getProjectSubjectsAndSkills(pid int64, subjects string, skills string) (subjectList []*models.ProjectSubject, skillList []*models.ProjectSkill, err error) {
+func getProjectSubjectsAndSkills(pid string, subjects string, skills string) (subjectList []*models.ProjectSubject, skillList []*models.ProjectSkill, err error) {
 	var (
 		subjectL []string
 		skillL   []string
@@ -477,9 +457,9 @@ func (p *ProjectController) GetProjectStudents() {
 // @Failure 401
 // @router /:projectId/favourite/add [post]
 func (p *ProjectController) AddFavouriteProject() {
-	pid, err := p.GetInt64(":projectId")
+	pid := p.GetString(":projectId")
 	uid := util.GetUserId(p.GetSessionUser())
-	err = models.AddFavourite(uid, pid)
+	err := models.AddFavourite(uid, pid)
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -496,14 +476,13 @@ func (p *ProjectController) AddFavouriteProject() {
 // RemoveFavouriteProject
 // @Title
 // @Description
-// @Param projectId path string true ""
+// @Param projectId path string true "project id"
 // @Success 200 {object} Response
-// @Failure 401
 // @router /:projectId/favourite/remove [post]
 func (p *ProjectController) RemoveFavouriteProject() {
-	pid, err := p.GetInt64(":projectId")
+	pid := p.GetString(":projectId")
 	uid := util.GetUserId(p.GetSessionUser())
-	err = models.RemoveFavourite(uid, pid)
+	err := models.RemoveFavourite(uid, pid)
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -527,10 +506,8 @@ type SubjectsAndSkillsResponse struct {
 // GetProjectSubjectsAndSkills
 // @Title
 // @Description
-// @Param id path string true "project id"
-// @Success 200 {object} models.TeacherProject
-// @Failure 400
-// @router /:id/subjects-skills [get]
+// @Success 200 {object} SubjectsAndSkillsResponse
+// @router /:projectId/subjects-skills [get]
 func (p *ProjectController) GetProjectSubjectsAndSkills() {
 	subjects, err := models.GetSubjects()
 	skills, err := models.GetSkills()
@@ -550,14 +527,12 @@ func (p *ProjectController) GetProjectSubjectsAndSkills() {
 
 // ViewProject
 // @Title
-// @Description create project
+// @Description View a project
+// @Param id path string true "project id"
 // @Success 200 {object} Response
-// @Failure 401
-// @Failure 400
-// @Failure 403
-// @router /:id/view [post]
+// @router /:projectId/view [post]
 func (p *ProjectController) ViewProject() {
-	pid := p.GetString(":id")
+	pid := p.GetString(":projectId")
 	err := models.ViewProject(pid)
 	if err != nil {
 		p.Data["json"] = Response{
@@ -573,17 +548,15 @@ func (p *ProjectController) ViewProject() {
 }
 
 // CloneProject
-// @Title
-// @Description create project
+// @Title CloneProject
+// @Description Clone project
+// @Param projectId path string true "The id of the project"
 // @Success 200 {object} Response
-// @Failure 401
-// @Failure 400
-// @Failure 403
-// @router /:id/clone [post]
+// @router /:projectId/clone [post]
 func (p *ProjectController) CloneProject() {
-	pid, err := p.GetInt64(":id")
+	pid := p.GetString(":projectId")
 	uid := util.GetUserId(p.GetSessionUser())
-	err = models.CloneProject(uid, pid)
+	err := models.CloneProject(uid, pid)
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,

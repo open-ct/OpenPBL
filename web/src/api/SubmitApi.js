@@ -23,6 +23,9 @@ const SubmitApi = {
     })
   },
   uploadSubmitFile(pid, tid, sid, data) {
+    if (sid === "") {
+      sid = "0"
+    }
     return request({
       url: `/project/${pid}/task/${tid}/submit/${sid}/file`,
       method: 'post',

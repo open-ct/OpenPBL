@@ -4,16 +4,16 @@ import (
 	"OpenPBL/models"
 	"OpenPBL/util"
 	"encoding/json"
-	"strconv"
 	"time"
 )
 
 // CreateSubmit
-// @Title
+// @Title CreateSubmit
 // @Description
-// @Param body body models.Submit true ""
-// @Success 200 {object}
-// @Failure 403 body is empty
+// @Param taskId path string true "The id of the task"
+// @Param projectId path string true "The id of the project"
+// @Param submitType body string true "The type of submit (survey, file, comment)"
+// @Success 200 {object} Response
 // @router /:projectId/task/:taskId/submit [post]
 func (p *ProjectController) CreateSubmit() {
 	var resp Response
@@ -28,10 +28,11 @@ func (p *ProjectController) CreateSubmit() {
 		return
 	}
 	uid := util.GetUserId(user)
-	tid, err := p.GetInt64(":taskId")
-	pid, err := p.GetInt64(":projectId")
+	tid := p.GetString(":taskId")
+	pid := p.GetString(":projectId")
 
 	submit := &models.Submit{
+		Id:              util.NewId(),
 		ProjectId:       pid,
 		StudentId:       uid,
 		TaskId:          tid,
@@ -49,9 +50,9 @@ func (p *ProjectController) CreateSubmit() {
 	}
 	var c = make([]models.Choice, 0)
 	if submit.SubmitType == "survey" {
-		err = json.Unmarshal([]byte(p.GetString("choices")), &c)
+		_ = json.Unmarshal([]byte(p.GetString("choices")), &c)
 	}
-	err = submit.Create(c)
+	err := submit.Create(c)
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -61,18 +62,20 @@ func (p *ProjectController) CreateSubmit() {
 		p.Data["json"] = Response{
 			Code: 200,
 			Msg:  "提交成功",
-			Data: strconv.FormatInt(submit.Id, 10),
+			Data: submit.Id,
 		}
 	}
 	p.ServeJSON()
 }
 
 // UploadSubmitFile
-// @Title
+// @Title UploadSubmitFile
 // @Description
-// @Param filePath body string true ""
-// @Success 200 {object} models.TeacherProject
-// @Failure 400
+// @Param projectId path string true "The id of the project"
+// @Param taskId path string true "The id of the task"
+// @Param submitId path string true "The id of the submit"
+// @Param filePath body string true "The file path"
+// @Success 200 {object} Response
 // @router /:projectId/task/:taskId/submit/:submitId/file [post]
 func (p *ProjectController) UploadSubmitFile() {
 	user := p.GetSessionUser()
@@ -84,33 +87,32 @@ func (p *ProjectController) UploadSubmitFile() {
 		p.ServeJSON()
 		return
 	}
-	uid := util.GetUserId(user)
-	tid, err := p.GetInt64(":taskId")
-	pid, err := p.GetInt64(":projectId")
 	url := p.GetString("url")
 	fileName := p.GetString("name")
 	filePath := p.GetString("filePath")
-	sid, err := p.GetInt64(":submitId")
-	if sid == 0 {
+	sid := p.GetString(":submitId")
+	if sid == "0" {
 		submit := &models.Submit{
-			ProjectId:       pid,
-			StudentId:       uid,
-			TaskId:          tid,
+			Id:              util.NewId(),
+			ProjectId:       p.GetString(":projectId"),
+			StudentId:       util.GetUserId(user),
+			TaskId:          p.GetString(":taskId"),
 			SubmitType:      "file",
 			CreateAt:        time.Now(),
 			Scored:          false,
 			Score:           0,
 		}
-		err = submit.Create(make([]models.Choice, 0))
+		_ = submit.Create(make([]models.Choice, 0))
 		sid = submit.Id
 	}
 	r := &models.SubmitFile{
+		Id:         util.NewId(),
 		SubmitId:   sid,
 		Name:       fileName,
 		FilePath:   filePath,
 		Url:        url,
 	}
-	err = r.Create()
+	err := r.Create()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -126,11 +128,14 @@ func (p *ProjectController) UploadSubmitFile() {
 }
 
 // UpdateSubmitFile
-// @Title
+// @Title UpdateSubmitFile
 // @Description
-// @Param filePath body string true ""
-// @Success 200 {object} models.TeacherProject
-// @Failure 400
+// @Param projectId path string true "The id of the project"
+// @Param taskId path string true "The id of the task"
+// @Param submitId path string true "The id of the submit"
+// @Param fileId path string true "The id of the file"
+// @Param filePath body string true "The path of the file"
+// @Success 200 {object} Response
 // @router /:projectId/task/:taskId/submit/:submitId/file/:fileId/update [post]
 func (p *ProjectController) UpdateSubmitFile() {
 	user := p.GetSessionUser()
@@ -144,17 +149,15 @@ func (p *ProjectController) UpdateSubmitFile() {
 	}
 	url := p.GetString("url")
 	fileName := p.GetString("name")
-	sid, err := p.GetInt64(":submitId")
-	fid, err := p.GetInt64(":fileId")
 	filePath := p.GetString("filePath")
 	r := &models.SubmitFile{
-		Id:         fid,
-		SubmitId:   sid,
+		Id:         p.GetString(":fileId"),
+		SubmitId:   p.GetString(":submitId"),
 		Name:       fileName,
 		FilePath:   filePath,
 		Url:        url,
 	}
-	err = r.Update()
+	err := r.Update()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -170,11 +173,14 @@ func (p *ProjectController) UpdateSubmitFile() {
 }
 
 // DeleteSubmitFile
-// @Title
+// @Title DeleteSubmitFile
 // @Description
-// @Param filePath body string true ""
-// @Success 200 {object} models.TeacherProject
-// @Failure 400
+// @Param projectId path string true "The id of the project"
+// @Param taskId path string true "The id of the task"
+// @Param submitId path string true "The id of the submit"
+// @Param fileId path string true "The id of the file"
+// @Param filePath body string true "The path of the file"
+// @Success 200 {object} Response
 // @router /:projectId/task/:taskId/submit/:submitId/file/:fileId/delete [post]
 func (p *ProjectController) DeleteSubmitFile() {
 	user := p.GetSessionUser()
@@ -203,11 +209,12 @@ func (p *ProjectController) DeleteSubmitFile() {
 }
 
 // UpdateSubmit
-// @Title
+// @Title UpdateSubmit
 // @Description
-// @Param body body models.Submit true ""
-// @Success 200 {object}
-// @Failure 403 body is empty
+// @Param projectId path string true "The id of the project"
+// @Param taskId path string true "The id of the task"
+// @Param submitId path string true "The id of the submit"
+// @Success 200 {object} Response
 // @router /:projectId/task/:taskId/submit/:submitId [post]
 func (p *ProjectController) UpdateSubmit() {
 	user := p.GetSessionUser()
@@ -215,9 +222,9 @@ func (p *ProjectController) UpdateSubmit() {
 	if util.IsStudent(user) {
 		uid = util.GetUserId(user)
 	}
-	tid, err := p.GetInt64(":taskId")
-	sid, err := p.GetInt64(":submitId")
-	pid, err := p.GetInt64(":projectId")
+	tid := p.GetString(":taskId")
+	sid := p.GetString(":submitId")
+	pid := p.GetString(":projectId")
 	score, err := p.GetInt("score")
 	scored, err := p.GetBool("scored")
 	f := &models.Submit{
@@ -254,11 +261,12 @@ func (p *ProjectController) UpdateSubmit() {
 
 
 // GetSubmitFiles
-// @Title
+// @Title GetSubmitFiles
 // @Description
-// @Param body body models.Submit true ""
+// @Param projectId path string true "The id of the project"
+// @Param taskId path string true "The id of the task"
+// @Param submitId path string true "The id of the submit"
 // @Success 200 {object}
-// @Failure 403 body is empty
 // @router /:projectId/task/:taskId/submit/:submitId/files [get]
 func (p *ProjectController) GetSubmitFiles() {
 	sid := p.GetString(":submitId")

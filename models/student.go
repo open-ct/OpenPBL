@@ -1,7 +1,6 @@
 package models
 
 import (
-	"strconv"
 	"time"
 	"xorm.io/xorm"
 )
@@ -10,14 +9,14 @@ type LearnProject struct {
 	Avatar     string    `json:"avatar" xorm:"text"`
 	Name       string    `json:"name"`
 	StudentId  string    `json:"studentId" xorm:"not null index pk"`
-	ProjectId  int64     `json:"projectId" xorm:"not null index pk"`
+	ProjectId  string    `json:"projectId" xorm:"not null index pk"`
 	Learning   bool      `json:"learning" xorm:"index default 0"`
 	JoinTime   time.Time `json:"joinTime" xorm:"created"`
 }
 
 type LearnSection struct {
 	StudentId     string    `json:"studentId" xorm:"not null pk"`
-	SectionId     int64     `json:"sectionId" xorm:"not null pk"`
+	SectionId     string    `json:"sectionId" xorm:"not null pk"`
 
 	LearnMinute   int       `json:"learnMinute" xorm:"default 0"`
 	LearnSecond   int       `json:"learnSecond" xorm:"default 0"`
@@ -25,14 +24,14 @@ type LearnSection struct {
 
 type LastLearn struct {
 	StudentId     string    `json:"studentId" xorm:"not null pk"`
-	ProjectId     int64     `json:"projectId" xorm:"not null pk"`
-	SectionId     int64     `json:"sectionId" xorm:"not null index"`
+	ProjectId     string    `json:"projectId" xorm:"not null pk"`
+	SectionId     string    `json:"sectionId" xorm:"not null index"`
 	ExitAt        time.Time `json:"exitAt" xorm:"updated"`
 }
 
 type LastLearnSection struct {
 	LastLearn             `xorm:"extends"`
-	Id            int64   `json:"id"`
+	Id            string  `json:"id"`
 	SectionName   string  `json:"sectionName"`
 	ChapterNumber int     `json:"chapterNumber"`
 	SectionNumber int     `json:"sectionNumber"`
@@ -77,10 +76,9 @@ func (l *LearnProject) Delete() (err error) {
 
 func IsLearningProject(pid string, uid string) (e bool) {
 	var err error
-	id, err := strconv.ParseInt(pid, 10, 64)
 	e, err = (&LearnProject{}).GetEngine().Exist(&LearnProject{
 		StudentId: uid,
-		ProjectId: id,
+		ProjectId: pid,
 		Learning:  true,
 	})
 	if err != nil {
@@ -101,7 +99,7 @@ func GetProjectStudents(pid string, from int, size int) (s []LearnProject, rows 
 	return
 }
 
-func GetLearnSection(sectionId int64, studentId string, projectId int64) (l LearnSection, err error) {
+func GetLearnSection(sectionId string, studentId string, projectId string) (l LearnSection, err error) {
 	var b bool
 	b, err = (&LearnSection{}).GetEngine().
 		Where("section_id = ?", sectionId).
@@ -130,7 +128,7 @@ func GetLastLearnSection(studentId string, projectId string) (l LastLearnSection
 	return
 }
 
-func (l *LearnSection) Create(projectId int64) (err error) {
+func (l *LearnSection) Create(projectId string) (err error) {
 	_, err = (&LearnSection{}).GetEngine().Insert(l)
 	_, err = (&LastLearn{}).GetEngine().Insert(&LastLearn{
 		StudentId: l.StudentId,
@@ -140,7 +138,7 @@ func (l *LearnSection) Create(projectId int64) (err error) {
 	})
 	return
 }
-func (l *LearnSection) Update(projectId int64) (err error) {
+func (l *LearnSection) Update(projectId string) (err error) {
 	_, err = (&LearnSection{}).GetEngine().
 		Where("student_id = ?", l.StudentId).
 		Where("section_id = ?", l.SectionId).

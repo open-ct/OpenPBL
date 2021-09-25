@@ -1,6 +1,7 @@
 package models
 
 import (
+	"OpenPBL/util"
 	"strconv"
 	"strings"
 	"time"
@@ -8,11 +9,11 @@ import (
 )
 
 type Submit struct {
-	Id              int64     `json:"id" xorm:"not null pk autoincr"`
+	Id              string    `json:"id" xorm:"not null pk"`
 
-	ProjectId       int64     `json:"projectId" xorm:"not null index"`
+	ProjectId       string    `json:"projectId" xorm:"not null index"`
 	StudentId       string    `json:"studentId" xorm:"not null index"`
-	TaskId          int64     `json:"taskId" xorm:"not null index"`
+	TaskId          string    `json:"taskId" xorm:"not null index"`
 
 	SubmitType      string    `json:"submitType" xorm:"index"`
 
@@ -27,17 +28,17 @@ type Submit struct {
 }
 
 type SubmitFile struct {
-	Id        int64    `json:"id" xorm:"not null pk autoincr"`
-	SubmitId  int64    `json:"submitId" xorm:"not null index"`
+	Id        string   `json:"id" xorm:"not null pk"`
+	SubmitId  string   `json:"submitId" xorm:"not null index"`
 	FilePath  string   `json:"filePath"`
 	Name      string   `json:"name"`
 	Url       string   `json:"url"`
 }
 
 type Choice struct {
-	Id            int64     `json:"id" xorm:"not null pk autoincr"`
-	SubmitId      int64     `json:"submitId" xorm:"not null index"`
-	QuestionId    int64     `json:"questionId" xorm:"not null index"`
+	Id            string    `json:"id" xorm:"not null pk"`
+	SubmitId      string    `json:"submitId" xorm:"not null index"`
+	QuestionId    string    `json:"questionId" xorm:"not null index"`
 	ChoiceOrder   int       `json:"choiceOrder"`
 	ChoiceOptions string    `json:"choiceOptions" xorm:"text"`
 }
@@ -45,7 +46,7 @@ type Choice struct {
 type SubmitDetail struct {
 	Submit             `json:"submit" xorm:"extends"`
 	Choices   []Choice `json:"choices" xorm:"extends"`
-	Submitted  bool     `json:"submitted"`
+	Submitted  bool    `json:"submitted"`
 }
 
 func (p *Submit) GetEngine() *xorm.Session {
@@ -93,6 +94,7 @@ func (p *Submit) Create(c []Choice) (err error) {
 	if p.SubmitType == "survey" {
 		for i := 0; i < len(c); i ++ {
 			ci := &Choice{
+				Id:            util.NewId(),
 				SubmitId:      p.Id,
 				QuestionId:    c[i].QuestionId,
 				ChoiceOrder:   c[i].ChoiceOrder,

@@ -11,10 +11,10 @@ function TaskCard(obj) {
   const [fileList, setFileList] = useState([])
 
   useEffect(()=>{
-    if (obj.item.taskType === "file") {
+    if (obj.learning && obj.item.taskType === "file") {
       getSubmitFiles()
     }
-  }, [])
+  }, [obj.learning])
 
   const getSubmitFiles = () => {
     SubmitApi.getSubmitFiles(obj.pid, obj.item.id, obj.item.submit.id)
@@ -78,7 +78,6 @@ function TaskCard(obj) {
   }
   const onUploadFile = file => {
     file = file.file
-
     let f = fileList
     f.push({name: file.name, status: 'uploading'})
     setFileList([...f])
@@ -91,7 +90,10 @@ function TaskCard(obj) {
       message.error('文件不能大于1GB');
       return
     }
-    let filePath = `/openpbl/project${obj.pid}/task${obj.item.id}/${obj.studentId}/${file.name}`
+    let name = file.name.substr(0, index)
+    const postfix = file.name.substr(index);
+    let ts = new Date().getTime()
+    let filePath = `/openpbl/${obj.studentId}/${name}-${ts}${postfix}`
     FileApi.uploadFile("admin", "openpbl", obj.studentId, filePath, file)
       .then(res=>{
         if (res.data.status === 'ok') {

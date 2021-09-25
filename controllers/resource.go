@@ -2,18 +2,20 @@ package controllers
 
 import (
 	"OpenPBL/models"
+	"OpenPBL/util"
 )
 
 
 // GetResource
-// @Title
+// @Title GetResource
 // @Description
-// @Param id path string true ""
+// @Param projectId path string true "The id of the project"
+// @Param resourceId path string true "The id of the resource"
 // @Success 200 {object} models.Resource
 // @router /:projectId/resource/:resourceId [get]
 func (p *ProjectController) GetResource() {
 	var err error
-	rid := p.GetString(":id")
+	rid := p.GetString(":resourceId")
 	resource, err := models.GetResourceById(rid)
 	if err != nil {
 		p.Data["json"] = map[string]models.Resource{"resource": {}}
@@ -24,19 +26,21 @@ func (p *ProjectController) GetResource() {
 }
 
 // CreateResource
-// @Title
+// @Title CreateResource
 // @Description
-// @Param body body models.Resource true ""
-// @Success 200 {object} models.TeacherProject
-// @Failure 400
+// @Param projectId path string true "The id of the project"
+// @Param sectionId body string true "The id of the section"
+// @Param content body string true "The content of the resource"
+// @Success 200 {object} Response
 // @router /:projectId/resource [post]
 func (p *ProjectController) CreateResource() {
-	s, err := p.GetInt64("sectionId")
+	s := p.GetString("sectionId")
 	resource := &models.Resource{
+		Id:                util.NewId(),
 		SectionId:         s,
-		Content:           p.GetString("Content"),
+		Content:           p.GetString("content"),
 	}
-	err = resource.Create()
+	err := resource.Create()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -53,21 +57,20 @@ func (p *ProjectController) CreateResource() {
 }
 
 // UpdateResource
-// @Title
+// @Title UpdateResource
 // @Description
-// @Param body body models.Resource true ""
-// @Success 200 {object} models.TeacherProject
-// @Failure 400
+// @Param resourceId path string true "The id of the resource"
+// @Param sectionId body string true "The id of the section"
+// @Success 200 {object} Response
 // @router /:projectId/resource/:resourceId [post]
 func (p *ProjectController) UpdateResource() {
-	s, err := p.GetInt64("sectionId")
-	id, err := p.GetInt64(":resourceId")
+	id := p.GetString(":resourceId")
 	resource := &models.Resource{
 		Id:                id,
-		SectionId:         s,
+		SectionId:         p.GetString("sectionId"),
 		Content:           p.GetString("content"),
 	}
-	err = resource.Update()
+	err := resource.Update()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -83,20 +86,19 @@ func (p *ProjectController) UpdateResource() {
 }
 
 // UpdateResourceContent
-// @Title
+// @Title UpdateResourceContent
 // @Description
-// @Param id path string true ""
+// @Param projectId path string true "The id of the project"
+// @Param resourceId path string true "The id of the resource"
 // @Param content body string true ""
 // @Success 200 {object} models.TeacherProject
-// @Failure 400
 // @router /:projectId/resource/:resourceId/content [post]
 func (p *ProjectController) UpdateResourceContent() {
-	id, err := p.GetInt64(":resourceId")
 	resource := &models.Resource{
-		Id:      id,
+		Id:      p.GetString(":resourceId"),
 		Content: p.GetString("content"),
 	}
-	err = resource.Update()
+	err := resource.Update()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,

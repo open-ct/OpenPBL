@@ -4,8 +4,8 @@ import (
 	"OpenPBL/models"
 	"OpenPBL/util"
 	"encoding/json"
-	"strconv"
 )
+
 
 type SectionResponse struct {
 	Response
@@ -13,12 +13,11 @@ type SectionResponse struct {
 }
 
 // GetSectionDetail
-// @Title
+// @Title GetSectionDetail
 // @Description
-// @Param sid path string true ""
-// @Param pid path string true ""
-// @Success 200 {object}
-// @Failure 403 body is empty
+// @Param projectId path string true "The id of the project"
+// @Param sectionId path string true "The id of the section"
+// @Success 200 {object} SectionResponse
 // @router /:projectId/section/:sectionId [get]
 func (p *ProjectController) GetSectionDetail() {
 	sid := p.GetString(":sectionId")
@@ -43,12 +42,11 @@ func (p *ProjectController) GetSectionDetail() {
 }
 
 // GetSectionFiles
-// @Title
+// @Title GetSectionFiles
 // @Description
-// @Param sectionId path string true ""
-// @Param projectId path string true ""
-// @Success 200 {object}
-// @Failure 403 body is empty
+// @Param sectionId path string true "The id of the section"
+// @Param projectId path string true "The id of the project"
+// @Success 200 {object} Response
 // @router /:projectId/section/:sectionId/files [get]
 func (p *ProjectController) GetSectionFiles() {
 	sid := p.GetString(":sectionId")
@@ -68,21 +66,19 @@ func (p *ProjectController) GetSectionFiles() {
 }
 
 // GetChapterSections
-// @Title
+// @Title GetChapterSections
 // @Description
-// @Param cid path string true "chapter id"
+// @Param projectId path string true "The id of the project"
+// @Param chapterId path string true "The id of the chapter"
 // @Success 200 {object} []models.Section
-// @Failure 403 body is empty
 // @router /:projectId/chapter/:chapterId/sections [get]
 func (p *ProjectController) GetChapterSections() {
 	cid := p.GetString(":chapterId")
-	if cid != "" {
-		sections, err := models.GetSectionsByCid(cid)
-		if err != nil {
-			p.Data["json"] = map[string][]models.Section{"sections": nil}
-		} else {
-			p.Data["json"] = map[string][]models.Section{"sections": sections}
-		}
+	sections, err := models.GetSectionsByCid(cid)
+	if err != nil {
+		p.Data["json"] = map[string][]models.Section{"sections": nil}
+	} else {
+		p.Data["json"] = map[string][]models.Section{"sections": sections}
 	}
 	p.ServeJSON()
 }
@@ -90,20 +86,21 @@ func (p *ProjectController) GetChapterSections() {
 // CreateChapterSection
 // @Title
 // @Description
-// @Param body body models.Section true ""
+// @Param projectId path string true "The id of the project"
+// @Param chapterId path string true "The id of the chapter"
 // @Success 200 {object}
 // @Failure 403 body is empty
 // @router /:projectId/chapter/:chapterId/section [post]
 func (p *ProjectController) CreateChapterSection() {
-	cid, err := p.GetInt64(":chapterId")
 	sectionNumber, err := p.GetInt("sectionNumber")
 	chapterNumber, err := p.GetInt("chapterNumber")
 	section := &models.Section{
-		ChapterId:        cid,
+		Id:               util.NewId(),
+		ChapterId:        p.GetString(":chapterId"),
 		SectionName:      p.GetString("sectionName"),
 		SectionNumber:    sectionNumber,
 		ChapterNumber:    chapterNumber,
-		SectionMinute:    1,
+		SectionMinute:    10,
 	}
 	if err != nil {
 		p.Data["json"] = Response{
@@ -121,32 +118,32 @@ func (p *ProjectController) CreateChapterSection() {
 		p.Data["json"] = Response{
 			Code: 200,
 			Msg:  "创建成功",
-			Data: strconv.FormatInt(section.Id, 10),
+			Data: section.Id,
 		}
 	}
 	p.ServeJSON()
 }
 
 // UpdateChapterSection
-// @Title
+// @Title UpdateChapterSection
 // @Description
-// @Param body body models.Section true ""
+// @Param projectId path string true "The id of the project"
+// @Param chapterId path string true "The id of the chapter"
+// @Param sectionId path string true "The id of the section"
 // @Success 200 {object}
 // @Failure 401
 // @router /:projectId/chapter/:chapterId/section/:sectionId [post]
 func (p *ProjectController) UpdateChapterSection() {
-	sid, err := p.GetInt64(":sectionId")
-	cid, err := p.GetInt64(":chapterId")
-	sectionNumber, err := p.GetInt("sectionNumber")
-	chapterNumber, err := p.GetInt("chapterNumber")
+	sectionNumber, _ := p.GetInt("sectionNumber")
+	chapterNumber, _ := p.GetInt("chapterNumber")
 	section := &models.Section{
-		Id:               sid,
-		ChapterId:        cid,
+		Id:               p.GetString(":sectionId"),
+		ChapterId:        p.GetString(":chapterId"),
 		SectionName:      p.GetString("sectionName"),
 		SectionNumber:    sectionNumber,
 		ChapterNumber:    chapterNumber,
 	}
-	err = section.Update()
+	err := section.Update()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -163,20 +160,19 @@ func (p *ProjectController) UpdateChapterSection() {
 }
 
 // DeleteChapterSection
-// @Title
+// @Title DeleteChapterSection
 // @Description
-// @Param sid path string true ""
-// @Success 200 {object}
-// @Failure 401
+// @Param projectId path string true "The id of the project"
+// @Param chapterId path string true "The id of the chapter"
+// @Param sectionId path string true "The id of the section"
+// @Success 200 {object} Response
 // @router /:projectId/chapter/:chapterId/section/:sectionId/delete [post]
 func (p *ProjectController) DeleteChapterSection() {
-	sid, err := p.GetInt64(":sectionId")
-	cid, err := p.GetInt64(":chapterId")
 	sectionNumber, err := p.GetInt("sectionNumber")
 	chapterNumber, err := p.GetInt("chapterNumber")
 	section := &models.Section{
-		Id:               sid,
-		ChapterId:        cid,
+		Id:               p.GetString(":sectionId"),
+		ChapterId:        p.GetString(":chapterId"),
 		SectionName:      p.GetString("sectionName"),
 		SectionNumber:    sectionNumber,
 		ChapterNumber:    chapterNumber,
@@ -198,11 +194,11 @@ func (p *ProjectController) DeleteChapterSection() {
 }
 
 // ExchangeChapterSection
-// @Title
+// @Title ExchangeChapterSection
 // @Description
-// @Param sid path string true ""
-// @Success 200 {object}
-// @Failure 401
+// @Param projectId path string true "The id of the project"
+// @Param chapterId path string true "The id of the chapter"
+// @Success 200 {object} Response
 // @router /:projectId/chapter/:chapterId/sections/exchange [post]
 func (p *ProjectController) ExchangeChapterSection() {
 	sid1 := p.GetString("sectionId1")
@@ -223,11 +219,11 @@ func (p *ProjectController) ExchangeChapterSection() {
 }
 
 // UpdateSectionsMinute
-// @Title
+// @Title UpdateSectionsMinute
 // @Description
-// @Param body body []models.Section true ""
-// @Success 200 {object}
-// @Failure 401
+// @Param projectId path string true "The id of the project"
+// @Param sections body []string true "The sections of the project"
+// @Success 200 {object} Response
 // @router /:projectId/sections-minute [post]
 func (p *ProjectController) UpdateSectionsMinute() {
 	sections := make([]models.Section, 0)
@@ -249,11 +245,13 @@ func (p *ProjectController) UpdateSectionsMinute() {
 }
 
 // UploadSectionFile
-// @Title
+// @Title UploadSectionFile
 // @Description
-// @Param filePath body string true ""
-// @Success 200 {object} models.TeacherProject
-// @Failure 400
+// @Param sectionId path string true "The id of the section"
+// @Param name body string true "The name of the file"
+// @Param filePath body string true "The path of the file"
+// @Param url body string true "The url of the file"
+// @Success 200 {object} Response
 // @router /:projectId/section/:sectionId/file [post]
 func (p *ProjectController) UploadSectionFile() {
 	user := p.GetSessionUser()
@@ -265,18 +263,14 @@ func (p *ProjectController) UploadSectionFile() {
 		p.ServeJSON()
 		return
 	}
-	sid, err := p.GetInt64(":sectionId")
-	name := p.GetString("name")
-	url := p.GetString("url")
-	filePath := p.GetString("filePath")
 	r := &models.SectionFile{
-		SectionId:  sid,
-		Name:       name,
-		FilePath:   filePath,
-		Url:        url,
+		Id:         util.NewId(),
+		SectionId:  p.GetString(":sectionId"),
+		Name:       p.GetString("name"),
+		FilePath:   p.GetString("filePath"),
+		Url:        p.GetString("url"),
 	}
-	err = r.Create()
-
+	err := r.Create()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -293,11 +287,14 @@ func (p *ProjectController) UploadSectionFile() {
 }
 
 // UpdateSectionFile
-// @Title
+// @Title UpdateSectionFile
 // @Description
-// @Param filePath body string true ""
+// @Param fileId body string true "The id of the file"
+// @Param sectionId body string true "The section id"
+// @Param name body string true "The name of the file"
+// @Param filePath body string true "The path of the file"
+// @Param url body string true "The url of the file"
 // @Success 200 {object} models.TeacherProject
-// @Failure 400
 // @router /:projectId/section/:sectionId/file/:fileId/update [post]
 func (p *ProjectController) UpdateSectionFile() {
 	user := p.GetSessionUser()
@@ -309,19 +306,14 @@ func (p *ProjectController) UpdateSectionFile() {
 		p.ServeJSON()
 		return
 	}
-	sid, err := p.GetInt64(":sectionId")
-	fileId, err := p.GetInt64(":fileId")
-	name := p.GetString("name")
-	url := p.GetString("url")
-	filePath := p.GetString("filePath")
 	r := &models.SectionFile{
-		Id:         fileId,
-		SectionId:  sid,
-		Name:       name,
-		FilePath:   filePath,
-		Url:        url,
+		Id:         p.GetString(":fileId"),
+		SectionId:  p.GetString(":sectionId"),
+		Name:       p.GetString("name"),
+		FilePath:   p.GetString("filePath"),
+		Url:        p.GetString("url"),
 	}
-	err = r.Update()
+	err := r.Update()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -338,11 +330,12 @@ func (p *ProjectController) UpdateSectionFile() {
 }
 
 // DeleteSectionFile
-// @Title
+// @Title DeleteSectionFile
 // @Description
-// @Param filePath body string true ""
+// @Param projectId path string true "The id of the project"
+// @Param :sectionId path string true "The id of the section"
+// @Param :fileId path string true "The id of the file"
 // @Success 200 {object} models.TeacherProject
-// @Failure 400
 // @router /:projectId/section/:sectionId/file/:fileId/delete [post]
 func (p *ProjectController) DeleteSectionFile() {
 	user := p.GetSessionUser()

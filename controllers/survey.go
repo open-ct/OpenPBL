@@ -2,15 +2,16 @@ package controllers
 
 import (
 	"OpenPBL/models"
-	"strconv"
+	"OpenPBL/util"
 )
 
+
 // GetSurveyDetailByTaskId
-// @Title
+// @Title GetSurveyDetailByTaskId
 // @Description
-// @Param sid path string true ""
+// @Param projectId path string true "The id of the project"
+// @Param taskId path string true "The id of the task"
 // @Success 200 {object}
-// @Failure 400
 // @router /:projectId/task/:taskId/survey [get]
 func (p *ProjectController) GetSurveyDetailByTaskId() {
 	tid := p.GetString(":taskId")
@@ -31,16 +32,14 @@ func (p *ProjectController) GetSurveyDetailByTaskId() {
 // @Failure 400
 // @router /:projectId/task/:taskId/survey [post]
 func (p *ProjectController) CreateSurvey() {
-	tid, err := p.GetInt64(":taskId")
+	tid := p.GetString(":taskId")
 	survey := &models.Survey{
+		Id:              util.NewId(),
 		TaskId:          tid,
 		SurveyTitle:     p.GetString("surveyTitle"),
 		SurveyIntroduce: p.GetString("surveyIntroduce"),
 	}
-	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
-	}
-	err = survey.Create()
+	err := survey.Create()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -50,7 +49,7 @@ func (p *ProjectController) CreateSurvey() {
 		p.Data["json"] = Response{
 			Code: 200,
 			Msg:  "创建成功",
-			Data: strconv.FormatInt(survey.Id, 10),
+			Data: survey.Id,
 		}
 	}
 	p.ServeJSON()
@@ -64,18 +63,15 @@ func (p *ProjectController) CreateSurvey() {
 // @Failure 400
 // @router /:projectId/task/:taskId/survey/:sid [post]
 func (p *ProjectController) UpdateSurvey() {
-	sid, err := p.GetInt64(":sid")
-	tid, err := p.GetInt64(":tid")
+	sid := p.GetString(":sid")
+	tid := p.GetString(":tid")
 	survey := &models.Survey{
 		Id:              sid,
 		TaskId:          tid,
 		SurveyTitle:     p.GetString("surveyTitle"),
 		SurveyIntroduce: p.GetString("surveyIntroduce"),
 	}
-	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
-	}
-	err = survey.Create()
+	err := survey.Create()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -91,26 +87,25 @@ func (p *ProjectController) UpdateSurvey() {
 }
 
 // CreateQuestion
-// @Title
+// @Title CreateQuestion
 // @Description
-// @Param body body models.Question true ""
+// @Param projectId path string true "The id of the project"
+// @Param taskId path string true "The id of the task"
+// @Param surveyId path string true "The id of the survey"
 // @Success 200 {object} Response
-// @Failure 400
 // @router /:projectId/task/:taskId/survey/:surveyId/question [post]
 func (p *ProjectController) CreateQuestion() {
-	sid, err := p.GetInt64(":surveyId")
-	o, err := p.GetInt("questionOrder")
+	sid := p.GetString(":surveyId")
+	o, _ := p.GetInt("questionOrder")
 	question := &models.Question{
+		Id:              util.NewId(),
 		SurveyId:        sid,
 		QuestionOrder:   o,
 		QuestionType:    p.GetString("questionType"),
 		QuestionTitle:   p.GetString("questionTitle"),
 		QuestionOptions: p.GetString("questionOptions"),
 	}
-	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
-	}
-	err = question.Create()
+	err := question.Create()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -120,21 +115,23 @@ func (p *ProjectController) CreateQuestion() {
 		p.Data["json"] = Response{
 			Code: 200,
 			Msg:  "创建成功",
-			Data: strconv.FormatInt(question.Id, 10),
+			Data: question.Id,
 		}
 	}
 	p.ServeJSON()
 }
 // UpdateQuestion
-// @Title
+// @Title UpdateQuestion
 // @Description
-// @Param body body models.Survey true ""
+// @Param projectId path string true "The id of the project"
+// @Param taskId path string true "The id of the task"
+// @Param surveyId path string true "The id of the survey"
+// @Param questionId path string true "The id of the question"
 // @Success 200 {object} Response
-// @Failure 400
 // @router /:projectId/task/:taskId/survey/:surveyId/question/:questionId [post]
 func (p *ProjectController) UpdateQuestion() {
-	qid, err := p.GetInt64(":questionId")
-	sid, err := p.GetInt64(":surveyId")
+	qid := p.GetString(":questionId")
+	sid := p.GetString(":surveyId")
 	o, err := p.GetInt("questionOrder")
 	question := &models.Question{
 		Id:              qid,
@@ -163,16 +160,18 @@ func (p *ProjectController) UpdateQuestion() {
 }
 
 // ExchangeQuestion
-// @Title
+// @Title ExchangeQuestion
 // @Description
-// @Param body body string true ""
+// @Param projectId path string true "The id of the project"
+// @Param taskId path string true "The id of the task"
+// @Param surveyId path string true "The id of the survey"
+// @Param questionId1 body string true "The id of the question1"
+// @Param questionId2 body string true "The id of the question2"
 // @Success 200 {object} Response
-// @Failure 400
 // @router /:projectId/task/:taskId/survey/:surveyId/questions/exchange [post]
 func (p *ProjectController) ExchangeQuestion() {
 	id1 := p.GetString("questionId1")
 	id2 := p.GetString("questionId2")
-
 	err := models.ExchangeQuestion(id1, id2)
 	if err != nil {
 		p.Data["json"] = Response{
@@ -192,24 +191,18 @@ func (p *ProjectController) ExchangeQuestion() {
 // DeleteQuestion
 // @Title
 // @Description
-// @Param qid path string true ""
+// @Param projectId path string true "The id of the project"
+// @Param taskId path string true "The id of the task"
+// @Param surveyId path string true "The id of the survey"
+// @Param questionId path string true "The id of the question"
 // @Success 200 {object} Response
-// @Failure 400
 // @router /:projectId/task/:taskId/survey/:surveyId/question/:questionId/delete [post]
 func (p *ProjectController) DeleteQuestion() {
-	qid, err := p.GetInt64(":questionId")
+	qid := p.GetString(":questionId")
 	question := &models.Question{
 		Id:              qid,
 	}
-	if err != nil {
-		p.Data["json"] = Response{
-			Code: 400,
-			Msg:  err.Error(),
-		}
-		p.ServeJSON()
-		return
-	}
-	err = question.Delete()
+	err := question.Delete()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,

@@ -65,7 +65,7 @@ function RichWords(obj) {
     }
     const postfix = file.name.substr(index);
     let fileName = new Date().getTime()
-    let filePath = `/openpbl/project${obj.pid}/section${obj.sid}/${fileName}${postfix}`
+    let filePath = `/openpbl/resources/${fileName}${postfix}`
     FileApi.uploadFile("admin", "openpbl", obj.account.name, filePath, file)
       .then(res=>{
         if (res.data.status === 'ok') {

@@ -21,25 +21,25 @@ func init() {
 
 	// project
 	beego.Router("/api/project", &controllers.ProjectController{}, "POST:CreateProject")
-	beego.Router("/api/project/:id", &controllers.ProjectController{}, "GET:GetProjectDetail")
-	beego.Router("/api/project/:id", &controllers.ProjectController{}, "POST:UpdateProject")
-	beego.Router("/api/project/:id/weight", &controllers.ProjectController{}, "POST:UpdateProjectWeight")
-	beego.Router("/api/project/:id/publish", &controllers.ProjectController{}, "POST:PublishProject")
-	beego.Router("/api/project/:id/close", &controllers.ProjectController{}, "POST:CloseProject")
-	beego.Router("/api/project/:id/delete", &controllers.ProjectController{}, "POST:DeleteProject")
+	beego.Router("/api/project/:projectId", &controllers.ProjectController{}, "GET:GetProjectDetail")
+	beego.Router("/api/project/:projectId", &controllers.ProjectController{}, "POST:UpdateProject")
+	beego.Router("/api/project/:projectId/weight", &controllers.ProjectController{}, "POST:UpdateProjectWeight")
+	beego.Router("/api/project/:projectId/publish", &controllers.ProjectController{}, "POST:PublishProject")
+	beego.Router("/api/project/:projectId/close", &controllers.ProjectController{}, "POST:CloseProject")
+	beego.Router("/api/project/:projectId/delete", &controllers.ProjectController{}, "POST:DeleteProject")
 
 	beego.Router("/api/project/:projectId/students", &controllers.ProjectController{}, "GET:GetProjectStudents")
 	beego.Router("/api/project/:projectId/remove/:studentId", &controllers.ProjectController{}, "POST:RemoveStudent")
 	beego.Router("/api/project/:projectId/favourite/add", &controllers.ProjectController{}, "POST:AddFavouriteProject")
 	beego.Router("/api/project/:projectId/favourite/remove", &controllers.ProjectController{}, "POST:RemoveFavouriteProject")
 
-	beego.Router("/api/project/:id/subjects-skills", &controllers.ProjectController{}, "GET:GetProjectSubjectsAndSkills")
-	beego.Router("/api/project/:id/view", &controllers.ProjectController{}, "POST:ViewProject")
-	beego.Router("/api/project/:id/clone", &controllers.ProjectController{}, "POST:CloneProject")
+	beego.Router("/api/project/:projectId/subjects-skills", &controllers.ProjectController{}, "GET:GetProjectSubjectsAndSkills")
+	beego.Router("/api/project/:projectId/view", &controllers.ProjectController{}, "POST:ViewProject")
+	beego.Router("/api/project/:projectId/clone", &controllers.ProjectController{}, "POST:CloneProject")
 
 	// chapter
-	beego.Router("/api/project/:id/chapters", &controllers.ProjectController{}, "GET:GetProjectChapters")
-	beego.Router("/api/project/:id/chapter", &controllers.ProjectController{}, "POST:CreateProjectChapter")
+	beego.Router("/api/project/:projectId/chapters", &controllers.ProjectController{}, "GET:GetProjectChapters")
+	beego.Router("/api/project/:projectId/chapter", &controllers.ProjectController{}, "POST:CreateProjectChapter")
 	beego.Router("/api/project/:projectId/chapter/:chapterId", &controllers.ProjectController{}, "POST:UpdateProjectChapter")
 	beego.Router("/api/project/:projectId/chapter/:chapterId/delete", &controllers.ProjectController{}, "POST:DeleteProjectChapter")
 	beego.Router("/api/project/:projectId/chapters/exchange", &controllers.ProjectController{}, "POST:ExchangeProjectChapter")
@@ -65,9 +65,9 @@ func init() {
 	beego.Router("/api/project/:projectId/task/:taskId/survey/:surveyId/question/:questionId/delete", &controllers.ProjectController{}, "POST:DeleteQuestion")
 
 	// comments
-	beego.Router("/api/project/:id/comments", &controllers.ProjectController{}, "GET:GetProjectComments")
-	beego.Router("/api/project/:id/comment", &controllers.ProjectController{}, "POST:CreateProjectComment")
-	beego.Router("/api/project/:id/comment/:commentId/delete", &controllers.ProjectController{}, "POST:DeleteProjectComment")
+	beego.Router("/api/project/:projectId/comments", &controllers.ProjectController{}, "GET:GetProjectComments")
+	beego.Router("/api/project/:projectId/comment", &controllers.ProjectController{}, "POST:CreateProjectComment")
+	beego.Router("/api/project/:projectId/comment/:commentId/delete", &controllers.ProjectController{}, "POST:DeleteProjectComment")
 
 	// resource
 	beego.Router("/api/project/:projectId/resource/:resourceId", &controllers.ProjectController{}, "GET:GetResource")

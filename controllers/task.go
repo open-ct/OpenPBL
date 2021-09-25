@@ -3,7 +3,6 @@ package controllers
 import (
 	"OpenPBL/models"
 	"OpenPBL/util"
-	"strconv"
 )
 
 type TaskResponse struct {
@@ -16,11 +15,11 @@ type TaskResponse struct {
 }
 
 // GetSectionTasksDetail
-// @Title
-// @Description get section tasks with submit and survey
-// @Param sid path string true ""
+// @Title GetSectionTasksDetail
+// @Description Get section tasks with submit and survey
+// @Param projectId path string true "The id of the project"
+// @Param sectionId path string true "The id of the section"
 // @Success 200 {object} TaskResponse
-// @Failure 400
 // @router /:projectId/section/:sectionId/tasks [get]
 func (p *ProjectController) GetSectionTasksDetail() {
 	sid := p.GetString(":sectionId")
@@ -61,11 +60,10 @@ func (p *ProjectController) GetSectionTasksDetail() {
 }
 
 // GetProjectTasks
-// @Title
+// @Title GetProjectTasks
 // @Description get all the tasks of a section
-// @Param sid path string true ""
-// @Success 200 {object}
-// @Failure 400
+// @Param projectId path string true "The id of the project"
+// @Success 200 {object} Response
 // @router /:projectId/tasks [get]
 func (p *ProjectController) GetProjectTasks() {
 	pid := p.GetString(":projectId")
@@ -85,11 +83,10 @@ func (p *ProjectController) GetProjectTasks() {
 }
 
 // GetProjectTasksDetail
-// @Title
+// @Title GetProjectTasksDetail
 // @Description get all the tasks of a section
-// @Param sid path string true ""
-// @Success 200 {object}
-// @Failure 400
+// @Param projectId path string true "The id of the project"
+// @Success 200 {object} TaskResponse
 // @router /:projectId/tasks-detail [get]
 func (p *ProjectController) GetProjectTasksDetail() {
 	var learning bool
@@ -142,20 +139,20 @@ func (p *ProjectController) GetProjectTasksDetail() {
 }
 
 // CreateTask
-// @Title
+// @Title CreateTask
 // @Description
-// @Param body body models.Task true ""
+// @Param projectId path string true "The id of the project"
 // @Success 200 {object} Response
-// @Failure 400
 // @router /:projectId/task [post]
 func (p *ProjectController) CreateTask() {
-	sid, err := p.GetInt64("sectionId")
-	pid, err := p.GetInt64(":projectId")
-	o, err := p.GetInt("taskOrder")
-	sn, err := p.GetInt("sectionNumber")
-	cn, err := p.GetInt("chapterNumber")
+	sid := p.GetString("sectionId")
+	pid := p.GetString(":projectId")
+	o, _ := p.GetInt("taskOrder")
+	sn, _ := p.GetInt("sectionNumber")
+	cn, _ := p.GetInt("chapterNumber")
 
 	task := &models.Task{
+		Id:            util.NewId(),
 		SectionId:     sid,
 		ProjectId:     pid,
 		SectionNumber: sn,
@@ -165,10 +162,7 @@ func (p *ProjectController) CreateTask() {
 		TaskIntroduce: p.GetString("taskIntroduce"),
 		TaskType:      p.GetString("taskType"),
 	}
-	if err != nil {
-		p.Data["json"] = map[string]string{"error": err.Error()}
-	}
-	err = task.Create()
+	err := task.Create()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -178,26 +172,25 @@ func (p *ProjectController) CreateTask() {
 		p.Data["json"] = Response{
 			Code: 200,
 			Msg:  "创建成功",
-			Data: strconv.FormatInt(task.Id, 10),
+			Data: task.Id,
 		}
 	}
 	p.ServeJSON()
 }
 
 // UpdateTask
-// @Title
+// @Title UpdateTask
 // @Description
-// @Param body body models.Task true ""
+// @Param projectId path string true "The id of the project"
 // @Success 200 {object} Response
-// @Failure 401
 // @router /:projectId/task/:taskId [post]
 func (p *ProjectController) UpdateTask() {
-	tid, err := p.GetInt64(":taskId")
-	sid, err := p.GetInt64("sectionId")
-	pid, err := p.GetInt64(":projectId")
-	o, err := p.GetInt("taskOrder")
-	sn, err := p.GetInt("sectionNumber")
-	cn, err := p.GetInt("chapterNumber")
+	tid := p.GetString(":taskId")
+	sid := p.GetString("sectionId")
+	pid := p.GetString(":projectId")
+	o, _ := p.GetInt("taskOrder")
+	sn, _ := p.GetInt("sectionNumber")
+	cn, _ := p.GetInt("chapterNumber")
 
 	task := &models.Task{
 		Id:            tid,
@@ -210,7 +203,7 @@ func (p *ProjectController) UpdateTask() {
 		TaskIntroduce: p.GetString("taskIntroduce"),
 		TaskType:      p.GetString("taskType"),
 	}
-	err = task.Update()
+	err := task.Update()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -227,18 +220,18 @@ func (p *ProjectController) UpdateTask() {
 }
 
 // DeleteTask
-// @Title
+// @Title DeleteTask
 // @Description
-// @Param cid path string true ""
+// @Param projectId path string true "The id of the project"
+// @Param taskId path string true "The id of the task"
 // @Success 200 {object} Response
-// @Failure 401
 // @router /:projectId/task/:taskId/delete [post]
 func (p *ProjectController) DeleteTask() {
-	tid, err := p.GetInt64(":taskId")
+	tid := p.GetString(":taskId")
 	task := &models.Task{
 		Id:               tid,
 	}
-	err = task.Delete()
+	err := task.Delete()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -255,15 +248,16 @@ func (p *ProjectController) DeleteTask() {
 }
 
 // ExchangeTask
-// @Title
-// @Description
-// @Param cid path string true ""
+// @Title ExchangeTask
+// @Description Exchange two tasks
+// @Param projectId path string true "project id"
+// @Param taskId1 body string true "task1 id"
+// @Param taskId2 body string true "task2 id"
 // @Success 200 {object} Response
-// @Failure 401
 // @router /:projectId/tasks/exchange [post]
 func (p *ProjectController) ExchangeTask() {
-	tid1 := p.GetString(":taskId1")
-	tid2 := p.GetString(":taskId2")
+	tid1 := p.GetString("taskId1")
+	tid2 := p.GetString("taskId2")
 	err := models.ExchangeTasks(tid1, tid2)
 	if err != nil {
 		p.Data["json"] = Response{

@@ -3,7 +3,6 @@ package controllers
 import (
 	"OpenPBL/models"
 	"OpenPBL/util"
-	"strconv"
 )
 
 type ChaptersResponse struct {
@@ -14,12 +13,11 @@ type ChaptersResponse struct {
 }
 
 // GetProjectChapters
-// @Title
+// @Title GetProjectChapters
 // @Description
-// @Param pid path string true "project id"
-// @Success 200 {object} []models.Outline
-// @Failure 403 body is empty
-// @router /:id/chapters [get]
+// @Param projectId path string true "project id"
+// @Success 200 {object} ChapterResponse
+// @router /:projectId/chapters [get]
 func (p *ProjectController) GetProjectChapters() {
 	user := p.GetSessionUser()
 	uid := ""
@@ -34,7 +32,7 @@ func (p *ProjectController) GetProjectChapters() {
 			show = true
 		}
 	}
-	pid := p.GetString(":id")
+	pid := p.GetString(":projectId")
 	outline, err := models.GetChaptersByPid(pid, uid)
 	if err != nil {
 		p.Data["json"] = ChaptersResponse{
@@ -52,16 +50,16 @@ func (p *ProjectController) GetProjectChapters() {
 	p.ServeJSON()
 }
 // CreateProjectChapter
-// @Title
+// @Title CreateProjectChapter
 // @Description
-// @Param body body models.Chapter true ""
+// @Param projectId path string true "The id of the project"
 // @Success 200 {object} Response
-// @Failure 401
-// @router /:id/chapter [post]
+// @router /:projectId/chapter [post]
 func (p *ProjectController) CreateProjectChapter() {
-	pid, err := p.GetInt64(":id")
+	pid := p.GetString(":projectId")
 	num, err := p.GetInt("chapterNumber")
 	chapter := &models.Chapter{
+		Id:               util.NewId(),
 		ProjectId:        pid,
 		ChapterName:      p.GetString("chapterName"),
 		ChapterNumber:    num,
@@ -82,30 +80,30 @@ func (p *ProjectController) CreateProjectChapter() {
 		p.Data["json"] = Response{
 			Code: 200,
 			Msg:  "添加成功",
-			Data: strconv.FormatInt(chapter.Id, 10),
+			Data: chapter.Id,
 		}
 	}
 	p.ServeJSON()
 }
 
 // UpdateProjectChapter
-// @Title
+// @Title UpdateProjectChapter
 // @Description
-// @Param body body models.Chapter true ""
+// @Param projectId path string true "The id of the project"
+// @Param chapterId path string true "The id of the chapter"
 // @Success 200 {object} Response
-// @Failure 401
 // @router /:projectId/chapter/:chapterId [post]
 func (p *ProjectController) UpdateProjectChapter() {
-	cid, err := p.GetInt64(":chapterId")
-	pid, err := p.GetInt64(":projectId")
-	num, err := p.GetInt("chapterNumber")
+	cid := p.GetString(":chapterId")
+	pid := p.GetString(":projectId")
+	num, _ := p.GetInt("chapterNumber")
 	chapter := &models.Chapter{
 		Id:               cid,
 		ProjectId:        pid,
 		ChapterName:      p.GetString("chapterName"),
 		ChapterNumber:    num,
 	}
-	err = chapter.Update()
+	err := chapter.Update()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -122,23 +120,23 @@ func (p *ProjectController) UpdateProjectChapter() {
 }
 
 // DeleteProjectChapter
-// @Title
+// @Title DeleteProjectChapter
 // @Description
-// @Param body body models.Chapter true ""
+// @Param projectId path string true "The id of the project"
+// @Param chapterId path string true "The id of the chapter"
 // @Success 200 {object} Response
-// @Failure 401
 // @router /:projectId/chapter/:chapterId/delete [post]
 func (p *ProjectController) DeleteProjectChapter() {
-	cid, err := p.GetInt64(":chapterId")
-	pid, err := p.GetInt64(":projectId")
-	num, err := p.GetInt("chapterNumber")
+	cid := p.GetString(":chapterId")
+	pid := p.GetString(":projectId")
+	num, _ := p.GetInt("chapterNumber")
 	chapter := &models.Chapter{
 		Id:               cid,
 		ProjectId:        pid,
 		ChapterName:      p.GetString("chapterName"),
 		ChapterNumber:    num,
 	}
-	err = chapter.Delete()
+	err := chapter.Delete()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -155,11 +153,10 @@ func (p *ProjectController) DeleteProjectChapter() {
 }
 
 // ExchangeProjectChapter
-// @Title
+// @Title ExchangeProjectChapter
 // @Description
-// @Param cid path string true ""
+// @Param projectId path string true "The id of the project"
 // @Success 200 {object} Response
-// @Failure 401
 // @router /:projectId/chapters/exchange [post]
 func (p *ProjectController) ExchangeProjectChapter() {
 	cid1 := p.GetString("chapterId1")

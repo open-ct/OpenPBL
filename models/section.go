@@ -1,23 +1,24 @@
 package models
 
 import (
+	"OpenPBL/util"
 	"fmt"
 	"xorm.io/xorm"
 )
 
 type Section struct {
-	Id                 int64   `json:"id" xorm:"not null pk autoincr"`
-	ChapterId          int64   `json:"chapterId" xorm:"index"`
+	Id                 string  `json:"id" xorm:"not null pk"`
+	ChapterId          string  `json:"chapterId" xorm:"index"`
 	SectionName        string  `json:"sectionName"`
 	SectionNumber      int     `json:"sectionNumber" xorm:"index"`
 	ChapterNumber      int     `json:"chapterNumber" xorm:"index"`
 
-	SectionMinute      int     `json:"sectionMinute" xorm:"default 1"`
+	SectionMinute      int     `json:"sectionMinute" xorm:"default 10"`
 }
 
 type SectionFile struct {
-	Id        int64    `json:"id" xorm:"not null pk autoincr"`
-	SectionId int64    `json:"sectionId" xorm:"not null index"`
+	Id        string   `json:"id" xorm:"not null pk"`
+	SectionId string   `json:"sectionId" xorm:"not null index"`
 	FilePath  string   `json:"filePath"`
 	Name      string   `json:"name"`
 	Url       string   `json:"url"`
@@ -73,6 +74,7 @@ func (p *Section) Create() (err error) {
 	session.Begin()
 	_, err = session.Insert(p)
 	_, err = session.Insert(Resource{
+		Id:                util.NewId(),
 		SectionId:         p.Id,
 	})
 	session.Commit()
@@ -126,7 +128,7 @@ func GetSectionDetailById(sid string) (s SectionDetail, err error) {
 	return
 }
 
-func DeleteChapterSections(cid int64) (err error) {
+func DeleteChapterSections(cid string) (err error) {
 	var sections []Section
 	err = (&Section{}).GetEngine().Where("chapter_id = ?", cid).Find(&sections)
 	for i:=0; i< len(sections); i++ {
@@ -140,18 +142,18 @@ func DeleteChapterSections(cid int64) (err error) {
 	return
 }
 
-func DeleteSectionFiles(sid int64) (err error) {
+func DeleteSectionFiles(sid string) (err error) {
 	_, err = (&SectionFile{}).GetEngine().Where("section_id = ?", sid).Delete(&SectionFile{})
 	return
 }
 
-func CloneChapterSections(newPid int64, cid int64, newCid int64) (err error) {
+func CloneChapterSections(newPid string, cid string, newCid string) (err error) {
 	var sections []Section
 	err = (&Section{}).GetEngine().Where("chapter_id = ?", cid).Find(&sections)
 	for i:=0; i< len(sections); i++ {
 		s := sections[i]
 		sid := s.Id
-		s.Id = 0
+		s.Id = util.NewId()
 		s.ChapterId = newCid
 		_, err = (&Section{}).GetEngine().Insert(&s)
 		newSid := s.Id
@@ -162,12 +164,12 @@ func CloneChapterSections(newPid int64, cid int64, newCid int64) (err error) {
 	return
 }
 
-func CloneSectionFiles(sid int64, newSid int64) (err error) {
+func CloneSectionFiles(sid string, newSid string) (err error) {
 	var files []SectionFile
 	err = (&SectionFile{}).GetEngine().Where("section_id = ?", sid).Find(&files)
 	for i:=0; i<len(files); i++ {
 		f := files[i]
-		f.Id = 0
+		f.Id = util.NewId()
 		f.SectionId = newSid
 		err = f.Create()
 	}

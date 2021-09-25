@@ -191,7 +191,7 @@ class PreviewSection extends React.Component {
                 {util.FormatSectionName(section.sectionName, section.chapterNumber, section.sectionNumber)}
               </h2>
               {learning && editable ?
-                <span style={{float: 'right'}}>{minute}&nbsp;:&nbsp;{second}</span>
+                <span style={{float: 'right'}}>{minute}&nbsp;分&nbsp;{second}&nbsp;秒</span>
                 : null}
             </Card>
             <Card className="resource-card">

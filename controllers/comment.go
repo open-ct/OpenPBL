@@ -16,11 +16,9 @@ type CommentResponse struct {
 // @Title
 // @Description
 // @Success 200 {object} Response
-// @Failure 401
-// @Failure 400
-// @router /:id/comments [get]
+// @router /:projectId/comments [get]
 func (p *ProjectController) GetProjectComments() {
-	pid := p.GetString(":id")
+	pid := p.GetString(":projectId")
 	from, err := p.GetInt("from")
 	if err != nil {
 		from = 0
@@ -54,12 +52,9 @@ func (p *ProjectController) GetProjectComments() {
 // @Title
 // @Description
 // @Success 200 {object} Response
-// @Failure 401
-// @Failure 400
-// @Failure 403
-// @router /:id/comment [post]
+// @router /:projectId/comment [post]
 func (p *ProjectController) CreateProjectComment() {
-	pid, err := p.GetInt64(":id")
+	pid, err := p.GetInt64(":projectId")
 	user := p.GetSessionUser()
 	uid := util.GetUserId(user)
 	comment := &models.Comment{
@@ -90,9 +85,7 @@ func (p *ProjectController) CreateProjectComment() {
 // @Title
 // @Description
 // @Success 200 {object} Response
-// @Failure 401
-// @Failure 400
-// @router /:id/comment/:commentId/delete [post]
+// @router /:projectId/comment/:commentId/delete [post]
 func (p *ProjectController) DeleteProjectComment() {
 	cid, err := p.GetInt64(":commentId")
 	err = (&models.Comment{Id: cid}).Delete()

@@ -2,13 +2,14 @@ package models
 
 import (
 	"errors"
+	uuid "github.com/satori/go.uuid"
 	"time"
 	"xorm.io/xorm"
 )
 
 
 type Project struct {
-	Id                 int64     `json:"id" xorm:"not null pk autoincr"`
+	Id                 string    `json:"id" xorm:"not null pk"`
 	Image              string    `json:"image" xorm:"longtext"`
 	ProjectTitle       string    `json:"projectTitle"`
 	ProjectIntroduce   string    `json:"projectIntroduce"`
@@ -37,7 +38,7 @@ type Project struct {
 }
 
 type Favourite struct {
-	ProjectId          int64     `json:"projectId" xorm:"not null pk"`
+	ProjectId          string    `json:"projectId" xorm:"not null pk"`
 	UserId             string    `json:"userId" xorm:"not null pk"`
 	CreateAt           time.Time `json:"createAt" xorm:"created"`
 }
@@ -51,12 +52,12 @@ type ProjectDetail struct {
 
 type ProjectSkill struct {
 	Skill          string     `json:"skill" xorm:"not null pk"`
-	ProjectId      int64      `json:"projectId" xorm:"not null pk"`
+	ProjectId      string     `json:"projectId" xorm:"not null pk"`
 }
 
 type ProjectSubject struct {
 	Subject        string     `json:"subject" xorm:"not null pk"`
-	ProjectId      int64      `json:"projectId" xorm:"not null pk"`
+	ProjectId      string     `json:"projectId" xorm:"not null pk"`
 }
 
 func (p *Project) GetEngine() *xorm.Session {
@@ -72,7 +73,7 @@ func (f *Favourite) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(f)
 }
 
-func GetProjectById(pid int64) (project Project, err error) {
+func GetProjectById(pid string) (project Project, err error) {
 	var b bool
 	b, err = (&Project{}).GetEngine().
 		ID(pid).
@@ -83,7 +84,7 @@ func GetProjectById(pid int64) (project Project, err error) {
 	return
 }
 
-func GetProjectByPidForTeacher(pid int64, uid string) (pd ProjectDetail, err error) {
+func GetProjectByPidForTeacher(pid string, uid string) (pd ProjectDetail, err error) {
 	var p Project
 	c, err := (&Project{}).GetEngine().
 		ID(pid).
@@ -107,7 +108,7 @@ func GetProjectByPidForTeacher(pid int64, uid string) (pd ProjectDetail, err err
 	return
 }
 
-func GetProjectByPidForStudent(pid int64, uid string) (pd ProjectDetail, err error) {
+func GetProjectByPidForStudent(pid string, uid string) (pd ProjectDetail, err error) {
 	c, err := (&Project{}).GetEngine().
 		Where("project.id = ?", pid).
 		Join("LEFT OUTER", LearnProject{}, "project.id = learn_project.project_id and student_id = ?", uid).
@@ -192,7 +193,7 @@ func UpdateClosed(p Project) (err error) {
 	return
 }
 
-func AddFavourite(uid string, pid int64) (err error) {
+func AddFavourite(uid string, pid string) (err error) {
 	_, err = (&Favourite{}).GetEngine().Insert(Favourite{
 		ProjectId: pid,
 		UserId:    uid,
@@ -201,7 +202,7 @@ func AddFavourite(uid string, pid int64) (err error) {
 	return
 }
 
-func RemoveFavourite(uid string, pid int64) (err error) {
+func RemoveFavourite(uid string, pid string) (err error) {
 	_, err = (&Favourite{}).GetEngine().Delete(Favourite{
 		ProjectId: pid,
 		UserId:    uid,
@@ -230,11 +231,11 @@ func ViewProject(pid string) (err error) {
 	return
 }
 
-func CloneProject(uid string, pid int64) (err error) {
+func CloneProject(uid string, pid string) (err error) {
 	var project Project
 	_, err = (&Project{}).GetEngine().ID(pid).Get(&project)
 	project.TeacherId = uid
-	project.Id = 0
+	project.Id = uuid.NewV4().String()
 	project.Closed = false
 	project.Published = false
 	project.CreateAt = time.Now()
