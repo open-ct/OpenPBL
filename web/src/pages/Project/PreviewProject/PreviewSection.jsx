@@ -228,7 +228,6 @@ class PreviewSection extends React.Component {
 
                 <TaskCard
                   pid={pid}
-                  studentId={this.props.account.name}
                   account={this.props.account}
                   item={item}
                   index={index}

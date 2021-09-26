@@ -93,8 +93,8 @@ function TaskCard(obj) {
     let name = file.name.substr(0, index)
     const postfix = file.name.substr(index);
     let ts = new Date().getTime()
-    let filePath = `/openpbl/${obj.studentId}/${name}-${ts}${postfix}`
-    FileApi.uploadFile("admin", "openpbl", obj.studentId, filePath, file)
+    let filePath = `/openpbl/${obj.account.name}/${name}-${ts}${postfix}`
+    FileApi.uploadFile("admin", "openpbl", obj.account.name, filePath, file)
       .then(res=>{
         if (res.data.status === 'ok') {
           uploadFile(filePath, file.name, res.data.data)
