@@ -94,20 +94,20 @@ func (p *ProjectController) GetProjectTasksDetail() {
 	showSubmit := false
 	teacherScore := false
 	uid := util.GetUserId(user)
-	editable := true
+	editable := false
 	showCount := false
 	pid := p.GetString(":projectId")
 	if util.IsTeacher(user) {
 		uid = p.GetString("studentId")
 		showSubmit = true
-		editable = false
 		teacherScore = true
 		showCount = true
 	}
-	if !util.IsStudent(user) {
-		learning = false
-	} else {
+	if util.IsStudent(user) {
+		editable = models.IsEditableProject(pid)
 		learning = models.IsLearningProject(pid, uid)
+	} else {
+		learning = false
 	}
 	if learning {
 		showSubmit = true
