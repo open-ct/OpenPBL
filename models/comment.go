@@ -6,8 +6,8 @@ import (
 )
 
 type Comment struct {
-	Id           int64     `json:"id" xorm:"not null pk autoincr"`
-	ProjectId    int64     `json:"projectId" xorm:"not null index"`
+	Id           string    `json:"id" xorm:"not null pk"`
+	ProjectId    string    `json:"projectId" xorm:"not null index"`
 	UserId       string    `json:"userId" xorm:"not null index"`
 	UserAvatar   string    `json:"userAvatar" xorm:"not null"`
 	UserName     string    `json:"userName" xorm:"not null"`

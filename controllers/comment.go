@@ -54,10 +54,11 @@ func (p *ProjectController) GetProjectComments() {
 // @Success 200 {object} Response
 // @router /:projectId/comment [post]
 func (p *ProjectController) CreateProjectComment() {
-	pid, err := p.GetInt64(":projectId")
+	pid := p.GetString(":projectId")
 	user := p.GetSessionUser()
 	uid := util.GetUserId(user)
 	comment := &models.Comment{
+		Id:        util.NewId(),
 		ProjectId: pid,
 		UserId:    uid,
 		UserAvatar: user.Avatar,
@@ -66,7 +67,7 @@ func (p *ProjectController) CreateProjectComment() {
 		Content:   p.GetString("content"),
 		CreateAt:  time.Time{},
 	}
-	err = comment.Create()
+	err := comment.Create()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -87,8 +88,8 @@ func (p *ProjectController) CreateProjectComment() {
 // @Success 200 {object} Response
 // @router /:projectId/comment/:commentId/delete [post]
 func (p *ProjectController) DeleteProjectComment() {
-	cid, err := p.GetInt64(":commentId")
-	err = (&models.Comment{Id: cid}).Delete()
+	cid := p.GetString(":commentId")
+	err := (&models.Comment{Id: cid}).Delete()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
