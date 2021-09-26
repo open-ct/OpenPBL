@@ -25,8 +25,8 @@ class AuthCallback extends React.Component {
           AuthApi.getAccount()
             .then((resp) => {
               message.success("登录成功，跳转主页");
-              window.open("/home")
-              window.location.href = (Auth.getMyProfileUrl(resp.data.data));
+              window.location.href = "/home"
+              window.open(Auth.getMyProfileUrl(resp.data.data));
             })
             .catch((e) => {
               console.log(e)
