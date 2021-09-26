@@ -31,7 +31,7 @@ export function getUser(teacherId) {
 export function getAccount(account) {
   let request = getCasdoorService()
   return request({
-    url: getMyProfileUrl(account),
+    url: `/account?access_token=${account.accessToken}`,
     method: 'get',
   })
 }

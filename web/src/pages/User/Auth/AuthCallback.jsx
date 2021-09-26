@@ -23,7 +23,6 @@ class AuthCallback extends React.Component {
         if (res.data.code === 200) {
           message.success("登录成功，跳转主页");
           window.location.href = "/home"
-          getAccount()
         } else {
           this.setState({
             msg: res.msg,

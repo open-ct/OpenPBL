@@ -16,6 +16,7 @@ import Evidence from "../../Project/Evidence";
 import SectionEditPage from "../../Project/CreateProject/Section/SectionEditPage";
 import SurveyEditPage from "../../Project/CreateProject/Survey/SurveyEditPage";
 import PreviewSection from "../../Project/PreviewProject/PreviewSection";
+import {getAccount} from "../../User/Auth/Auth";
 
 
 const logo = "https://cdn.open-ct.com/logo/openct_logo_1082x328.png"
@@ -34,6 +35,7 @@ class HeaderLayout extends React.Component {
         this.setState({
           account: res.data.data
         })
+        getAccount(res.data.data)
       })
       .catch((e) => {
         console.log(e)
