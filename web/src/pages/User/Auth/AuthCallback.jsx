@@ -3,6 +3,7 @@ import {Button, message, Result, Spin} from "antd";
 
 import AuthApi from "../../../api/AuthApi";
 import {getAccount} from "./Auth"
+import * as Auth from "./Auth";
 
 class AuthCallback extends React.Component {
   constructor(props) {
@@ -21,8 +22,15 @@ class AuthCallback extends React.Component {
     AuthApi.login(params.get('code'), params.get('state'))
       .then((res) => {
         if (res.data.code === 200) {
-          message.success("登录成功，跳转主页");
-          window.location.href = "/home"
+          AuthApi.getAccount()
+            .then((resp) => {
+              message.success("登录成功，跳转主页");
+              window.open("/home")
+              window.location.href = (Auth.getMyProfileUrl(resp.data.data));
+            })
+            .catch((e) => {
+              console.log(e)
+            })
         } else {
           this.setState({
             msg: res.msg,

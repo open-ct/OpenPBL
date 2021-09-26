@@ -35,7 +35,6 @@ class HeaderLayout extends React.Component {
         this.setState({
           account: res.data.data
         })
-        getAccount(res.data.data)
       })
       .catch((e) => {
         console.log(e)
