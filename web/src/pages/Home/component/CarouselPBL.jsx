@@ -1,3 +1,17 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React from 'react';
 import BannerAnim from 'rc-banner-anim';
 import {Image} from 'antd';
@@ -14,19 +28,25 @@ class CarouselPBL extends React.Component {
     super(props);
     this.imgArray = [
       {
-        img: 'https://cdn.open-ct.com/task-resources//carousel-top-1.png',
-        title: '',
-        text: '',
+        img: 'https://cdn.open-ct.com/task-resources/lbaf23/carousel-top-1.jpg',
+        title: 'O p e n P B L',
+        text: 'Project Based Learning',
+        titleStyle: {color: 'white', fontSize: '60px', fontWeight: 'bold', fontFamily: 'Times New Roman'},
+        textStyle: {color: 'white', fontSize: '30px', marginTop: '50px'}
       },
       {
-        img: 'https://cdn.open-ct.com/task-resources//carousel-top-2.png',
-        title: '',
-        text: '',
+        img: 'https://cdn.open-ct.com/task-resources/lbaf23/carousel-top-2.jpg',
+        title: 'O p e n P B L',
+        text: 'Propose - Plan - Execute - Judge',
+        titleStyle: {color: 'lightblue', fontSize: '60px', fontWeight: 'bold', fontFamily: 'Times New Roman'},
+        textStyle: {color: 'lightblue', fontSize: '30px', marginTop: '50px'}
       },
       {
-        img: 'https://cdn.open-ct.com/task-resources//carousel-top-3.png',
-        title: '',
-        text: '',
+        img: 'https://cdn.open-ct.com/task-resources/lbaf23/carousel-top-3.jpg',
+        title: 'O p e n P B L',
+        text: 'explore real-world problems',
+        titleStyle: {color: 'black', fontSize: '60px', fontWeight: 'bold', fontFamily: 'Times New Roman'},
+        textStyle: {color: 'black', fontSize: '30px', marginTop: '50px'}
       },
     ];
     this.state = {
@@ -126,15 +146,16 @@ class CarouselPBL extends React.Component {
               className="bg"
               style={{
                 backgroundImage: `url(${item.img})`,
+
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }}
             />
             <TweenOne className="banner-user-title" animation={{y: 30, opacity: 0, type: 'from'}}>
-              <div style={{fontSize: '100px'}}>{item.title}</div>
+              <div style={item.titleStyle}>{item.title}</div>
             </TweenOne>
             <TweenOne className="banner-user-text" animation={{y: 30, opacity: 0, type: 'from', delay: 100}}>
-              <div style={{fontSize: '30px'}}>{item.text}</div>
+              <div style={item.textStyle}>{item.text}</div>
             </TweenOne>
           </Element>
         ))}

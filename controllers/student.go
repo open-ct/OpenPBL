@@ -1,3 +1,17 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package controllers
 
 import (
@@ -10,8 +24,7 @@ import (
 	"time"
 )
 
-// StudentController
-// Operations about Student
+
 type StudentController struct {
 	beego.Controller
 }
@@ -30,15 +43,13 @@ func (u *StudentController) GetSessionUser() *auth.Claims {
 }
 
 // LearnProject
-// @Title
+// @Title LearnProject
 // @Description
-// @Param pid path string true ""
+// @Param projectId path string true "The id of the project"
 // @Success 200 {object} Response
-// @Failure 401
-// @Failure 403
 // @router /learn/:projectId [post]
 func (u *StudentController) LearnProject() {
-	pid, err := u.GetInt64(":projectId")
+	pid := u.GetString(":projectId")
 	var resp Response
 	user := u.GetSessionUser()
 	if !util.IsStudent(user) {
@@ -59,7 +70,7 @@ func (u *StudentController) LearnProject() {
 		ProjectId: pid,
 		Learning:  true,
 	}
-	err = l.Create()
+	err := l.Create()
 	if err != nil {
 		resp = Response{
 			Code: 400,
@@ -74,12 +85,21 @@ func (u *StudentController) LearnProject() {
 
 	project, err := models.GetProjectById(pid)
 	if err == nil {
-		content := fmt.Sprintf("成功加入课程 \"%v\" ", project.ProjectTitle)
 		models.CreateMessage(&models.Message{
+			Id:           util.NewId(),
 			ReceiverId:   uid,
 			MessageType:  "info",
 			MessageTitle: "加入课程",
-			Content:      content,
+			Content:      fmt.Sprintf("成功加入课程 \"%v\" ", project.ProjectTitle),
+			ReadMessage:  false,
+			CreateAt:     time.Time{},
+		})
+		models.CreateMessage(&models.Message{
+			Id:           util.NewId(),
+			ReceiverId:   project.TeacherId,
+			MessageType:  "info",
+			MessageTitle: "加入课程",
+			Content:      fmt.Sprintf("学生 %v 加入课程 \"%v\" ", user.DisplayName, project.ProjectTitle),
 			ReadMessage:  false,
 			CreateAt:     time.Time{},
 		})
@@ -89,15 +109,13 @@ func (u *StudentController) LearnProject() {
 }
 
 // ExitProject
-// @Title
+// @Title ExitProject
 // @Description
-// @Param pid path string true ""
+// @Param projectId path string true "The id of the project"
 // @Success 200 {object} Response
-// @Failure 401
-// @Failure 403
 // @router /exit/:projectId [post]
 func (u *StudentController) ExitProject() {
-	pid, err := u.GetInt64(":projectId")
+	pid := u.GetString(":projectId")
 	var resp Response
 	user := u.GetSessionUser()
 	if !util.IsStudent(user) {
@@ -115,7 +133,7 @@ func (u *StudentController) ExitProject() {
 		StudentId: uid,
 		ProjectId: pid,
 	}
-	err = l.Delete()
+	err := l.Delete()
 	if err != nil {
 		resp = Response{
 			Code: 400,
@@ -130,12 +148,21 @@ func (u *StudentController) ExitProject() {
 
 	project, err := models.GetProjectById(pid)
 	if err == nil {
-		content := fmt.Sprintf("成功退出课程 \"%v\" ", project.ProjectTitle)
 		models.CreateMessage(&models.Message{
+			Id:           util.NewId(),
 			ReceiverId:   uid,
 			MessageType:  "info",
 			MessageTitle: "退出课程",
-			Content:      content,
+			Content:      fmt.Sprintf("成功退出课程 \"%v\" ", project.ProjectTitle),
+			ReadMessage:  false,
+			CreateAt:     time.Time{},
+		})
+		models.CreateMessage(&models.Message{
+			Id:           util.NewId(),
+			ReceiverId:   project.TeacherId,
+			MessageType:  "info",
+			MessageTitle: "退出课程",
+			Content:      fmt.Sprintf("学生 %v 退出课程 \"%v\" ", user.DisplayName, project.ProjectTitle),
 			ReadMessage:  false,
 			CreateAt:     time.Time{},
 		})
@@ -146,11 +173,9 @@ func (u *StudentController) ExitProject() {
 }
 
 // FinishedProject
-// @Title
+// @Title FinishedProject
 // @Description
-// @Param body body models.LearnProject true ""
 // @Success 200 {object} models.Project
-// @Failure 403
 // @router /finished [post]
 func (u *StudentController) FinishedProject() {
 	var l models.LearnProject
@@ -169,11 +194,11 @@ func (u *StudentController) FinishedProject() {
 }
 
 // GetLearnSection
-// @Title
+// @Title GetLearnSection
 // @Description
-// @Param body body models.LearnSection true ""
+// @Param projectId path string true "The id of the project"
+// @Param sectionId path string true "The id of the section"
 // @Success 200 {object} Response
-// @Failure 400
 // @router /project/:projectId/section/:sectionId [get]
 func (u *StudentController) GetLearnSection() {
 	var resp Response
@@ -188,8 +213,8 @@ func (u *StudentController) GetLearnSection() {
 		return
 	}
 	uid := util.GetUserId(user)
-	sid, err := u.GetInt64(":sectionId")
-	projectId, err := u.GetInt64(":projectId")
+	sid := u.GetString(":sectionId")
+	projectId := u.GetString(":projectId")
 	l, err := models.GetLearnSection(sid, uid, projectId)
 	if err != nil {
 		u.Data["json"] = Response{
@@ -206,11 +231,12 @@ func (u *StudentController) GetLearnSection() {
 }
 
 // UpdateLearnSection
-// @Title
+// @Title UpdateLearnSection
 // @Description
-// @Param body body models.LearnSection true ""
+// @Param sectionId path string true "The id of the section"
+// @Param learnMinute path string true "The learning minute"
+// @Param learnSecond path string true "The learning second"
 // @Success 200 {object} Response
-// @Failure 400
 // @router /project/:projectId/section/:sectionId [post]
 func (u *StudentController) UpdateLearnSection() {
 	var resp Response
@@ -225,7 +251,7 @@ func (u *StudentController) UpdateLearnSection() {
 		return
 	}
 	uid := util.GetUserId(user)
-	sid, err := u.GetInt64(":sectionId")
+	sid := u.GetString(":sectionId")
 	m, err := u.GetInt("learnMinute")
 	s, err := u.GetInt("learnSecond")
 	l := models.LearnSection{
@@ -234,7 +260,7 @@ func (u *StudentController) UpdateLearnSection() {
 		LearnMinute:   m,
 		LearnSecond:   s,
 	}
-	pid, err := u.GetInt64(":projectId")
+	pid := u.GetString(":projectId")
 	err = l.Update(pid)
 	if err != nil {
 		u.Data["json"] = Response{
@@ -250,10 +276,10 @@ func (u *StudentController) UpdateLearnSection() {
 }
 
 // GetLastLearnSection
-// @Title
+// @Title GetLastLearnSection
 // @Description
+// @Param projectId path string true "The id of the project"
 // @Success 200 {object} Response
-// @Failure 400
 // @router /last-learn/project/:projectId [get]
 func (u *StudentController) GetLastLearnSection() {
 	var resp Response

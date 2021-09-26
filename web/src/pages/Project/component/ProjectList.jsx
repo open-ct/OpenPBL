@@ -1,6 +1,21 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, {useEffect, useState} from 'react';
 import {Card, Col, Divider, Image, Input, Pagination, Row, Select, Spin, Tag} from 'antd';
 import {EyeOutlined, TeamOutlined} from '@ant-design/icons';
+import {Link} from "react-router-dom"
 
 import './project-list.less';
 import ProjectListApi from '../../../api/ProjectListApi'
@@ -49,7 +64,7 @@ function ProjectList(obj) {
     let q = {
       from: (p - 1) * size,
       size: size,
-      orderBy: 'create_at',
+      orderBy: 'update_at',
       orderType: 'desc',
       subject: subject,
       skill: skill,
@@ -77,7 +92,7 @@ function ProjectList(obj) {
   }, []);
 
   const loadSubjectsAndSkills = () => {
-    ProjectApi.getSubjectsAndSkills(obj.pid)
+    ProjectApi.getSubjectsAndSkills(0)
       .then(res => {
         if (res.data.code === 200) {
           if (res.data.subjects !== null) {
@@ -121,7 +136,6 @@ function ProjectList(obj) {
         .catch(e => {
         })
     }
-    window.location.href = `/home/project/${item.id}/info`
   }
 
   const onSearch = (v) => {
@@ -187,6 +201,7 @@ function ProjectList(obj) {
           {
             learningProjectList.map((item, index) => (
               <Col key={index.toString()} {...topColResponsiveProps}>
+                <Link to={`/home/project/${item.id}/info`}>
                 <Card
                   hoverable
                   bordered={false}
@@ -213,7 +228,7 @@ function ProjectList(obj) {
                     description={
                       <div>
                         <span className="des-text">{item.subjects === '' ? '--' : item.subjects}</span>
-                        {item.learning ?
+                        {item.learning && !item.closed ?
                           <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>学习中</Tag> : null}
                         {item.teacherId === uid && type === 'teacher' ?
                           <Tag color="geekblue" style={{zIndex: '999', float: 'right'}}>我的项目</Tag> : null}
@@ -247,9 +262,10 @@ function ProjectList(obj) {
                       float: 'right',
                     }}
                   >
-                      {util.FilterMoment(item.createAt)}
+                      {util.FilterMoment(item.updateAt)}
                     </span>
                 </Card>
+                </Link>
               </Col>
             ))
           }

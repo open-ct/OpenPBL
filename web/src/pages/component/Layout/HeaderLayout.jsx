@@ -1,3 +1,17 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React from "react";
 import {Avatar, Badge, Button, Col, Dropdown, Image, Layout, Menu, message, Row, Tag} from "antd";
 import {Link, Redirect, Route, Switch} from "react-router-dom";
@@ -16,6 +30,7 @@ import Evidence from "../../Project/Evidence";
 import SectionEditPage from "../../Project/CreateProject/Section/SectionEditPage";
 import SurveyEditPage from "../../Project/CreateProject/Survey/SurveyEditPage";
 import PreviewSection from "../../Project/PreviewProject/PreviewSection";
+import {getAccount} from "../../User/Auth/Auth";
 
 
 const logo = "https://cdn.open-ct.com/logo/openct_logo_1082x328.png"
@@ -136,12 +151,12 @@ class HeaderLayout extends React.Component {
       <Layout style={{minHeight: '100vh', textAlign: 'left'}}>
         <Layout.Header style={{backgroundColor: 'white', paddingLeft: '4px', paddingRight: '4px'}}>
           <Row>
-            <Col xxl={14} xl={10} lg={8} md={6} sm={6} xs={10}>
+            <Col xxl={16} xl={14} lg={10} md={6} sm={8} xs={0}>
               <Link to="/home">
-                <Image height={50} width={200} style={{margin: '7px'}} src={logo} preview={false}/>
+                <Image height={50} width={165} style={{margin: '7px'}} src={logo} preview={false}/>
               </Link>
             </Col>
-            <Col xxl={6} xl={10} lg={10} md={10} sm={10} xs={3}>
+            <Col xxl={4} xl={6} lg={8} md={10} sm={8} xs={6}>
               <Menu
                 theme="light"
                 mode="horizontal"
@@ -167,7 +182,7 @@ class HeaderLayout extends React.Component {
                 </Menu.Item>
               </Menu>
             </Col>
-            <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={11}>
+            <Col xxl={4} xl={4} lg={6} md={8} sm={8} xs={18}>
               {
                 <>
                   <span style={{float: 'left', marginRight: '20px'}}>

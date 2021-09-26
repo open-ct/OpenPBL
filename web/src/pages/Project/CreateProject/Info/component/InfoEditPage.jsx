@@ -1,3 +1,17 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, {useEffect, useState} from "react";
 import {Button, Col, DatePicker, Input, message, Row, Select, Upload} from "antd";
 import ImgCrop from 'antd-img-crop';
@@ -6,6 +20,7 @@ import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
 import '../../Outline/index.less'
 import ProjectApi from "../../../../../api/ProjectApi";
 import util from "../../../../component/Util"
+import FileApi from "../../../../../api/FileApi";
 
 function InfoEditPage(obj) {
   const pid = obj.pid
@@ -101,9 +116,9 @@ function InfoEditPage(obj) {
 
   const onUploadImage = (file) => {
     setChange(true)
-
     setLoading(true)
     file = file.file;
+    const index = file.name.lastIndexOf('.');
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
       message.error('只能上传 JPG/PNG 格式文件');
@@ -112,15 +127,17 @@ function InfoEditPage(obj) {
     if (!isLt2M) {
       message.error('图片应当小于 2MB');
     }
-
-    const r = new FileReader();
-    r.addEventListener('load', () => upload(r.result));
-    r.readAsDataURL(file);
-  }
-
-  const upload = (file) => {
-    setImageUrl(file)
-    setLoading(true)
+    const postfix = file.name.substr(index);
+    let filePath = `/openpbl/project/${pid}${postfix}`
+    FileApi.uploadFile("admin", "openpbl", obj.account.name, filePath, file)
+      .then(res=>{
+        if (res.data.status === 'ok') {
+          setImageUrl(res.data.data)
+        } else {
+          message.error(res.data.msg)
+        }
+      })
+      .catch(e=>{console.log(e)})
   }
 
   const onPreview = file => {
@@ -157,6 +174,8 @@ function InfoEditPage(obj) {
           setTimeout(() => {
             window.location.href = `/home/project/${pid}/outline/edit`
           }, 200)
+        } else {
+          message.error(res.data.msg)
         }
       })
       .catch((e) => {

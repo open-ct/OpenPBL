@@ -1,3 +1,17 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, {useEffect, useState} from "react";
 import {Button, Input, message, Upload} from "antd";
 import {InboxOutlined} from "@ant-design/icons";
@@ -14,7 +28,7 @@ function TaskCard(obj) {
     if (obj.item.taskType === "file") {
       getSubmitFiles()
     }
-  }, [])
+  }, [obj.item])
 
   const getSubmitFiles = () => {
     SubmitApi.getSubmitFiles(obj.pid, obj.item.id, obj.item.submit.id)
@@ -65,25 +79,22 @@ function TaskCard(obj) {
   }
 
   const removeFile = file => {
-    let data = {
-      objectKey: file.filePath,
-    }
-    FileApi.deleteFile(JSON.stringify(data))
+    SubmitApi.deleteSubmitFile(obj.pid, obj.item.id, obj.item.submit.id, file.id)
       .then(res=>{
-        if (res.data.status === 'ok') {
-          SubmitApi.deleteSubmitFile(obj.pid, obj.item.id, obj.item.submit.id, file.id)
-            .then(res=>{
-              if (res.data.code === 200) {
-                getSubmitFiles()
-              }
-            })
-            .catch(e=>{console.log(e)})
+        if (res.data.code === 200) {
+          message.success(res.data.msg)
+          getSubmitFiles()
+        } else {
+          message.error(res.data.msg)
         }
       })
       .catch(e=>{console.log(e)})
   }
   const onUploadFile = file => {
     file = file.file
+    let f = fileList
+    f.push({name: file.name, status: 'uploading'})
+    setFileList([...f])
     const index = file.name.lastIndexOf('.');
     if (index === -1) {
       message.error('不能识别文件类型');
@@ -93,22 +104,17 @@ function TaskCard(obj) {
       message.error('文件不能大于1GB');
       return
     }
-    let filePath = `/openpbl/project/${obj.pid}/task/${obj.item.id}/${obj.studentId}/${file.name}`
-    FileApi.uploadFile("admin", "openpbl", obj.studentId, filePath, file)
+    let name = file.name.substr(0, index)
+    const postfix = file.name.substr(index);
+    let ts = new Date().getTime()
+    let filePath = `/openpbl/${obj.account.name}/${name}-${ts}${postfix}`
+    FileApi.uploadFile("admin", "openpbl", obj.account.name, filePath, file)
       .then(res=>{
         if (res.data.status === 'ok') {
-          let e = false
-          for (let i=0; i<fileList.length; i++) {
-            if (fileList[i].name === file.name) {
-              let f = fileList[i]
-              f.url = res.data.data
-              updateFile(f)
-              e = true
-            }
-          }
-          if (!e) {
-            uploadFile(filePath, file.name, res.data.data)
-          }
+          uploadFile(filePath, file.name, res.data.data)
+        } else {
+          message.error(res.data.msg)
+          getSubmitFiles()
         }
       })
       .catch(e=>{console.log(e)})
@@ -124,9 +130,9 @@ function TaskCard(obj) {
         if (res.data.code === 200) {
           message.success(res.data.msg)
           obj.getTasks()
-          getSubmitFiles()
         } else {
           message.error(res.data.msg)
+          getSubmitFiles()
         }
       })
       .catch(e=>{console.log(e)})

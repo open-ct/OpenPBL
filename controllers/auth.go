@@ -1,3 +1,17 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package controllers
 
 import (
@@ -16,7 +30,8 @@ func InitCasdoor() {
 	var ClientSecret = beego.AppConfig.String("clientSecret")
 	var JwtSecret = beego.AppConfig.String("jwtSecret")
 	var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
-	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization)
+	var ApplicationName = beego.AppConfig.String("applicationName")
+	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization, ApplicationName)
 }
 
 
@@ -52,12 +67,11 @@ type Response struct {
 }
 
 // Login
-// @Title
-// @Description
+// @Title Login
+// @Description User login
 // @Param code body string true	"code"
-// @Param state body string true	"state"
-// @Success 200 {int} models.Teacher.Id
-// @Failure 403 body is empty
+// @Param state body string true "state"
+// @Success 200 {object} Response
 // @router /login [post]
 func (c *AuthController) Login() {
 	code := c.Input().Get("code")
@@ -94,8 +108,8 @@ func (c *AuthController) Login() {
 }
 
 // Logout
-// @Title
-// @Description
+// @Title Logout
+// @Description User logout
 // @Success 200 {object} Response
 // @router /logout [post]
 func (c *AuthController) Logout() {
@@ -110,10 +124,9 @@ func (c *AuthController) Logout() {
 }
 
 // GetAccount
-// @Title
-// @Description
+// @Title GetAccount
+// @Description Get user account
 // @Success 200 {object} Response
-// @Failure 401 {object} Response
 // @router /account [get]
 func (c *AuthController) GetAccount() {
 	var resp Response

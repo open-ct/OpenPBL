@@ -1,5 +1,19 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, {useEffect, useState} from "react";
-import {Button, Card, Divider, Dropdown, Input, Menu, message, Popconfirm} from "antd";
+import {Button, Card, Divider, Col, Row, Input, Menu, message, Popconfirm} from "antd";
 import {ArrowDownOutlined, ArrowUpOutlined, DeleteOutlined, UpOutlined} from "@ant-design/icons";
 
 import TaskApi from "../../../../../api/TaskApi";
@@ -10,6 +24,10 @@ function StudentTask(obj) {
   const pid = obj.pid
   const sid = obj.sid
   const [tasks, setTasks] = useState([])
+  const [bt1Loading, setBt1Loading] = useState(false)
+  const [bt2Loading, setBt2Loading] = useState(false)
+  const [bt3Loading, setBt3Loading] = useState(false)
+
   useEffect(() => {
     if (sid !== undefined) {
       getTasks()
@@ -43,10 +61,17 @@ function StudentTask(obj) {
       o = tasks[len - 1].taskOrder + 1
     }
     // taskType: survey file comment
+    if (tp === 'file') {
+      setBt1Loading(true)
+    } else if (tp === 'comment') {
+      setBt2Loading(true)
+    } else if (tp === 'survey'){
+      setBt3Loading(true)
+    }
     let t = {
       sectionId: sid,
       taskOrder: o,
-      taskType: tp.key,
+      taskType: tp,
       chapterNumber: obj.section.chapterNumber,
       sectionNumber: obj.section.sectionNumber
     }
@@ -56,6 +81,13 @@ function StudentTask(obj) {
           t.id = res.data.data
           tasks.push(t)
           setTasks([...tasks])
+        }
+        if (tp === 'file') {
+          setBt1Loading(false)
+        } else if (tp === 'comment') {
+          setBt2Loading(false)
+        } else if (tp === 'survey'){
+          setBt3Loading(false)
         }
       })
   }
@@ -106,56 +138,56 @@ function StudentTask(obj) {
   }
 
   return (
-    <Card className="resource-card">
-      <p className="card-title">学生任务</p>
+    <>
       {tasks.map((item, index) => (
-        <div key={index.toString()}>
-          <Divider/>
-          <p className="task-title">
-            {item.taskType === 'file' ? '学生上传文件' : null}
-            {item.taskType === 'comment' ? '学生评论' : null}
-            {item.taskType === 'survey' ? '学生填写问卷' : null}
-            <span style={{float: 'right'}}>
-              <Button shape="circle" type="text" icon={<ArrowUpOutlined/>}
-                      onClick={e => exchangeTask(index - 1, index)}/>
-              <Button shape="circle" type="text" icon={<ArrowDownOutlined/>}
-                      onClick={e => exchangeTask(index, index + 1)}/>
-              &nbsp;&nbsp;
-              <Popconfirm title="确定删除任务？" onConfirm={e => deleteTask(item, index)} placement="topRight">
-                <Button shape="circle" type="text" icon={<DeleteOutlined/>} style={{color: 'red'}}/>
-              </Popconfirm>
-            </span>
-          </p>
-          <Input placeholder="任务标题" value={item.taskTitle} onChange={e => changeTitle(e, index)}/>
-          <Input.TextArea placeholder="任务描述" value={item.taskIntroduce} onChange={e => changeIntroduce(e, index)}
-                          style={{marginTop: '20px'}}/>
-          {item.taskType === 'survey' ?
-            <Button style={{marginTop: '10px'}} onClick={e => gotoSurvey(item, index)}>查看问卷</Button>
-            : null
-          }
+        <Card className="resource-card">
+          <p className="card-title">学生任务</p>
+          <div key={index.toString()}>
+            <Divider/>
+            <p className="task-title">
+              {item.taskType === 'file' ? '学生上传文件' : null}
+              {item.taskType === 'comment' ? '学生评论' : null}
+              {item.taskType === 'survey' ? '学生填写问卷' : null}
+              <span style={{float: 'right'}}>
+                  <Button shape="circle" type="text" icon={<ArrowUpOutlined/>}
+                          onClick={e => exchangeTask(index - 1, index)}/>
+                  <Button shape="circle" type="text" icon={<ArrowDownOutlined/>}
+                          onClick={e => exchangeTask(index, index + 1)}/>
+                &nbsp;&nbsp;
+                <Popconfirm title="确定删除任务？" onConfirm={e => deleteTask(item, index)} placement="topRight">
+                    <Button shape="circle" type="text" icon={<DeleteOutlined/>} style={{color: 'red'}}/>
+                  </Popconfirm>
+                </span>
+            </p>
+            <Input placeholder="任务标题" value={item.taskTitle} onChange={e => changeTitle(e, index)} onBlur={e=>saveContent(item, index)} />
+            <Input.TextArea placeholder="任务描述" value={item.taskIntroduce} onChange={e => changeIntroduce(e, index)}
+                            style={{marginTop: '20px'}} onBlur={e=>saveContent(item, index)}/>
+            {item.taskType === 'survey' ?
+              <Button style={{marginTop: '10px'}} onClick={e => gotoSurvey(item, index)}>查看问卷</Button>
+              : null
+            }
 
-          <div style={{marginTop: '10px', textAlign: 'right'}}>
-            <span>
-              <Button type="primary" onClick={e => saveContent(item, index)}>保存</Button>
-            </span>
+            <div style={{marginTop: '10px', textAlign: 'left'}}>
+                <span>
+                  <Button type="primary" onClick={e => saveContent(item, index)}>保存</Button>
+                </span>
+            </div>
           </div>
-        </div>
+        </Card>
       ))}
-      <div style={{marginTop: '20px', textAlign: 'right'}}>
-        <Dropdown
-          trigger="click"
-          overlay={
-            <Menu onClick={addTask}>
-              <Menu.Item key="file">文件任务</Menu.Item>
-              <Menu.Item key="comment">评论任务</Menu.Item>
-              <Menu.Item key="survey">问卷任务</Menu.Item>
-            </Menu>
-          }
-        >
-          <Button>添加任务<UpOutlined/></Button>
-        </Dropdown>
-      </div>
-    </Card>
+      <Divider orientation="center">添加学生任务</Divider>
+      <Row gutter={[24, 16]}  style={{textAlign: 'center', marginTop: '20px'}} >
+        <Col span={8}>
+          <Button loading={bt1Loading} className="add-bt" size="large" type="round" onClick={e=>addTask('file')}>添加文件任务</Button>
+        </Col>
+        <Col span={8}>
+          <Button loading={bt2Loading} className="add-bt" size="large" type="round" onClick={e=>addTask('comment')}>添加评论任务</Button>
+        </Col>
+        <Col span={8}>
+          <Button loading={bt3Loading} className="add-bt" size="large" type="round" onClick={e=>addTask('survey')}>添加问卷任务</Button>
+        </Col>
+      </Row>
+    </>
   )
 }
 

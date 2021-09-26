@@ -1,3 +1,17 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package controllers
 
 import (
@@ -5,8 +19,7 @@ import (
 	"github.com/astaxie/beego"
 )
 
-// HomeController
-// Operations about Projects
+
 type HomeController struct {
 	beego.Controller
 }
@@ -17,11 +30,10 @@ type HomeProjectResponse struct {
 }
 
 // GetLatestProjects
-// @Title
-// @Description
-// @Param num path int true ""
+// @Title GetLatestProjects
+// @Description Get latest projects
+// @Param num params int true "Number of items"
 // @Success 200 {object} HomeProjectResponse
-// @Failure 400
 // @router /projects/latest [get]
 func (h *HomeController) GetLatestProjects() {
 	num, err := h.GetInt("num")

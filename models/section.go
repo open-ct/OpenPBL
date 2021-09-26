@@ -1,23 +1,38 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package models
 
 import (
+	"OpenPBL/util"
 	"fmt"
 	"xorm.io/xorm"
 )
 
 type Section struct {
-	Id                 int64   `json:"id" xorm:"not null pk autoincr"`
-	ChapterId          int64   `json:"chapterId" xorm:"index"`
+	Id                 string  `json:"id" xorm:"not null pk"`
+	ChapterId          string  `json:"chapterId" xorm:"index"`
 	SectionName        string  `json:"sectionName"`
 	SectionNumber      int     `json:"sectionNumber" xorm:"index"`
 	ChapterNumber      int     `json:"chapterNumber" xorm:"index"`
 
-	SectionMinute      int     `json:"sectionMinute" xorm:"default 1"`
+	SectionMinute      int     `json:"sectionMinute" xorm:"default 10"`
 }
 
 type SectionFile struct {
-	Id        int64    `json:"id" xorm:"not null pk autoincr"`
-	SectionId int64    `json:"sectionId" xorm:"not null index"`
+	Id        string   `json:"id" xorm:"not null pk"`
+	SectionId string   `json:"sectionId" xorm:"not null index"`
 	FilePath  string   `json:"filePath"`
 	Name      string   `json:"name"`
 	Url       string   `json:"url"`
@@ -73,6 +88,7 @@ func (p *Section) Create() (err error) {
 	session.Begin()
 	_, err = session.Insert(p)
 	_, err = session.Insert(Resource{
+		Id:                util.NewId(),
 		SectionId:         p.Id,
 	})
 	session.Commit()
@@ -94,12 +110,12 @@ func UpdateSectionsMinute(sections []Section) (err error) {
 func (p *Section) Delete() (err error) {
 	session := adapter.Engine.NewSession()
 	defer session.Close()
-	session.Begin()
+	_ = session.Begin()
 	_, err = session.Engine().
 		Exec("update section set section_number = section_number - 1 " +
 			"where chapter_id = ? and section_number > ?", p.ChapterId, p.SectionNumber)
 	_, err = session.Table(&Section{}).ID(p.Id).Delete(p)
-	session.Commit()
+	_ = session.Commit()
 	return
 }
 func ExchangeSections(id1 string, id2 string) (err error) {
@@ -126,7 +142,7 @@ func GetSectionDetailById(sid string) (s SectionDetail, err error) {
 	return
 }
 
-func DeleteChapterSections(cid int64) (err error) {
+func DeleteChapterSections(cid string) (err error) {
 	var sections []Section
 	err = (&Section{}).GetEngine().Where("chapter_id = ?", cid).Find(&sections)
 	for i:=0; i< len(sections); i++ {
@@ -134,23 +150,42 @@ func DeleteChapterSections(cid int64) (err error) {
 		sid := s.Id
 		_, err = (&Section{}).GetEngine().ID(sid).Delete(&Section{})
 		err = DeleteSectionResource(sid)
+		err = DeleteSectionFiles(sid)
 		err = DeleteTasks(sid)
 	}
 	return
 }
 
-func CloneChapterSections(newPid int64, cid int64, newCid int64) (err error) {
+func DeleteSectionFiles(sid string) (err error) {
+	_, err = (&SectionFile{}).GetEngine().Where("section_id = ?", sid).Delete(&SectionFile{})
+	return
+}
+
+func CloneChapterSections(newPid string, cid string, newCid string) (err error) {
 	var sections []Section
 	err = (&Section{}).GetEngine().Where("chapter_id = ?", cid).Find(&sections)
 	for i:=0; i< len(sections); i++ {
 		s := sections[i]
 		sid := s.Id
-		s.Id = 0
+		s.Id = util.NewId()
 		s.ChapterId = newCid
 		_, err = (&Section{}).GetEngine().Insert(&s)
 		newSid := s.Id
 		err = CloneSectionResource(sid, newSid)
+		err = CloneSectionFiles(sid, newSid)
 		err = CloneTasks(newPid, sid, newSid)
+	}
+	return
+}
+
+func CloneSectionFiles(sid string, newSid string) (err error) {
+	var files []SectionFile
+	err = (&SectionFile{}).GetEngine().Where("section_id = ?", sid).Find(&files)
+	for i:=0; i<len(files); i++ {
+		f := files[i]
+		f.Id = util.NewId()
+		f.SectionId = newSid
+		err = f.Create()
 	}
 	return
 }

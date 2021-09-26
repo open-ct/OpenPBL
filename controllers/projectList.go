@@ -1,3 +1,17 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package controllers
 
 import (
@@ -8,8 +22,7 @@ import (
 	"strconv"
 )
 
-// ProjectListController
-// Operations about Projects
+
 type ProjectListController struct {
 	beego.Controller
 }
@@ -35,23 +48,22 @@ func (pl *ProjectListController) GetSessionUser() *auth.Claims {
 }
 
 // GetUserProjectList
-// @Title
-// @Description
-// @Param projectType path string true "editing published closed // learning finished"
-// @Param from query string false "from"
-// @Param size query string false "size"
-// @Param orderBy query string false "orderBy"
-// @Param orderType query string false "orderType"
-// @Param subject query string false ""
-// @Param skill query string false ""
-// @Param text query string false ""
+// @Title GetUserProjectList
+// @Description Get project list
+// @Param projectType path string true "For teacher: editing/published/finished, for student: learning/finished"
+// @Param from query string false "Page number"
+// @Param size query string false "Page size"
+// @Param orderBy query string false "Order by , default UpdateAt"
+// @Param orderType query string false "Order type desc/asc, default desc"
+// @Param subject query string false "Project subjects"
+// @Param skill query string false "Project skills"
+// @Param text query string false "Search key-words"
 // @Success 200 {object} ProjectList
-// @Failure 401
 // @router /:projectType [get]
 func (pl *ProjectListController) GetUserProjectList() {
 	orderBy := pl.GetString("orderBy")
 	if orderBy == "" {
-		orderBy = "create_at"
+		orderBy = "update_at"
 	}
 	orderType := pl.GetString("orderType")
 	if orderType == "" {
@@ -79,9 +91,9 @@ func (pl *ProjectListController) GetUserProjectList() {
 
 	if util.IsStudent(user) {
 		if t == "learning" {
-			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, true)
-		} else if t == "finished" {
 			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, false)
+		} else if t == "finished" {
+			projects, count, err = models.GetMyProjectListBySid(uid, from, size, subject, skill, text, orderBy, orderType, true)
 		} else if t == "public" {
 			projects, count, err = models.GetPublicProjectListForStudent(uid, from, size, subject, skill, text, orderBy, orderType, false)
 		} else if t == "favourite" {
@@ -106,6 +118,5 @@ func (pl *ProjectListController) GetUserProjectList() {
 		Projects: projects,
 	}
 	pl.Data["json"] = data
-
 	pl.ServeJSON()
 }

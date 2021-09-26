@@ -1,19 +1,35 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package controllers
 
 import (
 	"OpenPBL/models"
+	"OpenPBL/util"
 )
 
 
 // GetResource
-// @Title
+// @Title GetResource
 // @Description
-// @Param id path string true ""
+// @Param projectId path string true "The id of the project"
+// @Param resourceId path string true "The id of the resource"
 // @Success 200 {object} models.Resource
 // @router /:projectId/resource/:resourceId [get]
 func (p *ProjectController) GetResource() {
 	var err error
-	rid := p.GetString(":id")
+	rid := p.GetString(":resourceId")
 	resource, err := models.GetResourceById(rid)
 	if err != nil {
 		p.Data["json"] = map[string]models.Resource{"resource": {}}
@@ -24,19 +40,21 @@ func (p *ProjectController) GetResource() {
 }
 
 // CreateResource
-// @Title
+// @Title CreateResource
 // @Description
-// @Param body body models.Resource true ""
-// @Success 200 {object} models.TeacherProject
-// @Failure 400
+// @Param projectId path string true "The id of the project"
+// @Param sectionId body string true "The id of the section"
+// @Param content body string true "The content of the resource"
+// @Success 200 {object} Response
 // @router /:projectId/resource [post]
 func (p *ProjectController) CreateResource() {
-	s, err := p.GetInt64("sectionId")
+	s := p.GetString("sectionId")
 	resource := &models.Resource{
+		Id:                util.NewId(),
 		SectionId:         s,
-		Content:           p.GetString("Content"),
+		Content:           p.GetString("content"),
 	}
-	err = resource.Create()
+	err := resource.Create()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -53,21 +71,20 @@ func (p *ProjectController) CreateResource() {
 }
 
 // UpdateResource
-// @Title
+// @Title UpdateResource
 // @Description
-// @Param body body models.Resource true ""
-// @Success 200 {object} models.TeacherProject
-// @Failure 400
+// @Param resourceId path string true "The id of the resource"
+// @Param sectionId body string true "The id of the section"
+// @Success 200 {object} Response
 // @router /:projectId/resource/:resourceId [post]
 func (p *ProjectController) UpdateResource() {
-	s, err := p.GetInt64("sectionId")
-	id, err := p.GetInt64(":resourceId")
+	id := p.GetString(":resourceId")
 	resource := &models.Resource{
 		Id:                id,
-		SectionId:         s,
+		SectionId:         p.GetString("sectionId"),
 		Content:           p.GetString("content"),
 	}
-	err = resource.Update()
+	err := resource.Update()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -83,20 +100,19 @@ func (p *ProjectController) UpdateResource() {
 }
 
 // UpdateResourceContent
-// @Title
+// @Title UpdateResourceContent
 // @Description
-// @Param id path string true ""
+// @Param projectId path string true "The id of the project"
+// @Param resourceId path string true "The id of the resource"
 // @Param content body string true ""
 // @Success 200 {object} models.TeacherProject
-// @Failure 400
 // @router /:projectId/resource/:resourceId/content [post]
 func (p *ProjectController) UpdateResourceContent() {
-	id, err := p.GetInt64(":resourceId")
 	resource := &models.Resource{
-		Id:      id,
+		Id:      p.GetString(":resourceId"),
 		Content: p.GetString("content"),
 	}
-	err = resource.Update()
+	err := resource.Update()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,

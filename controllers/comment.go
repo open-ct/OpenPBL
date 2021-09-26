@@ -1,3 +1,17 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package controllers
 
 import (
@@ -16,11 +30,9 @@ type CommentResponse struct {
 // @Title
 // @Description
 // @Success 200 {object} Response
-// @Failure 401
-// @Failure 400
-// @router /:id/comments [get]
+// @router /:projectId/comments [get]
 func (p *ProjectController) GetProjectComments() {
-	pid := p.GetString(":id")
+	pid := p.GetString(":projectId")
 	from, err := p.GetInt("from")
 	if err != nil {
 		from = 0
@@ -54,15 +66,13 @@ func (p *ProjectController) GetProjectComments() {
 // @Title
 // @Description
 // @Success 200 {object} Response
-// @Failure 401
-// @Failure 400
-// @Failure 403
-// @router /:id/comment [post]
+// @router /:projectId/comment [post]
 func (p *ProjectController) CreateProjectComment() {
-	pid, err := p.GetInt64(":id")
+	pid := p.GetString(":projectId")
 	user := p.GetSessionUser()
 	uid := util.GetUserId(user)
 	comment := &models.Comment{
+		Id:        util.NewId(),
 		ProjectId: pid,
 		UserId:    uid,
 		UserAvatar: user.Avatar,
@@ -71,7 +81,7 @@ func (p *ProjectController) CreateProjectComment() {
 		Content:   p.GetString("content"),
 		CreateAt:  time.Time{},
 	}
-	err = comment.Create()
+	err := comment.Create()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,
@@ -90,12 +100,10 @@ func (p *ProjectController) CreateProjectComment() {
 // @Title
 // @Description
 // @Success 200 {object} Response
-// @Failure 401
-// @Failure 400
-// @router /:id/comment/:commentId/delete [post]
+// @router /:projectId/comment/:commentId/delete [post]
 func (p *ProjectController) DeleteProjectComment() {
-	cid, err := p.GetInt64(":commentId")
-	err = (&models.Comment{Id: cid}).Delete()
+	cid := p.GetString(":commentId")
+	err := (&models.Comment{Id: cid}).Delete()
 	if err != nil {
 		p.Data["json"] = Response{
 			Code: 400,

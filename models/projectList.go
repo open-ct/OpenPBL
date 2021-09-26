@@ -1,3 +1,17 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package models
 
 import (
@@ -7,14 +21,13 @@ import (
 // ============= student ===================
 
 func GetMyProjectListBySid(sid string, from int, size int,
-	subject string, skill string, text string, orderBy string, orderType string, learning bool) (p []ProjectDetail, rows int64, err error) {
+	subject string, skill string, text string, orderBy string, orderType string, closed bool) (p []ProjectDetail, rows int64, err error) {
 	const baseSql = `
 		select %s from (
     		select * from project
         		inner join learn_project on (
             		learn_project.student_id = '%s' and
-            		learn_project.learning = %v and
-					project.closed = false and
+					project.closed = %v and
             		project.id = learn_project.project_id
         		)
 		) as project where true
@@ -25,9 +38,9 @@ func GetMyProjectListBySid(sid string, from int, size int,
 	e2 := getSkillExistSql(skill)
 	e3 := getTextSql(text)
 
-	sql1 := fmt.Sprintf(baseSql, "*", sid, learning, e1, e2, e3) +
+	sql1 := fmt.Sprintf(baseSql, "*", sid, closed, e1, e2, e3) +
 		fmt.Sprintf(pageSql, orderBy, orderType, from, size)
-	sql2 := fmt.Sprintf(baseSql, "count(*)", sid, learning, e1, e2, e3)
+	sql2 := fmt.Sprintf(baseSql, "count(*)", sid, closed, e1, e2, e3)
 	err = adapter.Engine.
 		SQL(sql1).
 		Find(&p)
@@ -39,32 +52,35 @@ func GetMyProjectListBySid(sid string, from int, size int,
 
 func GetPublicProjectListForStudent(sid string, from int, size int,
 	subject string, skill string, text string, orderBy string, orderType string, favourite bool) (p []ProjectDetail, rows int64, err error) {
-
-	const baseSql = `
+	baseSql := `
 		select %s from (
 			select * from project where project.published = true and project.closed = false 
-			%s %s %s %s 
+			%s %s %s 
 		) as p1 left join learn_project on (
 			p1.id = learn_project.project_id and learn_project.student_id = '%s'
 		)
 	`
-	const pageSql = " order by p1.%s %s limit %d, %d "
-	e0 := ""
 	if favourite {
-		e0 = `
-			and exists (
-				select favourite.project_id from favourite where favourite.project_id = project.id and favourite.user_id = '%s'
+		baseSql = `
+			select %s from (
+				select * from project where exists (
+					select favourite.project_id from favourite where favourite.project_id = project.id and favourite.user_id = '`+sid+`'
+				)
+				%s %s %s 
+			) as p1 left join learn_project on (
+				p1.id = learn_project.project_id and learn_project.student_id = '%s'
 			)
 		`
-		e0 = fmt.Sprintf(e0, sid)
 	}
+
+	const pageSql = " order by p1.%s %s limit %d, %d "
 	e1 := getSubjectExistSql(subject)
 	e2 := getSkillExistSql(skill)
 	e3 := getTextSql(text)
 
-	sql1 := fmt.Sprintf(baseSql, "*", e0, e1, e2, e3, sid) +
+	sql1 := fmt.Sprintf(baseSql, "*", e1, e2, e3, sid) +
 		fmt.Sprintf(pageSql, orderBy, orderType, from, size)
-	sql2 := fmt.Sprintf(baseSql, "count(*)", e0, e1, e2, e3, sid)
+	sql2 := fmt.Sprintf(baseSql, "count(*)", e1, e2, e3, sid)
 
 	err = adapter.Engine.
 		SQL(sql1).
@@ -109,23 +125,21 @@ func GetPublicProjectListForTeacher(sid string, from int, size int,
 	baseSql := "select %s from project where published = true and closed = false %s %s %s %s "
 	pageSql := " order by %s %s limit %d, %d "
 
-	e0 := ""
 	if favourite {
-		e0 = `
-			and exists (
-				select favourite.project_id from favourite where favourite.project_id = project.id and favourite.user_id = '%s'
+		baseSql = `select %s from project where exists (
+				select favourite.project_id from favourite where favourite.project_id = project.id and favourite.user_id = '`+sid+`'
 			)
+			%s %s %s 
 		`
-		e0 = fmt.Sprintf(e0, sid)
 	}
 
 	e1 := getSubjectExistSql(subject)
 	e2 := getSkillExistSql(skill)
 	e3 := getTextSql(text)
 
-	sql1 := fmt.Sprintf(baseSql, "*", e0, e1, e2, e3) +
+	sql1 := fmt.Sprintf(baseSql, "*", e1, e2, e3) +
 		fmt.Sprintf(pageSql, orderBy, orderType, from, size)
-	sql2 := fmt.Sprintf(baseSql, "count(*)", e0, e1, e2, e3)
+	sql2 := fmt.Sprintf(baseSql, "count(*)", e1, e2, e3)
 
 	err = adapter.Engine.
 		SQL(sql1).

@@ -1,6 +1,21 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package models
 
 import (
+	"OpenPBL/util"
 	"errors"
 	"time"
 	"xorm.io/xorm"
@@ -8,11 +23,11 @@ import (
 
 
 type Project struct {
-	Id                 int64     `json:"id" xorm:"not null pk autoincr"`
-	Image              string    `json:"image" xorm:"longtext"`
+	Id                 string    `json:"id" xorm:"not null pk"`
+	Image              string    `json:"image"`
 	ProjectTitle       string    `json:"projectTitle"`
-	ProjectIntroduce   string    `json:"projectIntroduce"`
-	ProjectGoal        string    `json:"projectGoal"`
+	ProjectIntroduce   string    `json:"projectIntroduce" xorm:"text"`
+	ProjectGoal        string    `json:"projectGoal" xorm:"text"`
 
 	TeacherId          string    `json:"teacherId" xorm:"index"`
 
@@ -20,6 +35,7 @@ type Project struct {
 	Skills             string    `json:"skills" xorm:"default ''"`
 
 	CreateAt           time.Time `json:"createAt" xorm:"created"`
+	UpdateAt           time.Time `json:"UpdateAt"`
 
 	Closed             bool      `json:"closed" xorm:"default false index"`
 	ClosedAt           time.Time `json:"closedAt"`
@@ -37,7 +53,7 @@ type Project struct {
 }
 
 type Favourite struct {
-	ProjectId          int64     `json:"projectId" xorm:"not null pk"`
+	ProjectId          string    `json:"projectId" xorm:"not null pk"`
 	UserId             string    `json:"userId" xorm:"not null pk"`
 	CreateAt           time.Time `json:"createAt" xorm:"created"`
 }
@@ -51,12 +67,12 @@ type ProjectDetail struct {
 
 type ProjectSkill struct {
 	Skill          string     `json:"skill" xorm:"not null pk"`
-	ProjectId      int64      `json:"projectId" xorm:"not null pk"`
+	ProjectId      string     `json:"projectId" xorm:"not null pk"`
 }
 
 type ProjectSubject struct {
 	Subject        string     `json:"subject" xorm:"not null pk"`
-	ProjectId      int64      `json:"projectId" xorm:"not null pk"`
+	ProjectId      string     `json:"projectId" xorm:"not null pk"`
 }
 
 func (p *Project) GetEngine() *xorm.Session {
@@ -72,7 +88,7 @@ func (f *Favourite) GetEngine() *xorm.Session {
 	return adapter.Engine.Table(f)
 }
 
-func GetProjectById(pid int64) (project Project, err error) {
+func GetProjectById(pid string) (project Project, err error) {
 	var b bool
 	b, err = (&Project{}).GetEngine().
 		ID(pid).
@@ -83,7 +99,7 @@ func GetProjectById(pid int64) (project Project, err error) {
 	return
 }
 
-func GetProjectByPidForTeacher(pid int64, uid string) (pd ProjectDetail, err error) {
+func GetProjectByPidForTeacher(pid string, uid string) (pd ProjectDetail, err error) {
 	var p Project
 	c, err := (&Project{}).GetEngine().
 		ID(pid).
@@ -107,7 +123,7 @@ func GetProjectByPidForTeacher(pid int64, uid string) (pd ProjectDetail, err err
 	return
 }
 
-func GetProjectByPidForStudent(pid int64, uid string) (pd ProjectDetail, err error) {
+func GetProjectByPidForStudent(pid string, uid string) (pd ProjectDetail, err error) {
 	c, err := (&Project{}).GetEngine().
 		Where("project.id = ?", pid).
 		Join("LEFT OUTER", LearnProject{}, "project.id = learn_project.project_id and student_id = ?", uid).
@@ -192,7 +208,7 @@ func UpdateClosed(p Project) (err error) {
 	return
 }
 
-func AddFavourite(uid string, pid int64) (err error) {
+func AddFavourite(uid string, pid string) (err error) {
 	_, err = (&Favourite{}).GetEngine().Insert(Favourite{
 		ProjectId: pid,
 		UserId:    uid,
@@ -201,7 +217,7 @@ func AddFavourite(uid string, pid int64) (err error) {
 	return
 }
 
-func RemoveFavourite(uid string, pid int64) (err error) {
+func RemoveFavourite(uid string, pid string) (err error) {
 	_, err = (&Favourite{}).GetEngine().Delete(Favourite{
 		ProjectId: pid,
 		UserId:    uid,
@@ -230,11 +246,11 @@ func ViewProject(pid string) (err error) {
 	return
 }
 
-func CloneProject(uid string, pid int64) (err error) {
+func CloneProject(uid string, pid string) (err error) {
 	var project Project
 	_, err = (&Project{}).GetEngine().ID(pid).Get(&project)
 	project.TeacherId = uid
-	project.Id = 0
+	project.Id = util.NewId()
 	project.Closed = false
 	project.Published = false
 	project.CreateAt = time.Now()
@@ -244,5 +260,17 @@ func CloneProject(uid string, pid int64) (err error) {
 	_, err = (&Project{}).GetEngine().Insert(&project)
 	newPid := project.Id
 	err = CloneProjectChapters(pid, newPid)
+	return
+}
+
+func IsEditableProject(pid string) (e bool) {
+	var p Project
+	var b bool
+	b, _ = (&Project{}).GetEngine().ID(pid).Get(&p)
+	if b {
+		e = p.Closed == false
+	} else {
+		e = false
+	}
 	return
 }

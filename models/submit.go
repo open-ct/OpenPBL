@@ -1,6 +1,21 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package models
 
 import (
+	"OpenPBL/util"
 	"strconv"
 	"strings"
 	"time"
@@ -8,11 +23,11 @@ import (
 )
 
 type Submit struct {
-	Id              int64     `json:"id" xorm:"not null pk autoincr"`
+	Id              string    `json:"id" xorm:"not null pk"`
 
-	ProjectId       int64     `json:"projectId" xorm:"not null index"`
+	ProjectId       string    `json:"projectId" xorm:"not null index"`
 	StudentId       string    `json:"studentId" xorm:"not null index"`
-	TaskId          int64     `json:"taskId" xorm:"not null index"`
+	TaskId          string    `json:"taskId" xorm:"not null index"`
 
 	SubmitType      string    `json:"submitType" xorm:"index"`
 
@@ -27,17 +42,17 @@ type Submit struct {
 }
 
 type SubmitFile struct {
-	Id        int64    `json:"id" xorm:"not null pk autoincr"`
-	SubmitId  int64    `json:"submitId" xorm:"not null index"`
+	Id        string   `json:"id" xorm:"not null pk"`
+	SubmitId  string   `json:"submitId" xorm:"not null index"`
 	FilePath  string   `json:"filePath"`
 	Name      string   `json:"name"`
 	Url       string   `json:"url"`
 }
 
 type Choice struct {
-	Id            int64     `json:"id" xorm:"not null pk autoincr"`
-	SubmitId      int64     `json:"submitId" xorm:"not null index"`
-	QuestionId    int64     `json:"questionId" xorm:"not null index"`
+	Id            string    `json:"id" xorm:"not null pk"`
+	SubmitId      string    `json:"submitId" xorm:"not null index"`
+	QuestionId    string    `json:"questionId" xorm:"not null index"`
 	ChoiceOrder   int       `json:"choiceOrder"`
 	ChoiceOptions string    `json:"choiceOptions" xorm:"text"`
 }
@@ -45,7 +60,7 @@ type Choice struct {
 type SubmitDetail struct {
 	Submit             `json:"submit" xorm:"extends"`
 	Choices   []Choice `json:"choices" xorm:"extends"`
-	Submitted  bool     `json:"submitted"`
+	Submitted  bool    `json:"submitted"`
 }
 
 func (p *Submit) GetEngine() *xorm.Session {
@@ -93,6 +108,7 @@ func (p *Submit) Create(c []Choice) (err error) {
 	if p.SubmitType == "survey" {
 		for i := 0; i < len(c); i ++ {
 			ci := &Choice{
+				Id:            util.NewId(),
 				SubmitId:      p.Id,
 				QuestionId:    c[i].QuestionId,
 				ChoiceOrder:   c[i].ChoiceOrder,
@@ -105,7 +121,7 @@ func (p *Submit) Create(c []Choice) (err error) {
 	return
 }
 func (p *Submit) Update(c []Choice) (err error) {
-	_, err = p.GetEngine().ID(p.Id).Update(p)
+	_, err = p.GetEngine().ID(p.Id).MustCols("scored").Update(p)
 	if len(c) > 0 && p.SubmitType == "survey" {
 		var cs []Choice
 		err = (&Choice{}).GetEngine().

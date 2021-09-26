@@ -1,3 +1,17 @@
+// Copyright 2021 The OpenPBL Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, {useEffect, useState} from "react";
 import {Button, Card, PageHeader} from "antd";
 import DocumentTitle from 'react-document-title';
@@ -40,16 +54,16 @@ function SectionEditPage(obj) {
           title="返回"
           subTitle="我的项目"
         />
-        <div style={{padding: '20px', margin: 'auto'}}>
+        <div style={{padding: '20px', margin: 'auto', maxWidth: '1400px'}}>
           <Card>
             <h2 style={{fontWeight: 'bold'}}>{section.sectionName}</h2>
           </Card>
-          <RichWords section={section} pid={pid} sid={sid}/>
-          <FileResource section={section} pid={pid} sid={sid}/>
+          <RichWords section={section} pid={pid} sid={sid} account={obj.account} content={section.resource.content}/>
+          <FileResource section={section} pid={pid} sid={sid} account={obj.account}/>
           <StudentTask section={section} pid={pid} sid={sid}/>
         </div>
         <div style={{textAlign: 'center'}}>
-          <Link to={`/home/project/${pid}/section/${sid}/preview?back=/project/${pid}/section/${sid}/edit`}>
+          <Link to={`/home/project/${pid}/section/${sid}/preview?back=/home/project/${pid}/section/${sid}/edit`}>
             <Button style={{marginBottom: '20px'}}>预览</Button>
           </Link>
         </div>
