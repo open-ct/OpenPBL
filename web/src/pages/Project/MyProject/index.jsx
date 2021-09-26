@@ -50,7 +50,7 @@ class MyProject extends React.PureComponent {
     ProjectApi.createProject()
       .then((res) => {
         if (res.data.code === 200) {
-          window.open(`/home/project/${res.data.data}/info/edit`)
+          window.location.href = `/home/project/${res.data.data}/info/edit`
         }
       })
       .catch((e) => {
